@@ -91,7 +91,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({ results, inputs, formatCurr
               </TableRow>
             ))}
             {/* Total row */}
-            <TableRow className="bg-primary text-primary-foreground">
+            <TableRow className="bg-primary text-primary-foreground hover:bg-primary">
               <TableCell className="font-bold text-xs uppercase tracking-wider">Net Annual Benefit</TableCell>
               <TableCell colSpan={2} />
               <TableCell className="text-right font-bold text-lg">
