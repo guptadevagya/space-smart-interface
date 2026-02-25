@@ -1,7 +1,6 @@
 import React from 'react';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell,
-  FunnelChart, Funnel, LabelList
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { SimulationResults, Region } from '@/lib/types';
@@ -9,7 +8,6 @@ import { SimulationResults, Region } from '@/lib/types';
 interface FinancialChartsProps {
   results: SimulationResults;
   region: Region;
-  annualBirths: number;
 }
 
 const CHART_COLORS = {
@@ -21,7 +19,7 @@ const CHART_COLORS = {
   muted: 'hsl(215, 16%, 47%)',       // muted
 };
 
-const FinancialCharts: React.FC<FinancialChartsProps> = ({ results, region, annualBirths }) => {
+const FinancialCharts: React.FC<FinancialChartsProps> = ({ results, region }) => {
   const isUS = region === 'US';
   const locale = isUS ? 'en-US' : 'en-GB';
   const currency = isUS ? 'USD' : 'GBP';
@@ -40,14 +38,6 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ results, region, annu
     { name: 'C-Section', value: results.financials.cSectionSavings, color: CHART_COLORS.primary },
     { name: 'NICU', value: results.financials.nicuSavings, color: CHART_COLORS.secondary },
     { name: isUS ? 'Litigation' : 'CNST', value: results.financials.litigationSavings, color: CHART_COLORS.savings },
-  ];
-
-  // Detection funnel
-  const funnelData = [
-    { name: 'Total Births', value: annualBirths, fill: 'hsl(215, 16%, 80%)' },
-    { name: 'FGR Cases', value: results.demographics.totalFGR, fill: CHART_COLORS.secondary },
-    { name: 'Currently Detected', value: results.demographics.totalFGR - results.demographics.undiagnosedCurrent, fill: CHART_COLORS.muted },
-    { name: 'OxNNet Detected', value: results.demographics.totalFGR - results.demographics.undiagnosedOxailis, fill: CHART_COLORS.savings },
   ];
 
   // Cost vs benefit comparison
@@ -114,29 +104,6 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ results, region, annu
         </CardContent>
       </Card>
 
-      {/* Detection Funnel */}
-      <Card className="lg:col-span-2">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-bold">Detection Funnel</CardTitle>
-          <CardDescription className="text-xs">
-            From total births through FGR detection — current pathway vs OxNNet
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <FunnelChart>
-                <Tooltip formatter={(value: number) => fmtNum(value)} />
-                <Funnel dataKey="value" data={funnelData} isAnimationActive>
-                  <LabelList position="right" fill="hsl(var(--foreground))" fontSize={11}
-                    formatter={(value: number) => fmtNum(value)} />
-                  <LabelList position="left" dataKey="name" fill="hsl(var(--muted-foreground))" fontSize={11} />
-                </Funnel>
-              </FunnelChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };
