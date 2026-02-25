@@ -1,7 +1,7 @@
 import React from 'react';
 import { Region } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import { Menu, Printer } from 'lucide-react';
+import { Menu, Printer, Save, FolderOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface DashboardHeaderProps {
@@ -9,9 +9,11 @@ interface DashboardHeaderProps {
   switchRegion: (r: Region) => void;
   toggleSidebar: () => void;
   totalImpact: string;
+  onSave: () => void;
+  onLoad: () => void;
 }
 
-const DashboardHeader: React.FC<DashboardHeaderProps> = ({ region, switchRegion, toggleSidebar, totalImpact }) => {
+const DashboardHeader: React.FC<DashboardHeaderProps> = ({ region, switchRegion, toggleSidebar, totalImpact, onSave, onLoad }) => {
   const regions: Region[] = ['US', 'UK', 'Global'];
 
   return (
@@ -33,7 +35,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ region, switchRegion,
         </div>
       </div>
 
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-3">
         {/* Region selector */}
         <div className="flex items-center bg-muted rounded-lg p-0.5">
           {regions.map((r) => (
@@ -58,10 +60,20 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ region, switchRegion,
           <p className="text-xl font-bold text-emerald-600 leading-none">{totalImpact}</p>
         </div>
 
-        <Button variant="outline" size="sm" onClick={() => window.print()} className="hidden sm:flex">
-          <Printer className="h-3.5 w-3.5 mr-1.5" />
-          Print
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button variant="outline" size="sm" onClick={onSave} className="hidden sm:flex">
+            <Save className="h-3.5 w-3.5 mr-1.5" />
+            Save
+          </Button>
+          <Button variant="outline" size="sm" onClick={onLoad} className="hidden sm:flex">
+            <FolderOpen className="h-3.5 w-3.5 mr-1.5" />
+            Load
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => window.print()} className="hidden sm:flex">
+            <Printer className="h-3.5 w-3.5 mr-1.5" />
+            Print
+          </Button>
+        </div>
       </div>
     </header>
   );
