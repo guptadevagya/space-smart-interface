@@ -39,17 +39,17 @@ const KPIItem: React.FC<KPIItemProps> = ({ title, value, subtitle, icon, accent,
       transition={{ duration: 0.4, delay }}
     >
       <Card className={cn("h-full border-l-4 hover:shadow-md transition-shadow", accent)}>
-        <CardContent className="p-5">
-          <div className="flex items-start justify-between">
-            <div className="space-y-1">
-              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{title}</p>
-              <p className="text-2xl font-bold text-foreground leading-none mt-2">{value}</p>
-            </div>
-            <div className="p-2 bg-muted rounded-lg">
-              <Icon className="h-4 w-4 text-muted-foreground" />
+        <CardContent className="p-4 flex flex-col justify-between h-full min-h-[120px]">
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider leading-tight">{title}</p>
+            <div className="p-1.5 bg-muted rounded-lg shrink-0">
+              <Icon className="h-3.5 w-3.5 text-muted-foreground" />
             </div>
           </div>
-          <p className="text-xs text-muted-foreground mt-3">{subtitle}</p>
+          <div>
+            <p className="text-xl font-bold text-foreground leading-none truncate">{value}</p>
+            <p className="text-[10px] text-muted-foreground mt-1.5 leading-tight">{subtitle}</p>
+          </div>
         </CardContent>
       </Card>
     </motion.div>
@@ -125,7 +125,7 @@ const KPICards: React.FC<KPICardsProps> = ({ results, region, formatCurrency, fo
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
       {cards.map((card) => (
         <KPIItem key={card.title} {...card} />
       ))}

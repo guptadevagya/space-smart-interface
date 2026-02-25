@@ -92,7 +92,6 @@ const Index: React.FC = () => {
               <FinancialCharts
                 results={results}
                 region={inputs.region}
-                annualBirths={inputs.annualBirths}
               />
             </section>
 

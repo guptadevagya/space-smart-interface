@@ -191,7 +191,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({ inputs, setInputs, isOpen, 
               tooltip={inputs.inputReferences.oxailisFalsePositiveRate} />
           </InputGroup>
 
-          <InputGroup title="Cost Parameters" defaultOpen={false}>
+          <InputGroup title="Cost Parameters">
             {inputs.region === 'US' ? (
               <>
                 <SliderField label="Scan Reimbursement" value={inputs.scanReimbursement} onChange={(v) => update('scanReimbursement', v)}
@@ -237,7 +237,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({ inputs, setInputs, isOpen, 
             )}
           </InputGroup>
 
-          <InputGroup title="Risk Ratios" defaultOpen={false}>
+          <InputGroup title="Risk Ratios">
             <SliderField label="Emergency C-Section Rate" value={inputs.emergencyCSectionRateUndiagnosed} onChange={(v) => update('emergencyCSectionRateUndiagnosed', v)}
               min={0.10} max={0.70} step={0.01} suffix="%" isDefault={!isChanged('emergencyCSectionRateUndiagnosed')}
               formatDisplay={(v) => (v * 100).toFixed(0)}
