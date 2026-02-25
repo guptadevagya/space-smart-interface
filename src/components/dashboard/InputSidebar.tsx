@@ -4,7 +4,7 @@ import { DEFAULT_US_INPUTS, DEFAULT_UK_INPUTS, DEFAULT_GLOBAL_INPUTS } from '@/l
 import { Slider } from '@/components/ui/slider';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
-import { Info, RotateCcw, X, ChevronDown } from 'lucide-react';
+import { Info, RotateCcw, X, ChevronDown, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -14,6 +14,7 @@ interface InputSidebarProps {
   setInputs: React.Dispatch<React.SetStateAction<SimulationInputs>>;
   isOpen: boolean;
   toggleSidebar: () => void;
+  onSave: () => void;
 }
 
 const getDefaults = (region: Region): SimulationInputs => {
@@ -111,7 +112,7 @@ const SliderField: React.FC<SliderFieldProps> = ({
   );
 };
 
-const InputSidebar: React.FC<InputSidebarProps> = ({ inputs, setInputs, isOpen, toggleSidebar }) => {
+const InputSidebar: React.FC<InputSidebarProps> = ({ inputs, setInputs, isOpen, toggleSidebar, onSave }) => {
   const defaults = getDefaults(inputs.region);
   const currPrefix = inputs.region === 'US' ? '$' : '£';
 
@@ -238,14 +239,18 @@ const InputSidebar: React.FC<InputSidebarProps> = ({ inputs, setInputs, isOpen, 
           </InputGroup>
 
           <InputGroup title="Risk Ratios">
-            <SliderField label="Emergency C-Section Rate" value={inputs.emergencyCSectionRateUndiagnosed} onChange={(v) => update('emergencyCSectionRateUndiagnosed', v)}
-              min={0.10} max={0.70} step={0.01} suffix="%" isDefault={!isChanged('emergencyCSectionRateUndiagnosed')}
-              formatDisplay={(v) => (v * 100).toFixed(0)}
-              tooltip={inputs.inputReferences.emergencyCSectionRateUndiagnosed} />
-            <SliderField label="Hypoxic Event Rate" value={inputs.hypoxicEventRate} onChange={(v) => update('hypoxicEventRate', v)}
-              min={0.001} max={0.05} step={0.001} suffix="%" isDefault={!isChanged('hypoxicEventRate')}
-              formatDisplay={(v) => (v * 100).toFixed(2)}
-              tooltip={inputs.inputReferences.hypoxicEventRate} />
+            {inputs.region === 'US' && (
+              <>
+                <SliderField label="Emergency C-Section Rate" value={inputs.emergencyCSectionRateUndiagnosed} onChange={(v) => update('emergencyCSectionRateUndiagnosed', v)}
+                  min={0.10} max={0.70} step={0.01} suffix="%" isDefault={!isChanged('emergencyCSectionRateUndiagnosed')}
+                  formatDisplay={(v) => (v * 100).toFixed(0)}
+                  tooltip={inputs.inputReferences.emergencyCSectionRateUndiagnosed} />
+                <SliderField label="Hypoxic Event Rate" value={inputs.hypoxicEventRate} onChange={(v) => update('hypoxicEventRate', v)}
+                  min={0.001} max={0.05} step={0.001} suffix="%" isDefault={!isChanged('hypoxicEventRate')}
+                  formatDisplay={(v) => (v * 100).toFixed(2)}
+                  tooltip={inputs.inputReferences.hypoxicEventRate} />
+              </>
+            )}
             <SliderField label="CP Risk (if Hypoxic)" value={inputs.cerebralPalsyRisk} onChange={(v) => update('cerebralPalsyRisk', v)}
               min={0.01} max={0.30} step={0.005} suffix="%" isDefault={!isChanged('cerebralPalsyRisk')}
               formatDisplay={(v) => (v * 100).toFixed(1)}
@@ -253,8 +258,12 @@ const InputSidebar: React.FC<InputSidebarProps> = ({ inputs, setInputs, isOpen, 
           </InputGroup>
         </div>
 
-        <div className="px-4 py-3 border-t border-border text-[10px] text-center text-muted-foreground shrink-0">
-          Values update projections in real-time
+        <div className="px-4 py-3 border-t border-border shrink-0 flex flex-col items-center gap-2">
+          <Button variant="outline" size="sm" className="w-full" onClick={onSave}>
+            <Save className="h-3.5 w-3.5 mr-1.5" />
+            Save Configuration
+          </Button>
+          <p className="text-[10px] text-muted-foreground">Values update projections in real-time</p>
         </div>
       </aside>
     </>
