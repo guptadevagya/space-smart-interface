@@ -3,8 +3,8 @@ import { SimulationInputs, Region } from '@/lib/types';
 import { DEFAULT_US_INPUTS, DEFAULT_UK_INPUTS, DEFAULT_GLOBAL_INPUTS } from '@/lib/constants';
 import { Slider } from '@/components/ui/slider';
 import { Input } from '@/components/ui/input';
-import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
-import { Info, RotateCcw, X, ChevronDown, Save } from 'lucide-react';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { BookOpen, RotateCcw, X, ChevronDown, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -74,14 +74,17 @@ const SliderField: React.FC<SliderFieldProps> = ({
           <label className="text-xs font-medium text-muted-foreground">{label}</label>
           {!isDefault && <span className="w-1.5 h-1.5 rounded-full bg-primary" />}
           {tooltip && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Info className="h-3 w-3 text-muted-foreground/60 cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent side="right" className="max-w-[250px] text-xs">
-                {tooltip}
-              </TooltipContent>
-            </Tooltip>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="h-4 w-4 rounded-full bg-muted hover:bg-primary/20 flex items-center justify-center transition-colors">
+                  <BookOpen className="h-2.5 w-2.5 text-muted-foreground" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent side="right" className="max-w-[280px] text-xs p-3">
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Reference</p>
+                <p className="text-xs text-foreground">{tooltip}</p>
+              </PopoverContent>
+            </Popover>
           )}
         </div>
         <div className="flex items-center gap-1">
