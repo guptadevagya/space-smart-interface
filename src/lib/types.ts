@@ -60,3 +60,21 @@ export interface SimulationResults {
     avoidedNeonatalDeaths?: number;
   };
 }
+
+export interface FormulaDefinition {
+  id: string;
+  name: string;
+  formula: string;
+  group: 'demographics' | 'clinical' | 'financial';
+  format: 'number' | 'currency';
+  unit?: string;
+  isCustom?: boolean;
+  region?: Region | 'all';
+}
+
+export interface CustomVariable {
+  id: string;
+  name: string;
+  value: number;
+  format: 'number' | 'percent' | 'currency';
+}
