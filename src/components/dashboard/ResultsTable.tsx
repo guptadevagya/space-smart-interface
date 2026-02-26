@@ -14,6 +14,17 @@ interface ResultsTableProps {
 const ResultsTable: React.FC<ResultsTableProps> = ({ results, inputs, formatCurrency, formatNumber }) => {
   const isUS = inputs.region === 'US';
 
+  // Compute intermediate values for populated cells
+  const totalFGR = inputs.annualBirths * inputs.fgrPrevalence;
+  const detectedOxailis = totalFGR * inputs.oxailisDetectionRate;
+  const detectedCurrent = totalFGR * inputs.currentDetectionRate;
+  const highRiskOxailis = detectedOxailis / (1 - inputs.oxailisFalsePositiveRate);
+  const highRiskCurrent = detectedCurrent / (1 - inputs.currentFalsePositiveRate);
+  const additionalHighRisk = highRiskOxailis - highRiskCurrent;
+  const midwifeToConsultantDiff = inputs.consultantAppointmentCost - inputs.midwifeAppointmentCost;
+  const costPerHighRisk = (3 * inputs.growthScanCost) + (2 * inputs.consultantAppointmentCost) + midwifeToConsultantDiff;
+  const totalScansOxailis = highRiskOxailis * 3;
+
   const rows = [
     {
       label: 'Emergency C-Sections Avoided',
@@ -39,15 +50,15 @@ const ResultsTable: React.FC<ResultsTableProps> = ({ results, inputs, formatCurr
     ...(isUS
       ? [{
           label: 'Indicated Scan Revenue',
-          units: '—',
+          units: `${formatNumber(totalScansOxailis)} scans`,
           unitCost: formatCurrency(inputs.scanReimbursement),
           impact: formatCurrency(results.financials.revenueGenerated),
           type: 'revenue' as const,
         }]
       : [{
           label: 'Additional Screening Costs',
-          units: '—',
-          unitCost: '—',
+          units: `${formatNumber(additionalHighRisk)} patients`,
+          unitCost: `${formatCurrency(costPerHighRisk)}/pt`,
           impact: `−${formatCurrency(results.financials.growthScanCosts || 0)}`,
           type: 'cost' as const,
         }]),
@@ -78,8 +89,11 @@ const ResultsTable: React.FC<ResultsTableProps> = ({ results, inputs, formatCurr
                 )}
               >
                 <TableCell className="font-medium text-sm">{row.label}</TableCell>
-                <TableCell className="text-right font-mono text-sm text-emerald-600">
-                  {row.units !== '—' ? `−${row.units}` : '—'}
+                <TableCell className={cn(
+                  "text-right font-mono text-sm",
+                  row.type === 'cost' ? 'text-destructive' : 'text-emerald-600'
+                )}>
+                  {row.type === 'saving' ? `−${row.units}` : row.units}
                 </TableCell>
                 <TableCell className="text-right text-sm text-muted-foreground">{row.unitCost}</TableCell>
                 <TableCell className={cn(
