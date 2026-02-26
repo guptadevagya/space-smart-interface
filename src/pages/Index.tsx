@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import InputSidebar from '@/components/dashboard/InputSidebar';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import KPICards from '@/components/dashboard/KPICards';
@@ -7,8 +7,9 @@ import ResultsTable from '@/components/dashboard/ResultsTable';
 import ReferencesPanel from '@/components/dashboard/ReferencesPanel';
 import FormulaExplorer from '@/components/dashboard/FormulaExplorer';
 import { DEFAULT_US_INPUTS, DEFAULT_UK_INPUTS, DEFAULT_GLOBAL_INPUTS } from '@/lib/constants';
-import { calculateImpact } from '@/lib/modelLogic';
-import { SimulationInputs, Region } from '@/lib/types';
+import { evaluateFormulas } from '@/lib/formulaEngine';
+import { getDefaultFormulas, getInputVariableMap, formulaResultsToSimulation } from '@/lib/defaultFormulas';
+import { SimulationInputs, Region, FormulaDefinition, CustomVariable } from '@/lib/types';
 import { toast } from 'sonner';
 
 const STORAGE_KEY = 'oxnnet-simulator-configs';
@@ -18,6 +19,8 @@ interface SavedConfig {
   name: string;
   timestamp: number;
   inputs: SimulationInputs;
+  formulas?: FormulaDefinition[];
+  customVariables?: CustomVariable[];
 }
 
 const Index: React.FC = () => {
@@ -34,9 +37,53 @@ const Index: React.FC = () => {
     } catch {}
     return DEFAULT_UK_INPUTS;
   });
+
+  const [formulas, setFormulas] = useState<FormulaDefinition[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const configs = JSON.parse(saved) as SavedConfig[];
+        if (configs.length > 0 && configs[configs.length - 1].formulas) {
+          return configs[configs.length - 1].formulas!;
+        }
+      }
+    } catch {}
+    return getDefaultFormulas('UK');
+  });
+
+  const [customVariables, setCustomVariables] = useState<CustomVariable[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const configs = JSON.parse(saved) as SavedConfig[];
+        if (configs.length > 0 && configs[configs.length - 1].customVariables) {
+          return configs[configs.length - 1].customVariables!;
+        }
+      }
+    } catch {}
+    return [];
+  });
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const results = useMemo(() => calculateImpact(inputs), [inputs]);
+  // Build input variable map including custom variables
+  const inputVarMap = useMemo(() => {
+    const base = getInputVariableMap(inputs);
+    customVariables.forEach(v => { base[v.id] = v.value; });
+    return base;
+  }, [inputs, customVariables]);
+
+  // Evaluate all formulas
+  const { values: formulaValues, errors: formulaErrors } = useMemo(
+    () => evaluateFormulas(formulas, inputVarMap),
+    [formulas, inputVarMap]
+  );
+
+  // Convert to SimulationResults for existing dashboard components
+  const results = useMemo(
+    () => formulaResultsToSimulation(formulaValues, inputs.region),
+    [formulaValues, inputs.region]
+  );
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
@@ -46,6 +93,13 @@ const Index: React.FC = () => {
       case 'UK': setInputs(DEFAULT_UK_INPUTS); break;
       case 'Global': setInputs(DEFAULT_GLOBAL_INPUTS); break;
     }
+    setFormulas(getDefaultFormulas(region));
+    setCustomVariables([]);
+  };
+
+  const resetFormulas = () => {
+    setFormulas(getDefaultFormulas(inputs.region));
+    toast.success('Formulas reset to defaults');
   };
 
   const getSavedConfigs = (): SavedConfig[] => {
@@ -63,6 +117,8 @@ const Index: React.FC = () => {
         name: `${inputs.region} – ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
         timestamp: Date.now(),
         inputs: { ...inputs },
+        formulas: [...formulas],
+        customVariables: [...customVariables],
       };
       configs.push(newConfig);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(configs));
@@ -77,6 +133,10 @@ const Index: React.FC = () => {
     const config = configs.find(c => c.id === id);
     if (config) {
       setInputs(config.inputs);
+      if (config.formulas) setFormulas(config.formulas);
+      else setFormulas(getDefaultFormulas(config.inputs.region));
+      if (config.customVariables) setCustomVariables(config.customVariables);
+      else setCustomVariables([]);
       toast.success(`Loaded: ${config.name}`);
     }
   };
@@ -173,13 +233,19 @@ const Index: React.FC = () => {
               />
             </section>
 
-            {/* Section 3.5: Formulas */}
+            {/* Section 3.5: Formula Explorer */}
             <section>
               <FormulaExplorer
                 inputs={inputs}
-                results={results}
+                formulas={formulas}
+                setFormulas={setFormulas}
+                customVariables={customVariables}
+                setCustomVariables={setCustomVariables}
+                formulaValues={formulaValues}
+                formulaErrors={formulaErrors}
                 formatCurrency={formatCurrency}
                 formatNumber={formatNumber}
+                onResetFormulas={resetFormulas}
               />
             </section>
 

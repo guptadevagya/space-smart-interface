@@ -1,97 +1,186 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, ChevronRight, Calculator } from 'lucide-react';
-import { SimulationInputs, SimulationResults } from '@/lib/types';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { ChevronDown, ChevronRight, Calculator, Pencil, Check, X, Plus, Trash2, AlertCircle, RotateCcw } from 'lucide-react';
+import { FormulaDefinition, CustomVariable, SimulationInputs } from '@/lib/types';
+import { extractVariables, validateFormula } from '@/lib/formulaEngine';
+import { INPUT_VARIABLE_LABELS } from '@/lib/defaultFormulas';
 
 interface FormulaExplorerProps {
   inputs: SimulationInputs;
-  results: SimulationResults;
+  formulas: FormulaDefinition[];
+  setFormulas: React.Dispatch<React.SetStateAction<FormulaDefinition[]>>;
+  customVariables: CustomVariable[];
+  setCustomVariables: React.Dispatch<React.SetStateAction<CustomVariable[]>>;
+  formulaValues: Record<string, number>;
+  formulaErrors: Record<string, string>;
   formatCurrency: (val: number) => string;
   formatNumber: (val: number) => string;
+  onResetFormulas: () => void;
 }
 
-interface FormulaVariable {
-  name: string;
-  value: number;
-  format: 'number' | 'percent' | 'currency' | 'fixed';
-}
-
-interface FormulaDefinition {
-  title: string;
-  formula: string;
-  variables: FormulaVariable[];
-  result: number;
-  resultFormat: 'number' | 'currency';
-  resultUnit?: string;
-  condition?: (inputs: SimulationInputs) => boolean;
+// Build a label map from formulas + input labels + custom vars
+function buildLabelMap(formulas: FormulaDefinition[], customVars: CustomVariable[]): Record<string, string> {
+  const map: Record<string, string> = { ...INPUT_VARIABLE_LABELS };
+  formulas.forEach(f => { map[f.id] = f.name; });
+  customVars.forEach(v => { map[v.id] = v.name; });
+  return map;
 }
 
 const FormulaCard: React.FC<{
   def: FormulaDefinition;
+  value: number;
+  error?: string;
+  allVarIds: string[];
+  labelMap: Record<string, string>;
+  allValues: Record<string, number>;
   formatCurrency: (val: number) => string;
   formatNumber: (val: number) => string;
-}> = ({ def, formatCurrency, formatNumber }) => {
+  onUpdate: (id: string, changes: Partial<FormulaDefinition>) => void;
+  onDelete?: (id: string) => void;
+}> = ({ def, value, error, allVarIds, labelMap, allValues, formatCurrency, formatNumber, onUpdate, onDelete }) => {
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [editFormula, setEditFormula] = useState(def.formula);
+  const [editName, setEditName] = useState(def.name);
+  const [showVars, setShowVars] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const formatVar = (v: FormulaVariable) => {
-    if (v.format === 'percent') return `${(v.value * 100).toFixed(1)}%`;
-    if (v.format === 'currency') return formatCurrency(v.value);
-    if (v.format === 'fixed') return formatNumber(v.value);
-    return formatNumber(v.value);
+  const formattedResult = def.format === 'currency' ? formatCurrency(value) : formatNumber(value);
+  const usedVars = extractVariables(def.formula);
+
+  const availableVarSet = new Set(allVarIds);
+  const validationError = editing ? validateFormula(editFormula, availableVarSet) : null;
+
+  const handleSave = () => {
+    if (!validationError) {
+      onUpdate(def.id, { formula: editFormula, name: editName });
+      setEditing(false);
+    }
   };
 
-  const formattedResult = def.resultFormat === 'currency'
-    ? formatCurrency(def.result)
-    : formatNumber(def.result);
+  const handleCancel = () => {
+    setEditFormula(def.formula);
+    setEditName(def.name);
+    setEditing(false);
+  };
+
+  const insertVariable = (varId: string) => {
+    if (inputRef.current) {
+      const start = inputRef.current.selectionStart ?? editFormula.length;
+      const end = inputRef.current.selectionEnd ?? editFormula.length;
+      const newFormula = editFormula.slice(0, start) + varId + editFormula.slice(end);
+      setEditFormula(newFormula);
+      setTimeout(() => {
+        inputRef.current?.focus();
+        const pos = start + varId.length;
+        inputRef.current?.setSelectionRange(pos, pos);
+      }, 0);
+    } else {
+      setEditFormula(prev => prev + varId);
+    }
+  };
 
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
-      <Card className="border-border/50">
+      <Card className={`border-border/50 ${error ? 'border-destructive/50' : ''}`}>
         <CollapsibleTrigger className="w-full">
-          <div className="flex items-center justify-between p-4 hover:bg-muted/30 transition-colors cursor-pointer">
-            <div className="flex items-center gap-3">
-              {open ? <ChevronDown className="h-4 w-4 text-muted-foreground" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" />}
-              <span className="text-sm font-medium text-foreground">{def.title}</span>
+          <div className="flex items-center justify-between p-3 hover:bg-muted/30 transition-colors cursor-pointer">
+            <div className="flex items-center gap-2">
+              {open ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />}
+              <span className="text-sm font-medium text-foreground">{def.name}</span>
+              {error && <AlertCircle className="h-3.5 w-3.5 text-destructive" />}
+              {def.isCustom && <Badge variant="secondary" className="text-[10px] px-1.5 py-0">Custom</Badge>}
             </div>
-            <span className="text-sm font-semibold text-primary font-mono">
-              = {formattedResult}{def.resultUnit ? ` ${def.resultUnit}` : ''}
+            <span className={`text-sm font-semibold font-mono ${error ? 'text-destructive' : 'text-primary'}`}>
+              = {error ? 'Error' : formattedResult}{def.unit && !error ? ` ${def.unit}` : ''}
             </span>
           </div>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <CardContent className="pt-0 pb-4 px-4 space-y-3">
-            {/* Formula */}
-            <div className="bg-muted/50 rounded-md p-3 font-mono text-xs text-muted-foreground">
-              {def.formula}
-            </div>
-
-            {/* Substitution */}
-            <div className="font-mono text-xs text-foreground/80 px-1">
-              {def.variables.map((v, i) => (
-                <React.Fragment key={v.name}>
-                  {i > 0 && <span className="text-muted-foreground"> · </span>}
-                  <span>{formatVar(v)}</span>
-                </React.Fragment>
-              ))}
-              <span className="text-primary font-semibold ml-2">
-                = {formattedResult}{def.resultUnit ? ` ${def.resultUnit}` : ''}
-              </span>
-            </div>
-
-            {/* Input chips */}
-            <div className="flex flex-wrap gap-1.5 pt-1">
-              {def.variables.map(v => (
-                <Badge key={v.name} variant="outline" className="text-xs font-normal gap-1">
-                  {v.name}
-                  <span className="text-muted-foreground">{formatVar(v)}</span>
-                  {v.format === 'fixed' && (
-                    <span className="text-[10px] bg-muted px-1 rounded text-muted-foreground ml-0.5">Fixed</span>
+          <CardContent className="pt-0 pb-3 px-3 space-y-2">
+            {editing ? (
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <Input
+                    value={editName}
+                    onChange={e => setEditName(e.target.value)}
+                    placeholder="Formula name"
+                    className="text-sm h-8"
+                  />
+                </div>
+                <div className="relative">
+                  <Input
+                    ref={inputRef}
+                    value={editFormula}
+                    onChange={e => setEditFormula(e.target.value)}
+                    placeholder="e.g. annualBirths * fgrPrevalence"
+                    className="font-mono text-xs h-8"
+                    onFocus={() => setShowVars(true)}
+                  />
+                  {validationError && (
+                    <p className="text-[11px] text-destructive mt-1">{validationError}</p>
                   )}
-                </Badge>
-              ))}
-            </div>
+                </div>
+                {showVars && (
+                  <div className="bg-muted/50 rounded-md p-2 max-h-32 overflow-y-auto">
+                    <p className="text-[10px] text-muted-foreground mb-1.5 font-semibold uppercase tracking-wider">Click to insert variable</p>
+                    <div className="flex flex-wrap gap-1">
+                      {allVarIds.map(vid => (
+                        <button
+                          key={vid}
+                          type="button"
+                          onClick={() => insertVariable(vid)}
+                          className="inline-flex items-center rounded-full border border-border bg-background px-2 py-0.5 text-[11px] font-mono hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer"
+                        >
+                          {vid}
+                          <span className="text-muted-foreground ml-1 text-[10px]">{labelMap[vid] || ''}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <div className="flex gap-1.5">
+                  <Button size="sm" variant="default" className="h-7 text-xs" onClick={handleSave} disabled={!!validationError}>
+                    <Check className="h-3 w-3 mr-1" /> Save
+                  </Button>
+                  <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={handleCancel}>
+                    <X className="h-3 w-3 mr-1" /> Cancel
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 bg-muted/50 rounded-md p-2 font-mono text-xs text-muted-foreground">
+                    {def.formula}
+                  </div>
+                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={() => { setEditing(true); setShowVars(false); }}>
+                    <Pencil className="h-3 w-3" />
+                  </Button>
+                  {onDelete && def.isCustom && (
+                    <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-destructive" onClick={() => onDelete(def.id)}>
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  )}
+                </div>
+                {error && <p className="text-[11px] text-destructive">{error}</p>}
+                <div className="flex flex-wrap gap-1">
+                  {usedVars.map(vid => (
+                    <Badge key={vid} variant="outline" className="text-[11px] font-normal gap-1">
+                      {labelMap[vid] || vid}
+                      <span className="text-muted-foreground font-mono">
+                        {allValues[vid] !== undefined ? formatNumber(allValues[vid]) : '?'}
+                      </span>
+                    </Badge>
+                  ))}
+                </div>
+              </>
+            )}
           </CardContent>
         </CollapsibleContent>
       </Card>
@@ -99,261 +188,149 @@ const FormulaCard: React.FC<{
   );
 };
 
-const FormulaExplorer: React.FC<FormulaExplorerProps> = ({ inputs, results, formatCurrency, formatNumber }) => {
+const AddFormulaForm: React.FC<{
+  group: FormulaDefinition['group'];
+  allVarIds: string[];
+  labelMap: Record<string, string>;
+  onAdd: (formula: FormulaDefinition) => void;
+}> = ({ group, allVarIds, labelMap, onAdd }) => {
+  const [name, setName] = useState('');
+  const [id, setId] = useState('');
+  const [formula, setFormula] = useState('');
+  const [format, setFormat] = useState<'number' | 'currency'>('number');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const availableVarSet = new Set(allVarIds);
+  const error = formula ? validateFormula(formula, availableVarSet) : null;
+
+  const handleSubmit = () => {
+    if (!name || !id || !formula || error) return;
+    onAdd({ id, name, formula, group, format, isCustom: true });
+    setName(''); setId(''); setFormula('');
+  };
+
+  const insertVar = (vid: string) => {
+    setFormula(prev => prev + vid);
+    inputRef.current?.focus();
+  };
+
+  return (
+    <Card className="border-dashed border-border/50">
+      <CardContent className="p-3 space-y-2">
+        <p className="text-xs font-semibold text-muted-foreground">Add Formula</p>
+        <div className="grid grid-cols-2 gap-2">
+          <Input value={name} onChange={e => setName(e.target.value)} placeholder="Name (e.g. Extra Savings)" className="text-xs h-7" />
+          <Input value={id} onChange={e => setId(e.target.value.replace(/\s/g, ''))} placeholder="ID (e.g. extraSavings)" className="text-xs h-7 font-mono" />
+        </div>
+        <Input ref={inputRef} value={formula} onChange={e => setFormula(e.target.value)} placeholder="Formula expression" className="text-xs h-7 font-mono" />
+        {error && <p className="text-[10px] text-destructive">{error}</p>}
+        <div className="flex flex-wrap gap-1 max-h-20 overflow-y-auto">
+          {allVarIds.slice(0, 20).map(vid => (
+            <button key={vid} type="button" onClick={() => insertVar(vid)}
+              className="inline-flex rounded-full border border-border px-1.5 py-0 text-[10px] font-mono hover:bg-accent transition-colors cursor-pointer">
+              {vid}
+            </button>
+          ))}
+          {allVarIds.length > 20 && <span className="text-[10px] text-muted-foreground">+{allVarIds.length - 20} more</span>}
+        </div>
+        <div className="flex gap-2 items-center">
+          <select value={format} onChange={e => setFormat(e.target.value as 'number' | 'currency')}
+            className="text-xs h-7 border rounded px-2 bg-background text-foreground">
+            <option value="number">Number</option>
+            <option value="currency">Currency</option>
+          </select>
+          <Button size="sm" className="h-7 text-xs" onClick={handleSubmit} disabled={!name || !id || !formula || !!error}>
+            <Plus className="h-3 w-3 mr-1" /> Add
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+const AddVariableForm: React.FC<{
+  onAdd: (v: CustomVariable) => void;
+}> = ({ onAdd }) => {
+  const [name, setName] = useState('');
+  const [id, setId] = useState('');
+  const [value, setValue] = useState('0');
+  const [format, setFormat] = useState<'number' | 'percent' | 'currency'>('number');
+
+  const handleSubmit = () => {
+    if (!name || !id) return;
+    onAdd({ id, name, value: parseFloat(value) || 0, format });
+    setName(''); setId(''); setValue('0');
+  };
+
+  return (
+    <Card className="border-dashed border-border/50">
+      <CardContent className="p-3 space-y-2">
+        <p className="text-xs font-semibold text-muted-foreground">Add Custom Variable</p>
+        <div className="grid grid-cols-2 gap-2">
+          <Input value={name} onChange={e => setName(e.target.value)} placeholder="Name" className="text-xs h-7" />
+          <Input value={id} onChange={e => setId(e.target.value.replace(/\s/g, ''))} placeholder="ID (camelCase)" className="text-xs h-7 font-mono" />
+        </div>
+        <div className="flex gap-2">
+          <Input type="number" value={value} onChange={e => setValue(e.target.value)} placeholder="Value" className="text-xs h-7 flex-1" />
+          <select value={format} onChange={e => setFormat(e.target.value as any)}
+            className="text-xs h-7 border rounded px-2 bg-background text-foreground">
+            <option value="number">Number</option>
+            <option value="percent">Percent (0-1)</option>
+            <option value="currency">Currency</option>
+          </select>
+          <Button size="sm" className="h-7 text-xs" onClick={handleSubmit} disabled={!name || !id}>
+            <Plus className="h-3 w-3 mr-1" /> Add
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+const FormulaExplorer: React.FC<FormulaExplorerProps> = ({
+  inputs, formulas, setFormulas, customVariables, setCustomVariables,
+  formulaValues, formulaErrors, formatCurrency, formatNumber, onResetFormulas,
+}) => {
   const [open, setOpen] = useState(false);
-  const isUK = inputs.region === 'UK' || inputs.region === 'Global';
+  const [showAddVar, setShowAddVar] = useState(false);
+  const [showAddFormula, setShowAddFormula] = useState<FormulaDefinition['group'] | null>(null);
 
-  const { demographics: d, clinicalOutcomes: c, financials: f } = results;
+  const labelMap = useMemo(() => buildLabelMap(formulas, customVariables), [formulas, customVariables]);
 
-  // Intermediate values needed for UK formulas
-  const totalFGR = inputs.annualBirths * inputs.fgrPrevalence;
-  const detectedCurrent = totalFGR * inputs.currentDetectionRate;
-  const detectedOxailis = totalFGR * inputs.oxailisDetectionRate;
-  const highRiskCurrent = detectedCurrent / (1 - inputs.currentFalsePositiveRate);
-  const highRiskOxailis = detectedOxailis / (1 - inputs.oxailisFalsePositiveRate);
-  const midwifeToConsultantDiff = inputs.consultantAppointmentCost - inputs.midwifeAppointmentCost;
-  const costPerHighRisk = (3 * inputs.growthScanCost) + (2 * inputs.consultantAppointmentCost) + midwifeToConsultantDiff;
+  // All available variable IDs for autocomplete
+  const allVarIds = useMemo(() => {
+    const inputVarIds = Object.keys(INPUT_VARIABLE_LABELS);
+    const customVarIds = customVariables.map(v => v.id);
+    const formulaIds = formulas.map(f => f.id);
+    return [...inputVarIds, ...customVarIds, ...formulaIds];
+  }, [formulas, customVariables]);
 
-  const demographicFormulas: FormulaDefinition[] = [
-    {
-      title: 'Total FGR Cases',
-      formula: 'Annual Births × FGR Prevalence',
-      variables: [
-        { name: 'Annual Births', value: inputs.annualBirths, format: 'number' },
-        { name: 'FGR Prevalence', value: inputs.fgrPrevalence, format: 'percent' },
-      ],
-      result: d.totalFGR,
-      resultFormat: 'number',
-      resultUnit: 'cases',
-    },
-    {
-      title: 'Undiagnosed (Current)',
-      formula: 'Total FGR × (1 − Current Detection Rate)',
-      variables: [
-        { name: 'Total FGR', value: d.totalFGR, format: 'number' },
-        { name: 'Current Detection', value: inputs.currentDetectionRate, format: 'percent' },
-      ],
-      result: d.undiagnosedCurrent,
-      resultFormat: 'number',
-      resultUnit: 'cases',
-    },
-    {
-      title: 'Undiagnosed (OxNNet)',
-      formula: 'Total FGR × (1 − OxNNet Detection Rate)',
-      variables: [
-        { name: 'Total FGR', value: d.totalFGR, format: 'number' },
-        { name: 'OxNNet Detection', value: inputs.oxailisDetectionRate, format: 'percent' },
-      ],
-      result: d.undiagnosedOxailis,
-      resultFormat: 'number',
-      resultUnit: 'cases',
-    },
-    {
-      title: 'Avoided Undiagnosed Cases',
-      formula: 'Undiagnosed (Current) − Undiagnosed (OxNNet)',
-      variables: [
-        { name: 'Undiagnosed Current', value: d.undiagnosedCurrent, format: 'number' },
-        { name: 'Undiagnosed OxNNet', value: d.undiagnosedOxailis, format: 'number' },
-      ],
-      result: d.avoidedUndiagnosed,
-      resultFormat: 'number',
-      resultUnit: 'cases',
-    },
-  ];
+  const handleUpdateFormula = (id: string, changes: Partial<FormulaDefinition>) => {
+    setFormulas(prev => prev.map(f => f.id === id ? { ...f, ...changes } : f));
+  };
 
-  const clinicalFormulas: FormulaDefinition[] = [
-    {
-      title: 'Avoided C-Sections',
-      formula: isUK
-        ? 'Avoided Undiagnosed × 15% (Fixed)'
-        : 'Avoided Undiagnosed × Emergency C-Section Rate',
-      variables: isUK
-        ? [
-            { name: 'Avoided Undiagnosed', value: d.avoidedUndiagnosed, format: 'number' },
-            { name: 'C-Section Rate', value: 0.15, format: 'fixed' },
-          ]
-        : [
-            { name: 'Avoided Undiagnosed', value: d.avoidedUndiagnosed, format: 'number' },
-            { name: 'C-Section Rate', value: inputs.emergencyCSectionRateUndiagnosed, format: 'percent' },
-          ],
-      result: c.avoidedCSections,
-      resultFormat: 'number',
-    },
-    {
-      title: 'Avoided Hypoxic Events',
-      formula: isUK
-        ? 'Avoided Undiagnosed × 0.4% (Fixed)'
-        : 'Avoided Undiagnosed × Hypoxic Event Rate',
-      variables: isUK
-        ? [
-            { name: 'Avoided Undiagnosed', value: d.avoidedUndiagnosed, format: 'number' },
-            { name: 'Hypoxic Rate', value: 0.004, format: 'fixed' },
-          ]
-        : [
-            { name: 'Avoided Undiagnosed', value: d.avoidedUndiagnosed, format: 'number' },
-            { name: 'Hypoxic Rate', value: inputs.hypoxicEventRate, format: 'percent' },
-          ],
-      result: c.avoidedHypoxicEvents,
-      resultFormat: 'number',
-    },
-    {
-      title: 'Avoided NICU Days',
-      formula: 'Avoided Hypoxic Events × 7 days',
-      variables: [
-        { name: 'Hypoxic Events', value: c.avoidedHypoxicEvents, format: 'number' },
-        { name: 'Days per Event', value: 7, format: 'fixed' },
-      ],
-      result: c.avoidedNICUDays,
-      resultFormat: 'number',
-      resultUnit: 'days',
-    },
-    {
-      title: 'Avoided CP Cases',
-      formula: 'Avoided Hypoxic Events × CP Risk',
-      variables: [
-        { name: 'Hypoxic Events', value: c.avoidedHypoxicEvents, format: 'number' },
-        { name: 'CP Risk', value: inputs.cerebralPalsyRisk, format: 'percent' },
-      ],
-      result: c.avoidedCPCases,
-      resultFormat: 'number',
-    },
-    {
-      title: 'Avoided Stillbirths',
-      formula: 'Avoided Undiagnosed × 1.68%',
-      variables: [
-        { name: 'Avoided Undiagnosed', value: d.avoidedUndiagnosed, format: 'number' },
-        { name: 'Stillbirth Rate', value: 0.0168, format: 'fixed' },
-      ],
-      result: c.avoidedStillbirths,
-      resultFormat: 'number',
-    },
-  ];
+  const handleDeleteFormula = (id: string) => {
+    setFormulas(prev => prev.filter(f => f.id !== id));
+  };
 
-  if (isUK && c.avoidedNeonatalDeaths !== undefined) {
-    clinicalFormulas.push({
-      title: 'Avoided Neonatal Deaths',
-      formula: 'Avoided Hypoxic Events × 9% (Fixed)',
-      variables: [
-        { name: 'Hypoxic Events', value: c.avoidedHypoxicEvents, format: 'number' },
-        { name: 'NND Rate', value: 0.09, format: 'fixed' },
-      ],
-      result: c.avoidedNeonatalDeaths,
-      resultFormat: 'number',
-    });
-  }
+  const handleAddFormula = (formula: FormulaDefinition) => {
+    setFormulas(prev => [...prev, formula]);
+    setShowAddFormula(null);
+  };
 
-  const avoidedStillbirths = c.avoidedStillbirths;
-  const avoidedCPCases = c.avoidedCPCases;
-  const avoidedNND = c.avoidedNeonatalDeaths ?? 0;
+  const handleAddVariable = (v: CustomVariable) => {
+    setCustomVariables(prev => [...prev, v]);
+    setShowAddVar(false);
+  };
 
-  const financialFormulas: FormulaDefinition[] = [
-    {
-      title: 'C-Section Savings',
-      formula: 'Avoided C-Sections × C-Section Cost',
-      variables: [
-        { name: 'Avoided C-Sections', value: c.avoidedCSections, format: 'number' },
-        { name: 'C-Section Cost', value: inputs.cSectionCost, format: 'currency' },
-      ],
-      result: f.cSectionSavings,
-      resultFormat: 'currency',
-    },
-    {
-      title: 'NICU Savings',
-      formula: 'Avoided NICU Days × Daily NICU Cost',
-      variables: [
-        { name: 'NICU Days', value: c.avoidedNICUDays, format: 'number' },
-        { name: 'Daily Cost', value: inputs.nicuDailyCost, format: 'currency' },
-      ],
-      result: c.avoidedNICUDays * inputs.nicuDailyCost,
-      resultFormat: 'currency',
-    },
-  ];
+  const handleDeleteVariable = (id: string) => {
+    setCustomVariables(prev => prev.filter(v => v.id !== id));
+  };
 
-  if (isUK) {
-    financialFormulas.push({
-      title: 'Mum Extra Stay Savings',
-      formula: 'Avoided Hypoxic Events × £2,537 (Fixed)',
-      variables: [
-        { name: 'Hypoxic Events', value: c.avoidedHypoxicEvents, format: 'number' },
-        { name: 'Extra Stay Cost', value: 2537, format: 'fixed' },
-      ],
-      result: c.avoidedHypoxicEvents * 2537,
-      resultFormat: 'currency',
-    });
-  }
-
-  if (isUK) {
-    financialFormulas.push({
-      title: 'Litigation Savings',
-      formula: '(CP Cases × CP Litigation) + (Stillbirths × Stillbirth Cost) + (NND × NND Cost)',
-      variables: [
-        { name: 'CP Cases', value: avoidedCPCases, format: 'number' },
-        { name: 'CP Litigation', value: inputs.malpracticeClaimCost, format: 'currency' },
-        { name: 'Stillbirths', value: avoidedStillbirths, format: 'number' },
-        { name: 'Stillbirth Cost', value: inputs.stillbirthLitigationCost, format: 'currency' },
-        { name: 'NND Cases', value: avoidedNND, format: 'number' },
-        { name: 'NND Cost', value: inputs.neonatalDeathLitigationCost, format: 'currency' },
-      ],
-      result: f.litigationSavings,
-      resultFormat: 'currency',
-    });
-  } else {
-    financialFormulas.push({
-      title: 'Litigation Savings',
-      formula: '(CP Cases + Stillbirths) × Malpractice Claim Cost',
-      variables: [
-        { name: 'CP Cases', value: avoidedCPCases, format: 'number' },
-        { name: 'Stillbirths', value: avoidedStillbirths, format: 'number' },
-        { name: 'Claim Cost', value: inputs.malpracticeClaimCost, format: 'currency' },
-      ],
-      result: f.litigationSavings,
-      resultFormat: 'currency',
-    });
-  }
-
-  if (isUK && f.growthScanCosts !== undefined) {
-    financialFormulas.push({
-      title: 'Screening Cost Increase',
-      formula: '(High Risk OxNNet − High Risk Current) × Cost per High-Risk Patient',
-      variables: [
-        { name: 'HR OxNNet', value: highRiskOxailis, format: 'number' },
-        { name: 'HR Current', value: highRiskCurrent, format: 'number' },
-        { name: 'Cost/Patient', value: costPerHighRisk, format: 'currency' },
-      ],
-      result: f.growthScanCosts,
-      resultFormat: 'currency',
-    });
-
-    financialFormulas.push({
-      title: 'Net Benefit',
-      formula: 'Total Clinical Savings − Screening Cost Increase',
-      variables: [
-        { name: 'Clinical Savings', value: f.totalSavings, format: 'currency' },
-        { name: 'Screening Costs', value: f.growthScanCosts, format: 'currency' },
-      ],
-      result: f.netBenefit ?? 0,
-      resultFormat: 'currency',
-    });
-  }
-
-  if (!isUK) {
-    financialFormulas.push({
-      title: 'Revenue Generated',
-      formula: 'High Risk Cohort × 3 scans × Scan Reimbursement',
-      variables: [
-        { name: 'Detected OxNNet', value: detectedOxailis, format: 'number' },
-        { name: 'FP Rate', value: inputs.oxailisFalsePositiveRate, format: 'percent' },
-        { name: 'Reimbursement', value: inputs.scanReimbursement, format: 'currency' },
-      ],
-      result: f.revenueGenerated,
-      resultFormat: 'currency',
-    });
-  }
-
-  const groups = [
-    { title: 'Demographics', formulas: demographicFormulas },
-    { title: 'Clinical Outcomes', formulas: clinicalFormulas },
-    { title: 'Financial Impact', formulas: financialFormulas },
+  const groups: { key: FormulaDefinition['group']; title: string }[] = [
+    { key: 'demographics', title: 'Demographics' },
+    { key: 'clinical', title: 'Clinical Outcomes' },
+    { key: 'financial', title: 'Financial Impact' },
   ];
 
   return (
@@ -361,32 +338,78 @@ const FormulaExplorer: React.FC<FormulaExplorerProps> = ({ inputs, results, form
       <CollapsibleTrigger className="w-full">
         <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
           <Calculator className="h-4 w-4 text-muted-foreground" />
-          <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-            Model Formulas
-          </h2>
+          <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Model Formulas</h2>
           {open ? <ChevronDown className="h-3 w-3 text-muted-foreground" /> : <ChevronRight className="h-3 w-3 text-muted-foreground" />}
-          {!open && <span className="text-xs text-muted-foreground/60 ml-2">Click to expand</span>}
+          {!open && <span className="text-xs text-muted-foreground/60 ml-2">Click to expand — edit formulas, add variables</span>}
         </div>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <div className="mt-4 space-y-6">
-          {groups.map(group => (
-            <div key={group.title}>
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
-                {group.title}
-              </h3>
-              <div className="space-y-2">
-                {group.formulas.map(def => (
-                  <FormulaCard
-                    key={def.title}
-                    def={def}
-                    formatCurrency={formatCurrency}
-                    formatNumber={formatNumber}
-                  />
+        <div className="mt-4 space-y-5">
+          {/* Toolbar */}
+          <div className="flex gap-2 flex-wrap">
+            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => setShowAddVar(!showAddVar)}>
+              <Plus className="h-3 w-3 mr-1" /> Add Variable
+            </Button>
+            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={onResetFormulas}>
+              <RotateCcw className="h-3 w-3 mr-1" /> Reset to Defaults
+            </Button>
+          </div>
+
+          {/* Custom Variables */}
+          {showAddVar && <AddVariableForm onAdd={handleAddVariable} />}
+          {customVariables.length > 0 && (
+            <div>
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Custom Variables</h3>
+              <div className="flex flex-wrap gap-1.5">
+                {customVariables.map(v => (
+                  <Badge key={v.id} variant="secondary" className="text-xs gap-1.5 pr-1">
+                    <span className="font-mono">{v.id}</span>
+                    <span className="text-muted-foreground">= {v.value}</span>
+                    <button onClick={() => handleDeleteVariable(v.id)} className="ml-0.5 hover:text-destructive">
+                      <X className="h-3 w-3" />
+                    </button>
+                  </Badge>
                 ))}
               </div>
             </div>
-          ))}
+          )}
+
+          {/* Formula Groups */}
+          {groups.map(group => {
+            const groupFormulas = formulas.filter(f => f.group === group.key);
+            return (
+              <div key={group.key}>
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{group.title}</h3>
+                  <Button size="sm" variant="ghost" className="h-6 text-[10px] px-2" onClick={() => setShowAddFormula(showAddFormula === group.key ? null : group.key)}>
+                    <Plus className="h-3 w-3 mr-0.5" /> Add
+                  </Button>
+                </div>
+                <div className="space-y-1.5">
+                  {groupFormulas.map(def => (
+                    <FormulaCard
+                      key={def.id}
+                      def={def}
+                      value={formulaValues[def.id] ?? 0}
+                      error={formulaErrors[def.id]}
+                      allVarIds={allVarIds}
+                      labelMap={labelMap}
+                      allValues={formulaValues}
+                      formatCurrency={formatCurrency}
+                      formatNumber={formatNumber}
+                      onUpdate={handleUpdateFormula}
+                      onDelete={handleDeleteFormula}
+                    />
+                  ))}
+                </div>
+                {showAddFormula === group.key && (
+                  <div className="mt-2">
+                    <AddFormulaForm group={group.key} allVarIds={allVarIds} labelMap={labelMap} onAdd={handleAddFormula} />
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </CollapsibleContent>
     </Collapsible>
