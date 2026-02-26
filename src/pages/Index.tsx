@@ -111,6 +111,7 @@ const Index: React.FC = () => {
     setFormulas(getDefaultFormulas(region));
     setCustomVariables([]);
     setCustomParameters([]);
+  };
 
   const resetFormulas = () => {
     setFormulas(getDefaultFormulas(inputs.region));
