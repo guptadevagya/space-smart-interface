@@ -5,6 +5,7 @@ import KPICards from '@/components/dashboard/KPICards';
 import FinancialCharts from '@/components/dashboard/FinancialCharts';
 import ResultsTable from '@/components/dashboard/ResultsTable';
 import ReferencesPanel from '@/components/dashboard/ReferencesPanel';
+import FormulaExplorer from '@/components/dashboard/FormulaExplorer';
 import { DEFAULT_US_INPUTS, DEFAULT_UK_INPUTS, DEFAULT_GLOBAL_INPUTS } from '@/lib/constants';
 import { calculateImpact } from '@/lib/modelLogic';
 import { SimulationInputs, Region } from '@/lib/types';
@@ -167,6 +168,16 @@ const Index: React.FC = () => {
               <ResultsTable
                 results={results}
                 inputs={inputs}
+                formatCurrency={formatCurrency}
+                formatNumber={formatNumber}
+              />
+            </section>
+
+            {/* Section 3.5: Formulas */}
+            <section>
+              <FormulaExplorer
+                inputs={inputs}
+                results={results}
                 formatCurrency={formatCurrency}
                 formatNumber={formatNumber}
               />
