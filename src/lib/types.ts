@@ -78,3 +78,15 @@ export interface CustomVariable {
   value: number;
   format: 'number' | 'percent' | 'currency';
 }
+
+export interface CustomParameter {
+  id: string;
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  format: 'number' | 'percent' | 'currency';
+  group: string;
+  reference: string;
+}
