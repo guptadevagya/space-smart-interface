@@ -9,7 +9,7 @@ import FormulaExplorer from '@/components/dashboard/FormulaExplorer';
 import { DEFAULT_US_INPUTS, DEFAULT_UK_INPUTS, DEFAULT_GLOBAL_INPUTS } from '@/lib/constants';
 import { evaluateFormulas } from '@/lib/formulaEngine';
 import { getDefaultFormulas, getInputVariableMap, formulaResultsToSimulation } from '@/lib/defaultFormulas';
-import { SimulationInputs, Region, FormulaDefinition, CustomVariable } from '@/lib/types';
+import { SimulationInputs, Region, FormulaDefinition, CustomVariable, CustomParameter } from '@/lib/types';
 import { toast } from 'sonner';
 
 const STORAGE_KEY = 'oxnnet-simulator-configs';
@@ -21,6 +21,7 @@ interface SavedConfig {
   inputs: SimulationInputs;
   formulas?: FormulaDefinition[];
   customVariables?: CustomVariable[];
+  customParameters?: CustomParameter[];
 }
 
 const Index: React.FC = () => {
@@ -64,14 +65,28 @@ const Index: React.FC = () => {
     return [];
   });
 
+  const [customParameters, setCustomParameters] = useState<CustomParameter[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const configs = JSON.parse(saved) as SavedConfig[];
+        if (configs.length > 0 && configs[configs.length - 1].customParameters) {
+          return configs[configs.length - 1].customParameters!;
+        }
+      }
+    } catch {}
+    return [];
+  });
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Build input variable map including custom variables
   const inputVarMap = useMemo(() => {
     const base = getInputVariableMap(inputs);
     customVariables.forEach(v => { base[v.id] = v.value; });
+    customParameters.forEach(p => { base[p.id] = p.value; });
     return base;
-  }, [inputs, customVariables]);
+  }, [inputs, customVariables, customParameters]);
 
   // Evaluate all formulas
   const { values: formulaValues, errors: formulaErrors } = useMemo(
@@ -95,7 +110,7 @@ const Index: React.FC = () => {
     }
     setFormulas(getDefaultFormulas(region));
     setCustomVariables([]);
-  };
+    setCustomParameters([]);
 
   const resetFormulas = () => {
     setFormulas(getDefaultFormulas(inputs.region));
@@ -119,6 +134,7 @@ const Index: React.FC = () => {
         inputs: { ...inputs },
         formulas: [...formulas],
         customVariables: [...customVariables],
+        customParameters: [...customParameters],
       };
       configs.push(newConfig);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(configs));
@@ -137,6 +153,8 @@ const Index: React.FC = () => {
       else setFormulas(getDefaultFormulas(config.inputs.region));
       if (config.customVariables) setCustomVariables(config.customVariables);
       else setCustomVariables([]);
+      if (config.customParameters) setCustomParameters(config.customParameters);
+      else setCustomParameters([]);
       toast.success(`Loaded: ${config.name}`);
     }
   };
@@ -186,6 +204,8 @@ const Index: React.FC = () => {
         isOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
         onSave={saveConfiguration}
+        customParameters={customParameters}
+        setCustomParameters={setCustomParameters}
       />
 
       <div className="flex-1 flex flex-col h-full overflow-hidden">
