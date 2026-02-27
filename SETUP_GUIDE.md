@@ -1,173 +1,167 @@
-# 🚀 Setup Guide — Run the Model Dashboard on Your Computer
+# Local Setup Guide
 
-This guide is written for **non-developers**. Follow each step exactly, and you'll have the dashboard running locally in about 10 minutes.
+This guide walks you through running the OxNNet Health Economics Dashboard on your own computer. No prior coding experience is required.
 
 ---
 
-## Step 1: Install Node.js
+## Prerequisites
 
-Node.js is a free tool that lets your computer run the dashboard.
+- A computer running Windows 10+, macOS, or Linux
+- An internet connection (for initial setup only)
+- Approximately 500 MB of free disk space
 
-1. Go to **[https://nodejs.org](https://nodejs.org)**
-2. Click the big green button that says **"LTS"** (Long Term Support)
-3. Open the downloaded file and follow the installer — just click **Next → Next → Finish**
-4. **Restart your computer** after installing
+---
 
-### ✅ Verify it worked
+## Step 1 — Install Node.js
 
-- **On Windows:** Press `Win + R`, type `cmd`, press Enter
-- **On Mac:** Open **Terminal** (search "Terminal" in Spotlight)
+Node.js is the runtime environment required to run the dashboard.
 
-Type this and press Enter:
+1. Visit [https://nodejs.org](https://nodejs.org)
+2. Download the **LTS** (Long Term Support) version
+3. Run the installer using the default settings
+4. Restart your computer after installation
+
+To confirm the installation was successful, open a terminal and run:
 
 ```
 node --version
 ```
 
-You should see something like `v20.x.x`. If you see an error, try restarting your computer.
+You should see a version number (e.g. `v20.11.0`). If you see an error, revisit the installation step above.
+
+**How to open a terminal:**
+- Windows: Press `Win + R`, type `cmd`, press Enter
+- macOS: Open Spotlight (`Cmd + Space`), type `Terminal`, press Enter
 
 ---
 
-## Step 2: Download the Project
+## Step 2 — Download the Project
 
-### Option A: Download as ZIP (easiest)
+**Option A — Download as ZIP**
 
-1. Go to the project's GitHub page (your team lead will share the link)
-2. Click the green **"Code"** button
-3. Click **"Download ZIP"**
-4. Find the ZIP file in your Downloads folder
-5. **Right-click → Extract All** (Windows) or **double-click** (Mac)
-6. Remember where you extracted it (e.g., `Downloads/project-folder`)
+1. Navigate to the project's GitHub repository
+2. Click the green **Code** button, then select **Download ZIP**
+3. Extract the ZIP file to a location of your choice
 
-### Option B: Use Git (if you have it installed)
+**Option B — Clone with Git** (if Git is installed)
 
 ```
-git clone <THE_PROJECT_URL>
+git clone <REPOSITORY_URL>
 ```
 
 ---
 
-## Step 3: Open the Project Folder in Terminal
+## Step 3 — Open a Terminal in the Project Folder
 
-### On Windows:
+You need to navigate your terminal to the project directory before running any commands.
 
-1. Open **File Explorer** and navigate to the extracted project folder
-2. Click on the **address bar** at the top (where it shows the folder path)
-3. Type `cmd` and press **Enter** — a black terminal window will open in that folder
+**Windows:**
+1. Open File Explorer and navigate to the extracted project folder
+2. Click the address bar at the top of the window
+3. Type `cmd` and press Enter
 
-### On Mac:
+**macOS:**
+1. Open Terminal
+2. Type `cd ` (including the trailing space)
+3. Drag the project folder from Finder into the Terminal window
+4. Press Enter
 
-1. Open **Terminal**
-2. Type `cd ` (with a space after it), then **drag the project folder** from Finder into the Terminal window
-3. Press **Enter**
-
-### ✅ Verify you're in the right place
-
-Type this and press Enter:
+To verify you are in the correct directory, run:
 
 ```
 ls
 ```
 
-You should see files like `package.json`, `src`, `README.md`, etc.
+You should see files such as `package.json`, `src`, and `README.md`.
 
 ---
 
-## Step 4: Install Dependencies
+## Step 4 — Install Dependencies
 
-This downloads all the libraries the dashboard needs. Type this and press Enter:
+Run the following command to install all required packages:
 
 ```
 npm install
 ```
 
-⏳ This may take 1–3 minutes. You'll see a progress bar. Wait until it finishes and you see your cursor blinking again.
-
-> **If you see warnings** — that's normal! Only stop if you see red text saying **"ERR!"**
+This process takes 1–3 minutes. Wait until the command completes before proceeding. Warning messages during installation are normal and can be ignored. Errors will appear in red and begin with `ERR!`.
 
 ---
 
-## Step 5: Start the Dashboard
+## Step 5 — Start the Dashboard
 
-Type this and press Enter:
+Run:
 
 ```
 npm run dev
 ```
 
-You should see something like:
+Once the server is ready, you will see output similar to:
 
 ```
-  VITE v5.x.x  ready in 500ms
-
-  ➜  Local:   http://localhost:8080/
+VITE v5.x.x  ready in 500ms
+  Local:   http://localhost:8080/
 ```
+
+Open your web browser and navigate to **http://localhost:8080**. The dashboard should now be visible.
 
 ---
 
-## Step 6: Open the Dashboard
+## Daily Usage
 
-1. Open your web browser (Chrome, Edge, Firefox, Safari — any will work)
-2. Go to: **[http://localhost:8080](http://localhost:8080)**
-3. 🎉 **You should see the dashboard!**
-
----
-
-## 🔄 How to Use It Day-to-Day
-
-| What you want to do | How to do it |
+| Action | Command |
 |---|---|
-| **Start the dashboard** | Open terminal in the project folder → type `npm run dev` |
-| **Stop the dashboard** | Go to the terminal and press `Ctrl + C` |
-| **Restart after changes** | Stop it (`Ctrl + C`), then run `npm run dev` again |
+| Start the dashboard | `npm run dev` |
+| Stop the dashboard | `Ctrl + C` in the terminal |
+| Restart the dashboard | Stop, then start again |
+
+All configuration changes (parameters, formulas, settings) are saved automatically in your browser's local storage. No internet connection is needed after the initial setup. Note that clearing your browser data will reset saved configurations.
 
 ---
 
-## 💾 Your Data is Saved Locally
+## Troubleshooting
 
-All your changes (custom parameters, formulas, configurations) are saved in your **browser's local storage**. This means:
+**"node is not recognized" / "command not found: node"**
 
-- ✅ Your settings persist between sessions
-- ✅ No internet connection needed after setup
-- ⚠️ Clearing browser data will reset your settings
-- ⚠️ Different browsers will have separate settings
+Node.js is not installed or the system PATH was not updated. Reinstall Node.js and restart your computer.
 
----
+**"npm ERR! code ENOENT"**
 
-## ❓ Troubleshooting
+The terminal is not in the correct directory. Repeat Step 3 to ensure you are inside the project folder.
 
-### "node is not recognized" or "command not found"
-→ Node.js isn't installed properly. Go back to **Step 1** and restart your computer after installing.
+**Blank page or application error**
 
-### "npm ERR! code ENOENT"
-→ You're not in the right folder. Make sure your terminal is inside the project folder (see **Step 3**).
+Run the following commands in sequence:
 
-### The page is blank or shows an error
-→ Check the terminal window — if it shows red errors, try:
 ```
 npm install
 npm run dev
 ```
 
-### Port 8080 is already in use
-→ Another program is using that port. Either close it, or the dashboard will automatically try another port (check the terminal output for the URL).
+If the issue persists, check the terminal output for specific error messages.
 
-### Nothing works and I'm stuck
-→ Send a screenshot of your terminal to your technical contact. The error messages will help them diagnose the issue quickly.
+**"Port 8080 is already in use"**
+
+Another application is occupying port 8080. Close it, or check the terminal output — the dashboard may have started on an alternative port.
+
+**Unresolved issues**
+
+Capture a screenshot of the terminal output showing the error and send it to your technical contact for further assistance.
 
 ---
 
-## 📋 Quick Reference (Cheat Sheet)
+## Quick Reference
 
 ```
-# One-time setup:
-1. Install Node.js from https://nodejs.org
-2. Open terminal in project folder
-3. npm install
+# First-time setup (once):
+npm install
 
-# Every time you want to use it:
-1. Open terminal in project folder
-2. npm run dev
-3. Open http://localhost:8080 in your browser
-4. Press Ctrl+C in terminal when done
+# Start the dashboard:
+npm run dev
+
+# Open in browser:
+http://localhost:8080
+
+# Stop the dashboard:
+Ctrl + C
 ```
