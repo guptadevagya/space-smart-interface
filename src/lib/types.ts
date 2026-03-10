@@ -29,6 +29,10 @@ export interface SimulationInputs {
   hypoxicEventRate: number;
   cerebralPalsyRisk: number;
 
+  // Screening
+  oxailisScanCost: number;
+  combinedTestRate: number;
+
   // Documentation
   bibliography: string[];
   inputReferences: Record<string, string>;
