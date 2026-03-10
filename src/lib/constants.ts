@@ -39,6 +39,8 @@ export const DEFAULT_US_INPUTS: SimulationInputs = {
   emergencyCSectionRateUndiagnosed: 0.40,
   hypoxicEventRate: 0.004,
   cerebralPalsyRisk: 0.15,
+  oxailisScanCost: 0,
+  combinedTestRate: 0.85,
   bibliography: DEFAULT_BIBLIOGRAPHY,
   inputReferences: {
     annualBirths: "Hospital Administrative Data / Annual Report",
