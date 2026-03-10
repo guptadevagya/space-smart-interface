@@ -82,7 +82,7 @@ export const DEFAULT_UK_INPUTS: SimulationInputs = {
     annualBirths: "NHS Trust Annual Report",
     cSectionCost: "Ref 4: Relph S et al. Costing the impact of interventions",
     nicuDailyCost: "Ref 6: Bliss.org.uk",
-    malpracticeClaimCost: "Ref 16: NHS Litigation Authority",
+    malpracticeClaimCost: "Ref 11 & 17: NHS Litigation Authority / Average pay-out per successful CP case",
     growthScanCost: "Ref 4: Mid-range estimate",
     consultantAppointmentCost: "Ref 4: Mid-range estimate",
     midwifeAppointmentCost: "Ref 4: Mid-range estimate",
