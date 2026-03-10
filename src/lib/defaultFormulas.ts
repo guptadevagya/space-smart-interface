@@ -102,6 +102,8 @@ export function getInputVariableMap(inputs: SimulationInputs): Record<string, nu
     midwifeAppointmentCost: inputs.midwifeAppointmentCost,
     neonatalDeathLitigationCost: inputs.neonatalDeathLitigationCost,
     stillbirthLitigationCost: inputs.stillbirthLitigationCost,
+    oxailisScanCost: inputs.oxailisScanCost,
+    combinedTestRate: inputs.combinedTestRate,
   };
 }
 
