@@ -44,6 +44,8 @@ const calculateUKImpact = (inputs: SimulationInputs): SimulationResults => {
   const midwifeToConsultantDiff = inputs.consultantAppointmentCost - inputs.midwifeAppointmentCost;
   const costPerHighRisk = (3 * inputs.growthScanCost) + (2 * inputs.consultantAppointmentCost) + (1 * midwifeToConsultantDiff);
   const screeningCostIncrease = (highRiskOxailis - highRiskCurrent) * costPerHighRisk;
+  const oxailisScreeningCost = inputs.annualBirths * inputs.combinedTestRate * inputs.oxailisScanCost;
+  const totalScreeningCost = screeningCostIncrease + oxailisScreeningCost;
 
   // Clinical outcomes
   const avoidedCSections = avoidedUndiagnosed * 0.15;
