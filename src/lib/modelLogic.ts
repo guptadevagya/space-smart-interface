@@ -58,8 +58,9 @@ const calculateUKImpact = (inputs: SimulationInputs): SimulationResults => {
   const cpSavings = avoidedCPCases * inputs.malpracticeClaimCost;
   const avoidedNND = avoidedHypoxicEvents * 0.09;
   const nndSavings = avoidedNND * inputs.neonatalDeathLitigationCost;
+  const nndTrustCost = avoidedNND * inputs.stillbirthLitigationCost;
 
-  const totalLitigationSavings = cpSavings + nndSavings + stillbirthSavings;
+  const totalLitigationSavings = cpSavings + nndSavings + nndTrustCost + stillbirthSavings;
   const totalClinicalSavings = cSectionSavings + nicuSavings + mumExtraStaySavings + totalLitigationSavings;
   const netBenefit = totalClinicalSavings - screeningCostIncrease;
 
