@@ -115,7 +115,7 @@ export const DEFAULT_GLOBAL_INPUTS: SimulationInputs = {
   currentDetectionRate: 0.33,
   oxailisDetectionRate: 0.66,
   currentFalsePositiveRate: 0.50,
-  oxailisFalsePositiveRate: 0.25,
+  oxailisFalsePositiveRate: 0.20,
   emergencyCSectionRateUndiagnosed: 0.40,
   hypoxicEventRate: 0.011,
   cerebralPalsyRisk: 0.0585,
