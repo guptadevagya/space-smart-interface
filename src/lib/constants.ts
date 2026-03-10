@@ -132,7 +132,7 @@ export const DEFAULT_GLOBAL_INPUTS: SimulationInputs = {
   inputReferences: {
     annualBirths: "Ref 18: Countries doing 1st trimester screening",
     cSectionCost: "Ref 4: Relph S et al.",
-    nicuDailyCost: "Ref 6: Bliss.org.uk",
+    nicuDailyCost: "Ref 6: Pillay T et al. / Bliss.org.uk",
     malpracticeClaimCost: "Ref 17: Average pay-out per successful case",
     growthScanCost: "Ref 4: Mid-range estimate",
     consultantAppointmentCost: "Ref 4: Mid-range estimate",
@@ -147,5 +147,7 @@ export const DEFAULT_GLOBAL_INPUTS: SimulationInputs = {
     emergencyCSectionRateUndiagnosed: "Ref 5: Figueras F et al.",
     hypoxicEventRate: "Ref 1: Chauhan et al.",
     cerebralPalsyRisk: "Ref 12: Gonzalez FF, Miller SP",
+    oxailisScanCost: "Ref OxPLUS Study",
+    combinedTestRate: "Official Statistics - Antenatal screening standards: data report 2020-2021",
   }
 };
