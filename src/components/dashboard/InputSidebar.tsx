@@ -332,7 +332,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({ inputs, setInputs, isOpen, 
               label="Annual Births"
               value={inputs.annualBirths}
               onChange={(v) => update('annualBirths', v)}
-              min={1000} max={50000} step={500}
+              min={1000} max={5000000} step={1000}
               isDefault={!isChanged('annualBirths')}
               tooltip={inputs.inputReferences.annualBirths}
               onEditReference={(ref) => handleReferenceChange('annualBirths', ref)}
