@@ -63,7 +63,7 @@ export const DEFAULT_UK_INPUTS: SimulationInputs = {
   scanReimbursement: 0,
   cSectionCost: 3019,
   nicuDailyCost: 1445,
-  malpracticeClaimCost: 13000000,
+  malpracticeClaimCost: 18500000,
   growthScanCost: 91.00,
   consultantAppointmentCost: 177.83,
   midwifeAppointmentCost: 86.80,
