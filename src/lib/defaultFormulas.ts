@@ -62,8 +62,10 @@ export function getDefaultFormulas(region: Region): FormulaDefinition[] {
         formula: '(3 * growthScanCost) + (2 * consultantAppointmentCost) + (consultantAppointmentCost - midwifeAppointmentCost)',
         group: 'financial', format: 'currency',
       },
-      { id: 'screeningCostIncrease', name: 'Screening Cost Increase', formula: '(highRiskOxailis - highRiskCurrent) * costPerHighRisk', group: 'financial', format: 'currency' },
-      { id: 'netBenefit', name: 'Net Benefit', formula: 'totalClinicalSavings - screeningCostIncrease', group: 'financial', format: 'currency' },
+      { id: 'screeningCostIncrease', name: 'Extra High-Risk Pathway Cost', formula: '(highRiskOxailis - highRiskCurrent) * costPerHighRisk', group: 'financial', format: 'currency' },
+      { id: 'oxailisScreeningCost', name: 'Oxailis Screening Cost', formula: 'annualBirths * combinedTestRate * oxailisScanCost', group: 'financial', format: 'currency' },
+      { id: 'totalScreeningCost', name: 'Total New Screening Cost', formula: 'screeningCostIncrease + oxailisScreeningCost', group: 'financial', format: 'currency' },
+      { id: 'netBenefit', name: 'Net Benefit (Total Saving by NHS)', formula: 'totalClinicalSavings - totalScreeningCost', group: 'financial', format: 'currency' },
     );
   } else {
     financial.push(
