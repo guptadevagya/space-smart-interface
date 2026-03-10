@@ -76,7 +76,7 @@ export const DEFAULT_UK_INPUTS: SimulationInputs = {
   oxailisFalsePositiveRate: 0.20,
   emergencyCSectionRateUndiagnosed: 0.40,
   hypoxicEventRate: 0.011,
-  cerebralPalsyRisk: 0.0625,
+  cerebralPalsyRisk: 0.0585,
   bibliography: DEFAULT_BIBLIOGRAPHY,
   inputReferences: {
     annualBirths: "NHS Trust Annual Report",
