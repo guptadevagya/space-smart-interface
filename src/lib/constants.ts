@@ -86,7 +86,7 @@ export const DEFAULT_UK_INPUTS: SimulationInputs = {
     growthScanCost: "Ref 4: Mid-range estimate",
     consultantAppointmentCost: "Ref 4: Mid-range estimate",
     midwifeAppointmentCost: "Ref 4: Mid-range estimate",
-    neonatalDeathLitigationCost: "Ref 9: NHS Litigation Authority",
+    neonatalDeathLitigationCost: "Ref 9: Average pay-out per successful NND case",
     stillbirthLitigationCost: "Ref 9: Cost to Trust",
     fgrPrevalence: "Ref 2: Sovio et al.",
     currentDetectionRate: "Ref 3: Relph S et al.",
