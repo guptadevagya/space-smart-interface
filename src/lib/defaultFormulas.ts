@@ -126,6 +126,8 @@ export const INPUT_VARIABLE_LABELS: Record<string, string> = {
   growthScanCost: 'Growth Scan Cost',
   consultantAppointmentCost: 'Consultant Appt Cost',
   midwifeAppointmentCost: 'Midwife Appt Cost',
+  oxailisScanCost: 'Oxailis Scan Cost',
+  combinedTestRate: 'Combined Test Rate',
   neonatalDeathLitigationCost: 'NND Litigation Cost',
   stillbirthLitigationCost: 'Stillbirth Litigation Cost',
 };
