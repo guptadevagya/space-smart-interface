@@ -2,21 +2,22 @@ import { SimulationInputs } from './types';
 
 const DEFAULT_BIBLIOGRAPHY = [
   "Chauhan et al. Neonatal Morbidity of SGA and LGA Neonates. Obs Gyn. 2017;130(3):511-519",
-  "https://www.tommys.org/pregnancy-information/pregnancy-complications/fetal-growth-restriction-intrauterine-growth",
-  "Sovio et al. Screening for fetal growth restriction with universal third trimester ultrasonography in nulliparous women",
-  "Relph S, Delaney L, Melaugh A, et al. Costing the impact of interventions during pregnancy in the UK: a systematic review",
+  "https://www.tommys.org/pregnancy-information/pregnancy-complications/fetal-growth-restriction-intrauterine-growth-restriction",
+  "Sovio et al. Screening for fetal growth restriction with universal third trimester ultrasonography in nulliparous women in the POP study. Lancet 2015; 386: 2089–97",
+  "Relph S, Delaney L, Melaugh A, et al. Costing the impact of interventions during pregnancy in the UK: a systematic review of economic evaluations. BMJ Open 2020;10:e040022",
   "Figueras F et al. Diagnosis and surveillance of late-onset fetal growth restriction. AJOG: 2018; 218(2):Supplement S790-S802.E1",
-  "Pillay T, et al. Optimising neonatal service provision for preterm babies born between 27 and 31 weeks gestation in England",
+  "Pillay T, et al. Optimising neonatal service provision for preterm babies born between 27 and 31 weeks gestation in England (OPTI-PREM). BMJ Open 2019;9:e029421",
   "Bukowski et al. Fetal Growth and Risk of Stillbirth: A Population-Based Case–Control Study. PLOS Medicine. 2014",
   "Gardosi J, et al. Maternal and fetal risk factors for stillbirth: population based study. BMJ 2013; 346:f108",
-  "Campbell HE et al. Healthcare and wider societal implications of stillbirth: a population-based cost-of-illness study. BJOG 2018",
-  "Collins SL et al. Rapid Calculation of Standardized Placental Volume at 11 to 13 Weeks and the Prediction of SGA",
-  "NHS Litigation Authority 2012: Ten Years of Maternity Claims - An Analysis of NHS Litigation Authority Data",
-  "Gonzalez FF, Miller SP. Does perinatal asphyxia impair cognitive function without cerebral palsy? Arch Dis Child Fetal Neonatal Ed. 2006",
-  "Mathewlynn et al. The First Trimester Placental Ultrasound Study (FirstPLUS)",
+  "Campbell HE et al. Healthcare and wider societal implications of stillbirth: a population-based cost-of-illness study. BJOG 2018;125:108-17",
+  "Collins SL et al. Rapid Calculation of Standardized Placental Volume at 11 to 13 Weeks and the Prediction of SGA. Ultrasound Med Biol 2013;39:253-60",
+  "NHS Litigation Authority 2012: Ten Years of Maternity Claims - An Analysis of NHS Litigation Authority Data (2000-2010)",
+  "Gonzalez FF, Miller SP. Does perinatal asphyxia impair cognitive function without cerebral palsy? Arch Dis Child Fetal Neonatal Ed. 2006;91(6):F454-F459",
+  "Mathewlynn et al. The First Trimester Placental Ultrasound Study (FirstPLUS): Prediction of fetal growth restriction using OxNNet-derived first trimester placental volume. 2025 submitted",
   "https://www.bliss.org.uk/research-campaigns/neonatal-care-statistics/statistics-about-neonatal-care",
-  "Monier I, Blondel B, et al. Poor effectiveness of antenatal detection of fetal growth restriction. BJOG. 2015",
-  "Symon, A. G. (2002). The significance of time factors in cerebral palsy litigation. Midwifery, 18(1), 35-42."
+  "Monier I, Blondel B, et al. Poor effectiveness of antenatal detection of fetal growth restriction and consequences for obstetric management and neonatal outcomes. BJOG 2015;122:518–527",
+  "Symon, A. G. (2002). The significance of time factors in cerebral palsy litigation. Midwifery, 18(1), 35-42",
+  "https://www.bbc.co.uk/news/articles/clygw74z9dzo",
 ];
 
 export const DEFAULT_US_INPUTS: SimulationInputs = {
@@ -84,22 +85,24 @@ export const DEFAULT_UK_INPUTS: SimulationInputs = {
   bibliography: DEFAULT_BIBLIOGRAPHY,
   inputReferences: {
     annualBirths: "NHS Trust Annual Report",
-    cSectionCost: "Ref 4: Relph S et al. Costing the impact of interventions",
-    nicuDailyCost: "Ref 6: Bliss.org.uk",
+    cSectionCost: "Ref 4: Relph S et al. Costing the impact of interventions (mid-range)",
+    nicuDailyCost: "Ref 6: Pillay T et al. / Bliss.org.uk",
     malpracticeClaimCost: "Ref 11 & 17: NHS Litigation Authority / Average pay-out per successful CP case",
     growthScanCost: "Ref 4: Mid-range estimate",
     consultantAppointmentCost: "Ref 4: Mid-range estimate",
     midwifeAppointmentCost: "Ref 4: Mid-range estimate",
-    neonatalDeathLitigationCost: "Ref 9: Average pay-out per successful NND case",
-    stillbirthLitigationCost: "Ref 9: Cost to Trust",
-    fgrPrevalence: "Ref 2: Sovio et al.",
-    currentDetectionRate: "Ref 3: Relph S et al.",
-    oxailisDetectionRate: "Ref 13: Oxailis Clinical Data",
+    neonatalDeathLitigationCost: "Ref 9: Campbell HE et al. Average pay-out per successful NND case",
+    stillbirthLitigationCost: "Ref 9: Campbell HE et al. Cost to Trust",
+    fgrPrevalence: "Ref 2: Tommy's / Sovio et al.",
+    currentDetectionRate: "Ref 3: Sovio et al.",
+    oxailisDetectionRate: "Ref 13: Mathewlynn et al. FirstPLUS / Oxailis Clinical Data",
     currentFalsePositiveRate: "Ref 15: Monier I et al.",
-    oxailisFalsePositiveRate: "Ref 13: Oxailis Clinical Data",
+    oxailisFalsePositiveRate: "Ref 13: Mathewlynn et al. FirstPLUS / Oxailis Clinical Data",
     emergencyCSectionRateUndiagnosed: "Ref 5: Figueras F et al.",
     hypoxicEventRate: "Ref 1: Chauhan et al.",
-    cerebralPalsyRisk: "Ref 12: Gonzalez FF, Miller SP",
+    cerebralPalsyRisk: "Ref 12: Gonzalez FF, Miller SP (36% HIE × 65% moderate/severe × 25% CP)",
+    oxailisScanCost: "Ref OxPLUS Study",
+    combinedTestRate: "Official Statistics - Antenatal screening standards: data report 2020-2021",
   }
 };
 
@@ -129,7 +132,7 @@ export const DEFAULT_GLOBAL_INPUTS: SimulationInputs = {
   inputReferences: {
     annualBirths: "Ref 18: Countries doing 1st trimester screening",
     cSectionCost: "Ref 4: Relph S et al.",
-    nicuDailyCost: "Ref 6: Bliss.org.uk",
+    nicuDailyCost: "Ref 6: Pillay T et al. / Bliss.org.uk",
     malpracticeClaimCost: "Ref 17: Average pay-out per successful case",
     growthScanCost: "Ref 4: Mid-range estimate",
     consultantAppointmentCost: "Ref 4: Mid-range estimate",
@@ -144,5 +147,7 @@ export const DEFAULT_GLOBAL_INPUTS: SimulationInputs = {
     emergencyCSectionRateUndiagnosed: "Ref 5: Figueras F et al.",
     hypoxicEventRate: "Ref 1: Chauhan et al.",
     cerebralPalsyRisk: "Ref 12: Gonzalez FF, Miller SP",
+    oxailisScanCost: "Ref OxPLUS Study",
+    combinedTestRate: "Official Statistics - Antenatal screening standards: data report 2020-2021",
   }
 };

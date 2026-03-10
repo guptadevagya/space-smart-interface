@@ -103,9 +103,9 @@ const KPICards: React.FC<KPICardsProps> = ({ results, region, formatCurrency, fo
     },
     ...(region !== 'US' && results.financials.growthScanCosts
       ? [{
-          title: 'Screening Cost Increase',
+          title: 'Cost of New Screening',
           value: formatCurrency(results.financials.growthScanCosts),
-          subtitle: 'Additional screening pathway cost',
+          subtitle: 'Extra high-risk pathway + Oxailis screening',
           icon: 'cost' as keyof typeof iconMap,
           accent: 'border-l-destructive',
           delay: 0.2,
