@@ -425,6 +425,15 @@ const InputSidebar: React.FC<InputSidebarProps> = ({ inputs, setInputs, isOpen, 
                   min={1000} max={20000} step={500} prefix="£" isDefault={!isChanged('stillbirthLitigationCost')}
                   tooltip={inputs.inputReferences.stillbirthLitigationCost}
                   onEditReference={(ref) => handleReferenceChange('stillbirthLitigationCost', ref)} />
+                <SliderField label="Oxailis Scan Cost" value={inputs.oxailisScanCost} onChange={(v) => update('oxailisScanCost', v)}
+                  min={0} max={50} step={1} prefix="£" isDefault={!isChanged('oxailisScanCost')}
+                  tooltip={inputs.inputReferences.oxailisScanCost || 'Cost per Oxailis scan'}
+                  onEditReference={(ref) => handleReferenceChange('oxailisScanCost', ref)} />
+                <SliderField label="Combined Test Rate" value={inputs.combinedTestRate} onChange={(v) => update('combinedTestRate', v)}
+                  min={0.50} max={1.00} step={0.01} suffix="%" isDefault={!isChanged('combinedTestRate')}
+                  formatDisplay={(v) => (v * 100).toFixed(0)}
+                  tooltip={inputs.inputReferences.combinedTestRate || 'Official Statistics - Antenatal screening standards'}
+                  onEditReference={(ref) => handleReferenceChange('combinedTestRate', ref)} />
               </>
             )}
             {renderCustomParams('Cost Parameters')}

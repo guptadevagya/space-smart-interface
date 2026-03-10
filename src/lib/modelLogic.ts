@@ -44,6 +44,8 @@ const calculateUKImpact = (inputs: SimulationInputs): SimulationResults => {
   const midwifeToConsultantDiff = inputs.consultantAppointmentCost - inputs.midwifeAppointmentCost;
   const costPerHighRisk = (3 * inputs.growthScanCost) + (2 * inputs.consultantAppointmentCost) + (1 * midwifeToConsultantDiff);
   const screeningCostIncrease = (highRiskOxailis - highRiskCurrent) * costPerHighRisk;
+  const oxailisScreeningCost = inputs.annualBirths * inputs.combinedTestRate * inputs.oxailisScanCost;
+  const totalScreeningCost = screeningCostIncrease + oxailisScreeningCost;
 
   // Clinical outcomes
   const avoidedCSections = avoidedUndiagnosed * 0.15;
@@ -62,7 +64,7 @@ const calculateUKImpact = (inputs: SimulationInputs): SimulationResults => {
   const nndTotalCostSaving = nndSavings + nndTrustCost;
 
   const totalClinicalSavings = cSectionSavings + nicuSavings + mumExtraStaySavings + stillbirthSavings + cpSavings + nndSavings + nndTotalCostSaving;
-  const netBenefit = totalClinicalSavings - screeningCostIncrease;
+  const netBenefit = totalClinicalSavings - totalScreeningCost;
 
   return {
     demographics: { totalFGR, undiagnosedCurrent, undiagnosedOxailis, avoidedUndiagnosed },
@@ -74,7 +76,7 @@ const calculateUKImpact = (inputs: SimulationInputs): SimulationResults => {
       litigationSavings: cpSavings + nndSavings + nndTotalCostSaving + stillbirthSavings,
       totalSavings: totalClinicalSavings,
       totalEconomicImpact: netBenefit,
-      growthScanCosts: screeningCostIncrease,
+      growthScanCosts: totalScreeningCost,
       netBenefit
     }
   };

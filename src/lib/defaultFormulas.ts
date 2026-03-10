@@ -62,8 +62,10 @@ export function getDefaultFormulas(region: Region): FormulaDefinition[] {
         formula: '(3 * growthScanCost) + (2 * consultantAppointmentCost) + (consultantAppointmentCost - midwifeAppointmentCost)',
         group: 'financial', format: 'currency',
       },
-      { id: 'screeningCostIncrease', name: 'Screening Cost Increase', formula: '(highRiskOxailis - highRiskCurrent) * costPerHighRisk', group: 'financial', format: 'currency' },
-      { id: 'netBenefit', name: 'Net Benefit', formula: 'totalClinicalSavings - screeningCostIncrease', group: 'financial', format: 'currency' },
+      { id: 'screeningCostIncrease', name: 'Extra High-Risk Pathway Cost', formula: '(highRiskOxailis - highRiskCurrent) * costPerHighRisk', group: 'financial', format: 'currency' },
+      { id: 'oxailisScreeningCost', name: 'Oxailis Screening Cost', formula: 'annualBirths * combinedTestRate * oxailisScanCost', group: 'financial', format: 'currency' },
+      { id: 'totalScreeningCost', name: 'Total New Screening Cost', formula: 'screeningCostIncrease + oxailisScreeningCost', group: 'financial', format: 'currency' },
+      { id: 'netBenefit', name: 'Net Benefit (Total Saving by NHS)', formula: 'totalClinicalSavings - totalScreeningCost', group: 'financial', format: 'currency' },
     );
   } else {
     financial.push(
@@ -102,6 +104,8 @@ export function getInputVariableMap(inputs: SimulationInputs): Record<string, nu
     midwifeAppointmentCost: inputs.midwifeAppointmentCost,
     neonatalDeathLitigationCost: inputs.neonatalDeathLitigationCost,
     stillbirthLitigationCost: inputs.stillbirthLitigationCost,
+    oxailisScanCost: inputs.oxailisScanCost,
+    combinedTestRate: inputs.combinedTestRate,
   };
 }
 
@@ -122,6 +126,8 @@ export const INPUT_VARIABLE_LABELS: Record<string, string> = {
   growthScanCost: 'Growth Scan Cost',
   consultantAppointmentCost: 'Consultant Appt Cost',
   midwifeAppointmentCost: 'Midwife Appt Cost',
+  oxailisScanCost: 'Oxailis Scan Cost',
+  combinedTestRate: 'Combined Test Rate',
   neonatalDeathLitigationCost: 'NND Litigation Cost',
   stillbirthLitigationCost: 'Stillbirth Litigation Cost',
 };
@@ -155,9 +161,9 @@ export function formulaResultsToSimulation(
           litigationSavings: (values.cpSavings ?? 0) + (values.nndSavings ?? 0) + (values.nndTotalCostSaving ?? 0) + (values.stillbirthSavings ?? 0),
           totalSavings: values.totalClinicalSavings ?? 0,
           totalEconomicImpact: values.netBenefit ?? 0,
-          growthScanCosts: values.screeningCostIncrease ?? 0,
-          netBenefit: values.netBenefit ?? 0,
-        }
+           growthScanCosts: (values.screeningCostIncrease ?? 0) + (values.oxailisScreeningCost ?? 0),
+           netBenefit: values.netBenefit ?? 0,
+         }
       : {
           revenueGenerated: values.revenueGenerated ?? 0,
           cSectionSavings: values.cSectionSavings ?? 0,
