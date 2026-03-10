@@ -71,7 +71,7 @@ const calculateUKImpact = (inputs: SimulationInputs): SimulationResults => {
       revenueGenerated: 0,
       cSectionSavings,
       nicuSavings: nicuSavings + mumExtraStaySavings,
-      litigationSavings: totalLitigationSavings,
+      litigationSavings: cpSavings + nndSavings + nndTotalCostSaving + stillbirthSavings,
       totalSavings: totalClinicalSavings,
       totalEconomicImpact: netBenefit,
       growthScanCosts: screeningCostIncrease,
