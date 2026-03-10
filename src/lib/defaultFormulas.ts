@@ -152,7 +152,7 @@ export function formulaResultsToSimulation(
           revenueGenerated: 0,
           cSectionSavings: values.cSectionSavings ?? 0,
           nicuSavings: (values.nicuSavings ?? 0) + (values.mumExtraStaySavings ?? 0),
-          litigationSavings: values.totalLitigationSavings ?? 0,
+          litigationSavings: (values.cpSavings ?? 0) + (values.nndSavings ?? 0) + (values.nndTotalCostSaving ?? 0) + (values.stillbirthSavings ?? 0),
           totalSavings: values.totalClinicalSavings ?? 0,
           totalEconomicImpact: values.netBenefit ?? 0,
           growthScanCosts: values.screeningCostIncrease ?? 0,
