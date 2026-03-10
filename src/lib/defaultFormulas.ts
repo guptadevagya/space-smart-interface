@@ -42,12 +42,13 @@ export function getDefaultFormulas(region: Region): FormulaDefinition[] {
 
   if (isUK) {
     financial.push(
-      { id: 'mumExtraStaySavings', name: 'Mum Extra Stay Savings', formula: 'avoidedHypoxicEvents * 2537', group: 'financial', format: 'currency' },
-      { id: 'stillbirthSavings', name: 'Stillbirth Litigation Savings', formula: 'avoidedStillbirths * stillbirthLitigationCost', group: 'financial', format: 'currency' },
+      { id: 'mumExtraStaySavings', name: 'Mum Extra Stay Savings', formula: 'avoidedHypoxicEvents * 2537.333333', group: 'financial', format: 'currency' },
+      { id: 'stillbirthSavings', name: 'Stillbirth Cost Avoidance', formula: 'avoidedStillbirths * stillbirthLitigationCost', group: 'financial', format: 'currency' },
       { id: 'cpSavings', name: 'CP Litigation Savings', formula: 'avoidedCPCases * malpracticeClaimCost', group: 'financial', format: 'currency' },
       { id: 'nndSavings', name: 'NND Litigation Savings', formula: 'avoidedNND * neonatalDeathLitigationCost', group: 'financial', format: 'currency' },
-      { id: 'totalLitigationSavings', name: 'Total Litigation Savings', formula: 'cpSavings + nndSavings + stillbirthSavings', group: 'financial', format: 'currency' },
-      { id: 'totalClinicalSavings', name: 'Total Clinical Savings', formula: 'cSectionSavings + nicuSavings + mumExtraStaySavings + totalLitigationSavings', group: 'financial', format: 'currency' },
+      { id: 'nndTrustCost', name: 'NND Trust Cost Savings', formula: 'avoidedNND * stillbirthLitigationCost', group: 'financial', format: 'currency' },
+      { id: 'nndTotalCostSaving', name: 'NND Total Cost Saving to NHS', formula: 'nndSavings + nndTrustCost', group: 'financial', format: 'currency' },
+      { id: 'totalClinicalSavings', name: 'Total Saving to NHS', formula: 'cSectionSavings + nicuSavings + mumExtraStaySavings + stillbirthSavings + cpSavings + nndSavings + nndTotalCostSaving', group: 'financial', format: 'currency' },
       {
         id: 'highRiskCurrent', name: 'High Risk Cohort (Current)',
         formula: 'detectedCurrent / (1 - currentFalsePositiveRate)', group: 'financial', format: 'number',
@@ -151,7 +152,7 @@ export function formulaResultsToSimulation(
           revenueGenerated: 0,
           cSectionSavings: values.cSectionSavings ?? 0,
           nicuSavings: (values.nicuSavings ?? 0) + (values.mumExtraStaySavings ?? 0),
-          litigationSavings: values.totalLitigationSavings ?? 0,
+          litigationSavings: (values.cpSavings ?? 0) + (values.nndSavings ?? 0) + (values.nndTotalCostSaving ?? 0) + (values.stillbirthSavings ?? 0),
           totalSavings: values.totalClinicalSavings ?? 0,
           totalEconomicImpact: values.netBenefit ?? 0,
           growthScanCosts: values.screeningCostIncrease ?? 0,

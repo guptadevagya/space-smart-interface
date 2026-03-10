@@ -59,7 +59,7 @@ export const DEFAULT_US_INPUTS: SimulationInputs = {
 
 export const DEFAULT_UK_INPUTS: SimulationInputs = {
   region: 'UK',
-  annualBirths: 5000,
+  annualBirths: 600000,
   scanReimbursement: 0,
   cSectionCost: 3019,
   nicuDailyCost: 1445,

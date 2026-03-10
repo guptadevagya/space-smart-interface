@@ -51,7 +51,7 @@ const calculateUKImpact = (inputs: SimulationInputs): SimulationResults => {
   const avoidedHypoxicEvents = avoidedUndiagnosed * 0.004;
   const avoidedNICUDays = avoidedHypoxicEvents * 7;
   const nicuSavings = avoidedNICUDays * inputs.nicuDailyCost;
-  const mumExtraStaySavings = avoidedHypoxicEvents * 2537;
+  const mumExtraStaySavings = avoidedHypoxicEvents * (2537 + 1/3);
   const avoidedStillbirths = avoidedUndiagnosed * 0.0168;
   const stillbirthSavings = avoidedStillbirths * inputs.stillbirthLitigationCost;
   const avoidedCPCases = avoidedHypoxicEvents * inputs.cerebralPalsyRisk;
@@ -59,9 +59,9 @@ const calculateUKImpact = (inputs: SimulationInputs): SimulationResults => {
   const avoidedNND = avoidedHypoxicEvents * 0.09;
   const nndSavings = avoidedNND * inputs.neonatalDeathLitigationCost;
   const nndTrustCost = avoidedNND * inputs.stillbirthLitigationCost;
+  const nndTotalCostSaving = nndSavings + nndTrustCost;
 
-  const totalLitigationSavings = cpSavings + nndSavings + nndTrustCost + stillbirthSavings;
-  const totalClinicalSavings = cSectionSavings + nicuSavings + mumExtraStaySavings + totalLitigationSavings;
+  const totalClinicalSavings = cSectionSavings + nicuSavings + mumExtraStaySavings + stillbirthSavings + cpSavings + nndSavings + nndTotalCostSaving;
   const netBenefit = totalClinicalSavings - screeningCostIncrease;
 
   return {
@@ -71,7 +71,7 @@ const calculateUKImpact = (inputs: SimulationInputs): SimulationResults => {
       revenueGenerated: 0,
       cSectionSavings,
       nicuSavings: nicuSavings + mumExtraStaySavings,
-      litigationSavings: totalLitigationSavings,
+      litigationSavings: cpSavings + nndSavings + nndTotalCostSaving + stillbirthSavings,
       totalSavings: totalClinicalSavings,
       totalEconomicImpact: netBenefit,
       growthScanCosts: screeningCostIncrease,
