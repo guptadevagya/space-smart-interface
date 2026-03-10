@@ -67,7 +67,7 @@ export const DEFAULT_UK_INPUTS: SimulationInputs = {
   growthScanCost: 91.00,
   consultantAppointmentCost: 177.83,
   midwifeAppointmentCost: 86.80,
-  neonatalDeathLitigationCost: 576000,
+  neonatalDeathLitigationCost: 500000,
   stillbirthLitigationCost: 4191,
   fgrPrevalence: 0.08,
   currentDetectionRate: 0.33,
