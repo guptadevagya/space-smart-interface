@@ -64,7 +64,7 @@ const calculateUKImpact = (inputs: SimulationInputs): SimulationResults => {
   const nndTotalCostSaving = nndSavings + nndTrustCost;
 
   const totalClinicalSavings = cSectionSavings + nicuSavings + mumExtraStaySavings + stillbirthSavings + cpSavings + nndSavings + nndTotalCostSaving;
-  const netBenefit = totalClinicalSavings - screeningCostIncrease;
+  const netBenefit = totalClinicalSavings - totalScreeningCost;
 
   return {
     demographics: { totalFGR, undiagnosedCurrent, undiagnosedOxailis, avoidedUndiagnosed },
