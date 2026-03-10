@@ -123,6 +123,8 @@ export const DEFAULT_GLOBAL_INPUTS: SimulationInputs = {
   emergencyCSectionRateUndiagnosed: 0.40,
   hypoxicEventRate: 0.011,
   cerebralPalsyRisk: 0.0585,
+  oxailisScanCost: 10,
+  combinedTestRate: 0.85,
   bibliography: DEFAULT_BIBLIOGRAPHY,
   inputReferences: {
     annualBirths: "Ref 18: Countries doing 1st trimester screening",

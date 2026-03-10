@@ -161,9 +161,9 @@ export function formulaResultsToSimulation(
           litigationSavings: (values.cpSavings ?? 0) + (values.nndSavings ?? 0) + (values.nndTotalCostSaving ?? 0) + (values.stillbirthSavings ?? 0),
           totalSavings: values.totalClinicalSavings ?? 0,
           totalEconomicImpact: values.netBenefit ?? 0,
-          growthScanCosts: values.screeningCostIncrease ?? 0,
-          netBenefit: values.netBenefit ?? 0,
-        }
+           growthScanCosts: (values.screeningCostIncrease ?? 0) + (values.oxailisScreeningCost ?? 0),
+           netBenefit: values.netBenefit ?? 0,
+         }
       : {
           revenueGenerated: values.revenueGenerated ?? 0,
           cSectionSavings: values.cSectionSavings ?? 0,
