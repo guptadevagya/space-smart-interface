@@ -333,86 +333,130 @@ const FormulaExplorer: React.FC<FormulaExplorerProps> = ({
     { key: 'financial', title: 'Financial Impact' },
   ];
 
+  const printFormulaRows = formulas.map(f => ({
+    name: f.name,
+    group: f.group,
+    formula: f.formula,
+    value: formulaValues[f.id] ?? 0,
+    format: f.format,
+  }));
+
   return (
-    <Collapsible open={open} onOpenChange={setOpen}>
-      <CollapsibleTrigger className="w-full">
-        <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-          <Calculator className="h-4 w-4 text-muted-foreground" />
-          <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Model Formulas</h2>
-          {open ? <ChevronDown className="h-3 w-3 text-muted-foreground" /> : <ChevronRight className="h-3 w-3 text-muted-foreground" />}
-          {!open && <span className="text-xs text-muted-foreground/60 ml-2">Click to expand — edit formulas, add variables</span>}
-        </div>
-      </CollapsibleTrigger>
-      <CollapsibleContent>
-        <div className="mt-4 space-y-5">
-          {/* Toolbar */}
-          <div className="flex gap-2 flex-wrap">
-            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => setShowAddVar(!showAddVar)}>
-              <Plus className="h-3 w-3 mr-1" /> Add Variable
-            </Button>
-            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={onResetFormulas}>
-              <RotateCcw className="h-3 w-3 mr-1" /> Reset to Defaults
-            </Button>
-          </div>
-
-          {/* Custom Variables */}
-          {showAddVar && <AddVariableForm onAdd={handleAddVariable} />}
-          {customVariables.length > 0 && (
-            <div>
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Custom Variables</h3>
-              <div className="flex flex-wrap gap-1.5">
-                {customVariables.map(v => (
-                  <Badge key={v.id} variant="secondary" className="text-xs gap-1.5 pr-1">
-                    <span className="font-mono">{v.id}</span>
-                    <span className="text-muted-foreground">= {v.value}</span>
-                    <button onClick={() => handleDeleteVariable(v.id)} className="ml-0.5 hover:text-destructive">
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                ))}
-              </div>
+    <>
+      {/* Interactive version (hidden in print) */}
+      <div className="print:hidden">
+        <Collapsible open={open} onOpenChange={setOpen}>
+          <CollapsibleTrigger className="w-full">
+            <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+              <Calculator className="h-4 w-4 text-muted-foreground" />
+              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Model Formulas</h2>
+              {open ? <ChevronDown className="h-3 w-3 text-muted-foreground" /> : <ChevronRight className="h-3 w-3 text-muted-foreground" />}
+              {!open && <span className="text-xs text-muted-foreground/60 ml-2">Click to expand — edit formulas, add variables</span>}
             </div>
-          )}
-
-          {/* Formula Groups */}
-          {groups.map(group => {
-            const groupFormulas = formulas.filter(f => f.group === group.key);
-            return (
-              <div key={group.key}>
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{group.title}</h3>
-                  <Button size="sm" variant="ghost" className="h-6 text-[10px] px-2" onClick={() => setShowAddFormula(showAddFormula === group.key ? null : group.key)}>
-                    <Plus className="h-3 w-3 mr-0.5" /> Add
-                  </Button>
-                </div>
-                <div className="space-y-1.5">
-                  {groupFormulas.map(def => (
-                    <FormulaCard
-                      key={def.id}
-                      def={def}
-                      value={formulaValues[def.id] ?? 0}
-                      error={formulaErrors[def.id]}
-                      allVarIds={allVarIds}
-                      labelMap={labelMap}
-                      allValues={formulaValues}
-                      formatCurrency={formatCurrency}
-                      formatNumber={formatNumber}
-                      onUpdate={handleUpdateFormula}
-                      onDelete={handleDeleteFormula}
-                    />
-                  ))}
-                </div>
-                {showAddFormula === group.key && (
-                  <div className="mt-2">
-                    <AddFormulaForm group={group.key} allVarIds={allVarIds} labelMap={labelMap} onAdd={handleAddFormula} />
-                  </div>
-                )}
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <div className="mt-4 space-y-5">
+              {/* Toolbar */}
+              <div className="flex gap-2 flex-wrap">
+                <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => setShowAddVar(!showAddVar)}>
+                  <Plus className="h-3 w-3 mr-1" /> Add Variable
+                </Button>
+                <Button size="sm" variant="outline" className="h-7 text-xs" onClick={onResetFormulas}>
+                  <RotateCcw className="h-3 w-3 mr-1" /> Reset to Defaults
+                </Button>
               </div>
-            );
-          })}
-        </div>
-      </CollapsibleContent>
-    </Collapsible>
+
+              {/* Custom Variables */}
+              {showAddVar && <AddVariableForm onAdd={handleAddVariable} />}
+              {customVariables.length > 0 && (
+                <div>
+                  <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Custom Variables</h3>
+                  <div className="flex flex-wrap gap-1.5">
+                    {customVariables.map(v => (
+                      <Badge key={v.id} variant="secondary" className="text-xs gap-1.5 pr-1">
+                        <span className="font-mono">{v.id}</span>
+                        <span className="text-muted-foreground">= {v.value}</span>
+                        <button onClick={() => handleDeleteVariable(v.id)} className="ml-0.5 hover:text-destructive">
+                          <X className="h-3 w-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Formula Groups */}
+              {groups.map(group => {
+                const groupFormulas = formulas.filter(f => f.group === group.key);
+                return (
+                  <div key={group.key}>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{group.title}</h3>
+                      <Button size="sm" variant="ghost" className="h-6 text-[10px] px-2" onClick={() => setShowAddFormula(showAddFormula === group.key ? null : group.key)}>
+                        <Plus className="h-3 w-3 mr-0.5" /> Add
+                      </Button>
+                    </div>
+                    <div className="space-y-1.5">
+                      {groupFormulas.map(def => (
+                        <FormulaCard
+                          key={def.id}
+                          def={def}
+                          value={formulaValues[def.id] ?? 0}
+                          error={formulaErrors[def.id]}
+                          allVarIds={allVarIds}
+                          labelMap={labelMap}
+                          allValues={formulaValues}
+                          formatCurrency={formatCurrency}
+                          formatNumber={formatNumber}
+                          onUpdate={handleUpdateFormula}
+                          onDelete={handleDeleteFormula}
+                        />
+                      ))}
+                    </div>
+                    {showAddFormula === group.key && (
+                      <div className="mt-2">
+                        <AddFormulaForm group={group.key} allVarIds={allVarIds} labelMap={labelMap} onAdd={handleAddFormula} />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+      </div>
+
+      {/* Print-only version — static table of all formula results */}
+      <div className="hidden print:block">
+        <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Model Formulas</h2>
+        {groups.map(group => {
+          const gf = printFormulaRows.filter(f => f.group === group.key);
+          if (gf.length === 0) return null;
+          return (
+            <div key={group.key} className="mb-4">
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">{group.title}</h3>
+              <Card>
+                <CardContent className="p-0">
+                  <div className="divide-y divide-border">
+                    {gf.map((f, i) => (
+                      <div key={i} className="px-4 py-2 flex justify-between items-center">
+                        <div>
+                          <p className="text-xs font-medium text-foreground">{f.name}</p>
+                          <p className="text-[10px] font-mono text-muted-foreground">{f.formula}</p>
+                        </div>
+                        <p className="text-sm font-bold text-foreground">
+                          {f.format === 'currency' ? formatCurrency(f.value) : formatNumber(f.value)}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          );
+        })}
+      </div>
+    </>
   );
 };
 

@@ -97,12 +97,69 @@
 
 /* Print styles */
 @media print {
-  .lg\:hidden,
-  button,
-  aside {
+  /* Hide interactive-only elements */
+  aside,
+  header {
     display: none !important;
   }
-  main {
+
+  /* Remove overflow constraints */
+  *, html, body,
+  .flex.h-screen,
+  .flex-1.flex.flex-col,
+  main,
+  .overflow-hidden,
+  .overflow-y-auto {
     overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  .flex.h-screen {
+    display: block !important;
+  }
+
+  /* Remove shadows for cleaner print */
+  .shadow-sm, .shadow, .shadow-md, .shadow-lg {
+    box-shadow: none !important;
+  }
+
+  /* Good page breaks */
+  section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 16px;
+  }
+
+  /* Hide elements marked print:hidden */
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Show elements marked hidden print:block */
+  .hidden.print\:block {
+    display: block !important;
+  }
+
+  /* Hide hover-only UI (delete buttons etc) */
+  .group-hover\:opacity-100 {
+    display: none !important;
+  }
+
+  /* Print header */
+  body::before {
+    content: "OxNNet Economics – Impact Analysis Report";
+    display: block;
+    font-size: 18pt;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px 0 10px;
+    border-bottom: 2px solid #333;
+    margin-bottom: 20px;
+  }
+
+  /* Ensure charts print */
+  .recharts-wrapper {
+    page-break-inside: avoid;
   }
 }
