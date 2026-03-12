@@ -128,7 +128,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ region, switchRegion,
               )}
             </PopoverContent>
           </Popover>
-          <Button variant="outline" size="sm" onClick={() => window.print()} className="hidden sm:flex">
+          <Button variant="outline" size="sm" onClick={() => window.print()} className="hidden sm:flex print:hidden">
             <Printer className="h-3.5 w-3.5 mr-1.5" />
             Print
           </Button>
