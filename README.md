@@ -1,73 +1,198 @@
-# Welcome to your Lovable project
+# OxNNet Health Economics Dashboard
 
-## Project info
+An interactive simulation dashboard for modelling the health-economic impact of OxNNet-based fetal growth restriction (FGR) screening versus current clinical pathways.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+---
 
-## How can I edit this code?
+## What This Does
 
-There are several ways of editing your application.
+The dashboard allows you to:
 
-**Use Lovable**
+- Compare **current screening** versus **OxNNet (Oxailis) screening** for fetal growth restriction
+- Model cost savings to the NHS across C-sections, NICU stays, litigation, and stillbirths
+- Adjust clinical assumptions, prevalence rates, and cost parameters in real time
+- View detailed financial breakdowns, charts, and clinical outcome projections
+- Export/print full reports with references and assumptions
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Default configuration models **600,000 annual UK births** and produces:
 
-Changes made via Lovable will be committed automatically to this repo.
+| Metric | Value |
+|---|---|
+| Gross savings to NHS | £84,230,031 |
+| Net benefit (after screening costs) | £73,372,511 |
+| Stillbirths avoided | 269 |
+| Caesarean sections avoided | 2,400 |
+| Cases of cerebral palsy avoided | 4 |
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Local Setup Guide
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+No prior coding experience is required.
 
-Follow these steps:
+### Prerequisites
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- A computer running Windows 10+, macOS, or Linux
+- An internet connection (for initial setup only)
+- Approximately 500 MB of free disk space
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Step 1 — Install Node.js
 
-# Step 3: Install the necessary dependencies.
-npm i
+1. Visit [https://nodejs.org](https://nodejs.org)
+2. Download the **LTS** (Long Term Support) version
+3. Run the installer using the default settings
+4. Restart your computer after installation
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+To confirm the installation was successful, open a terminal and run:
+
+```
+node --version
+```
+
+You should see a version number (e.g. `v20.11.0`).
+
+**How to open a terminal:**
+- Windows: Press `Win + R`, type `cmd`, press Enter
+- macOS: Open Spotlight (`Cmd + Space`), type `Terminal`, press Enter
+
+### Step 2 — Download the Project
+
+**Option A — Download as ZIP**
+
+1. Click the green **Code** button on this page, then select **Download ZIP**
+2. Extract the ZIP file to a location of your choice
+
+**Option B — Clone with Git** (if Git is installed)
+
+```
+git clone <REPOSITORY_URL>
+```
+
+### Step 3 — Open a Terminal in the Project Folder
+
+**Windows:**
+1. Open File Explorer and navigate to the extracted project folder
+2. Click the address bar at the top of the window
+3. Type `cmd` and press Enter
+
+**macOS:**
+1. Open Terminal
+2. Type `cd ` (including the trailing space)
+3. Drag the project folder from Finder into the Terminal window
+4. Press Enter
+
+To verify you are in the correct directory, run:
+
+```
+ls
+```
+
+You should see files such as `package.json`, `src`, and `README.md`.
+
+### Step 4 — Install Dependencies
+
+```
+npm install
+```
+
+This takes 1–3 minutes. Warning messages are normal; errors appear in red starting with `ERR!`.
+
+### Step 5 — Start the Dashboard
+
+```
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Once ready, you will see output similar to:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```
+VITE v5.x.x  ready in 500ms
+  Local:   http://localhost:8080/
+```
 
-**Use GitHub Codespaces**
+Open your browser and navigate to **http://localhost:8080**.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## Daily Usage
 
-This project is built with:
+| Action | Command |
+|---|---|
+| Start the dashboard | `npm run dev` |
+| Stop the dashboard | `Ctrl + C` in the terminal |
+| Restart the dashboard | Stop, then start again |
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+All configuration changes are saved automatically in your browser's local storage. No internet connection is needed after initial setup. Clearing browser data will reset saved configurations.
 
-## How can I deploy this project?
+---
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+## Project Structure
 
-## Can I connect a custom domain to my Lovable project?
+```
+src/
+├── components/
+│   ├── dashboard/          # Dashboard-specific components
+│   │   ├── DashboardHeader.tsx
+│   │   ├── FinancialCharts.tsx
+│   │   ├── FormulaExplorer.tsx
+│   │   ├── InputSidebar.tsx
+│   │   ├── KPICards.tsx
+│   │   ├── ReferencesPanel.tsx
+│   │   └── ResultsTable.tsx
+│   └── ui/                 # Reusable UI primitives (shadcn)
+├── lib/                    # Core logic and configuration
+│   ├── constants.ts        # Default inputs, references, bibliography
+│   ├── defaultFormulas.ts  # Formula definitions per region
+│   ├── formulaEngine.ts    # Math expression evaluator
+│   ├── modelLogic.ts       # Direct calculation functions
+│   ├── types.ts            # TypeScript interfaces
+│   └── utils.ts            # Utility functions
+├── pages/
+│   └── Index.tsx           # Main dashboard page
+└── test/                   # Test configuration
+```
 
-Yes, you can!
+---
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Technology Stack
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- **React** + **TypeScript** — UI framework
+- **Vite** — Build tool and dev server
+- **Tailwind CSS** — Styling
+- **Recharts** — Charts and data visualisation
+- **mathjs** — Formula evaluation engine
+- **shadcn/ui** — UI component library
+
+---
+
+## Troubleshooting
+
+**"node is not recognized" / "command not found: node"**
+Node.js is not installed or the system PATH was not updated. Reinstall Node.js and restart your computer.
+
+**"npm ERR! code ENOENT"**
+The terminal is not in the correct directory. Ensure you are inside the project folder.
+
+**Blank page or application error**
+Run `npm install` then `npm run dev`. If the issue persists, check the terminal for error messages.
+
+**"Port 8080 is already in use"**
+Close the other application using the port, or check the terminal — the dashboard may have started on an alternative port.
+
+---
+
+## Quick Reference
+
+```bash
+# First-time setup (once):
+npm install
+
+# Start the dashboard:
+npm run dev
+
+# Open in browser:
+http://localhost:8080
+
+# Stop the dashboard:
+Ctrl + C
+```
