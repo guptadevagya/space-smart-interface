@@ -1,116 +1,104 @@
 # OxNNet Health Economics Dashboard
 
-An interactive simulation dashboard for modelling the health-economic impact of OxNNet-based fetal growth restriction (FGR) screening versus current clinical pathways.
+A simulation dashboard that models the health and economic impact of using OxNNet screening for fetal growth restriction (FGR) compared to current methods.
 
 ---
 
 ## What This Does
 
-The dashboard allows you to:
-
-- Compare **current screening** versus **OxNNet (Oxailis) screening** for fetal growth restriction
-- Model cost savings to the NHS across C-sections, NICU stays, litigation, and stillbirths
-- Adjust clinical assumptions, prevalence rates, and cost parameters in real time
-- View detailed financial breakdowns, charts, and clinical outcome projections
-- Export/print full reports with references and assumptions
-
-Default configuration models **600,000 annual UK births** and produces:
-
-| Metric | Value |
-|---|---|
-| Gross savings to NHS | £84,230,031 |
-| Net benefit (after screening costs) | £73,372,511 |
-| Stillbirths avoided | 269 |
-| Caesarean sections avoided | 2,400 |
-| Cases of cerebral palsy avoided | 4 |
+- Compare current FGR screening with OxNNet (Oxailis) screening
+- See projected cost savings across C-sections, NICU stays, litigation, and stillbirths
+- Adjust clinical assumptions and cost parameters in real time
+- View financial breakdowns, charts, and clinical outcome projections
+- Print full reports with references and assumptions
 
 ---
 
-## Local Setup Guide
+## Setup Guide
 
-No prior coding experience is required.
+No coding experience is needed.
 
-### Prerequisites
+### What You Need
 
 - A computer running Windows 10+, macOS, or Linux
-- An internet connection (for initial setup only)
-- Approximately 500 MB of free disk space
+- An internet connection (only needed for the first setup)
+- About 500 MB of free disk space
 
-### Step 1 — Install Node.js
+### Step 1: Install Node.js
 
-1. Visit [https://nodejs.org](https://nodejs.org)
-2. Download the **LTS** (Long Term Support) version
-3. Run the installer using the default settings
-4. Restart your computer after installation
+1. Go to [https://nodejs.org](https://nodejs.org)
+2. Download the **LTS** version
+3. Run the installer with default settings
+4. Restart your computer
 
-To confirm the installation was successful, open a terminal and run:
+To check it worked, open a terminal and run:
 
 ```
 node --version
 ```
 
-You should see a version number (e.g. `v20.11.0`).
+You should see a version number like `v20.11.0`.
 
 **How to open a terminal:**
 - Windows: Press `Win + R`, type `cmd`, press Enter
-- macOS: Open Spotlight (`Cmd + Space`), type `Terminal`, press Enter
+- macOS: Press `Cmd + Space`, type `Terminal`, press Enter
 
-### Step 2 — Download the Project
+### Step 2: Download the Project
 
-**Option A — Download as ZIP**
+**Option A: Download as ZIP**
 
 1. Click the green **Code** button on this page, then select **Download ZIP**
-2. Extract the ZIP file to a location of your choice
+2. Extract the ZIP file somewhere on your computer
 
-**Option B — Clone with Git** (if Git is installed)
+**Option B: Clone with Git** (if Git is installed)
 
 ```
 git clone <REPOSITORY_URL>
 ```
 
-### Step 3 — Open a Terminal in the Project Folder
+### Step 3: Open a Terminal in the Project Folder
 
 **Windows:**
-1. Open File Explorer and navigate to the extracted project folder
-2. Click the address bar at the top of the window
+1. Open File Explorer and go to the project folder
+2. Click the address bar at the top
 3. Type `cmd` and press Enter
 
 **macOS:**
 1. Open Terminal
-2. Type `cd ` (including the trailing space)
+2. Type `cd ` (with a space after it)
 3. Drag the project folder from Finder into the Terminal window
 4. Press Enter
 
-To verify you are in the correct directory, run:
+To check you are in the right place, run:
 
 ```
 ls
 ```
 
-You should see files such as `package.json`, `src`, and `README.md`.
+You should see files like `package.json`, `src`, and `README.md`.
 
-### Step 4 — Install Dependencies
+### Step 4: Install Dependencies
 
 ```
 npm install
 ```
 
-This takes 1–3 minutes. Warning messages are normal; errors appear in red starting with `ERR!`.
+This takes 1 to 3 minutes. Warning messages are normal. Errors show up in red and start with `ERR!`.
 
-### Step 5 — Start the Dashboard
+### Step 5: Start the Dashboard
 
 ```
 npm run dev
 ```
 
-Once ready, you will see output similar to:
+When it is ready, you will see something like:
 
 ```
 VITE v5.x.x  ready in 500ms
   Local:   http://localhost:8080/
 ```
 
-Open your browser and navigate to **http://localhost:8080**.
+Open your browser and go to **http://localhost:8080**.
 
 ---
 
@@ -122,7 +110,7 @@ Open your browser and navigate to **http://localhost:8080**.
 | Stop the dashboard | `Ctrl + C` in the terminal |
 | Restart the dashboard | Stop, then start again |
 
-All configuration changes are saved automatically in your browser's local storage. No internet connection is needed after initial setup. Clearing browser data will reset saved configurations.
+Your settings are saved in the browser automatically. No internet connection is needed after the first setup. Clearing your browser data will reset saved settings.
 
 ---
 
@@ -131,7 +119,7 @@ All configuration changes are saved automatically in your browser's local storag
 ```
 src/
 ├── components/
-│   ├── dashboard/          # Dashboard-specific components
+│   ├── dashboard/          # Main dashboard components
 │   │   ├── DashboardHeader.tsx
 │   │   ├── FinancialCharts.tsx
 │   │   ├── FormulaExplorer.tsx
@@ -139,12 +127,12 @@ src/
 │   │   ├── KPICards.tsx
 │   │   ├── ReferencesPanel.tsx
 │   │   └── ResultsTable.tsx
-│   └── ui/                 # Reusable UI primitives (shadcn)
+│   └── ui/                 # Reusable UI components
 ├── lib/                    # Core logic and configuration
 │   ├── constants.ts        # Default inputs, references, bibliography
 │   ├── defaultFormulas.ts  # Formula definitions per region
 │   ├── formulaEngine.ts    # Math expression evaluator
-│   ├── modelLogic.ts       # Direct calculation functions
+│   ├── modelLogic.ts       # Calculation functions
 │   ├── types.ts            # TypeScript interfaces
 │   └── utils.ts            # Utility functions
 ├── pages/
@@ -156,35 +144,35 @@ src/
 
 ## Technology Stack
 
-- **React** + **TypeScript** — UI framework
-- **Vite** — Build tool and dev server
-- **Tailwind CSS** — Styling
-- **Recharts** — Charts and data visualisation
-- **mathjs** — Formula evaluation engine
-- **shadcn/ui** — UI component library
+- **React** + **TypeScript** for the UI
+- **Vite** for building and running the app
+- **Tailwind CSS** for styling
+- **Recharts** for charts
+- **mathjs** for formula evaluation
+- **shadcn/ui** for UI components
 
 ---
 
 ## Troubleshooting
 
-**"node is not recognized" / "command not found: node"**
+**"node is not recognized" or "command not found: node"**
 Node.js is not installed or the system PATH was not updated. Reinstall Node.js and restart your computer.
 
 **"npm ERR! code ENOENT"**
-The terminal is not in the correct directory. Ensure you are inside the project folder.
+Your terminal is not in the right folder. Go back to Step 3 and make sure you are inside the project folder.
 
-**Blank page or application error**
-Run `npm install` then `npm run dev`. If the issue persists, check the terminal for error messages.
+**Blank page or error**
+Run `npm install` then `npm run dev`. If it still does not work, check the terminal for error messages.
 
 **"Port 8080 is already in use"**
-Close the other application using the port, or check the terminal — the dashboard may have started on an alternative port.
+Another app is using that port. Close it, or check the terminal output as the dashboard may have started on a different port.
 
 ---
 
 ## Quick Reference
 
 ```bash
-# First-time setup (once):
+# First time setup (once):
 npm install
 
 # Start the dashboard:
