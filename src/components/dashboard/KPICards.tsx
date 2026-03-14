@@ -2,7 +2,14 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Shield, Heart, DollarSign, AlertTriangle } from 'lucide-react';
+import {
+  TrendingUp,
+  TrendingDown,
+  Shield,
+  Heart,
+  DollarSign,
+  AlertTriangle,
+} from 'lucide-react';
 import { SimulationResults, Region } from '@/lib/types';
 
 interface KPICardsProps {
@@ -30,7 +37,14 @@ interface KPIItemProps {
   delay: number;
 }
 
-const KPIItem: React.FC<KPIItemProps> = ({ title, value, subtitle, icon, accent, delay }) => {
+const KPIItem: React.FC<KPIItemProps> = ({
+  title,
+  value,
+  subtitle,
+  icon,
+  accent,
+  delay,
+}) => {
   const Icon = iconMap[icon];
   return (
     <motion.div
@@ -38,17 +52,28 @@ const KPIItem: React.FC<KPIItemProps> = ({ title, value, subtitle, icon, accent,
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay }}
     >
-      <Card className={cn("h-full border-l-4 hover:shadow-md transition-shadow", accent)}>
+      <Card
+        className={cn(
+          'h-full border-l-4 hover:shadow-md transition-shadow',
+          accent,
+        )}
+      >
         <CardContent className="p-4 flex flex-col justify-between h-full min-h-[120px]">
           <div className="flex items-start justify-between gap-2">
-            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider leading-tight">{title}</p>
+            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider leading-tight">
+              {title}
+            </p>
             <div className="p-1.5 bg-muted rounded-lg shrink-0">
               <Icon className="h-3.5 w-3.5 text-muted-foreground" />
             </div>
           </div>
           <div>
-            <p className="text-xl font-bold text-foreground leading-none truncate">{value}</p>
-            <p className="text-[10px] text-muted-foreground mt-1.5 leading-tight">{subtitle}</p>
+            <p className="text-xl font-bold text-foreground leading-none truncate">
+              {value}
+            </p>
+            <p className="text-[10px] text-muted-foreground mt-1.5 leading-tight">
+              {subtitle}
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -56,14 +81,21 @@ const KPIItem: React.FC<KPIItemProps> = ({ title, value, subtitle, icon, accent,
   );
 };
 
-const KPICards: React.FC<KPICardsProps> = ({ results, region, formatCurrency, formatNumber }) => {
+const KPICards: React.FC<KPICardsProps> = ({
+  results,
+  region,
+  formatCurrency,
+  formatNumber,
+}) => {
   const isUS = region === 'US';
 
   const cards: KPIItemProps[] = [
     {
       title: 'Net Economic Benefit',
       value: formatCurrency(results.financials.totalEconomicImpact),
-      subtitle: isUS ? 'Revenue + cost avoidance' : 'Clinical savings − screening costs',
+      subtitle: isUS
+        ? 'Revenue + cost avoidance'
+        : 'Clinical savings − screening costs',
       icon: 'benefit',
       accent: 'border-l-emerald-500',
       delay: 0,
@@ -102,20 +134,22 @@ const KPICards: React.FC<KPICardsProps> = ({ results, region, formatCurrency, fo
       delay: 0.15,
     },
     ...(region !== 'US' && results.financials.growthScanCosts
-      ? [{
-          title: 'Cost of New Screening',
-          value: formatCurrency(results.financials.growthScanCosts),
-          subtitle: 'Extra high-risk pathway + Oxailis screening',
-          icon: 'cost' as keyof typeof iconMap,
-          accent: 'border-l-destructive',
-          delay: 0.2,
-        }]
+      ? [
+          {
+            title: 'Cost of New Screening',
+            value: formatCurrency(results.financials.growthScanCosts),
+            subtitle: 'Extra high-risk pathway + Oxailis screening',
+            icon: 'cost' as keyof typeof iconMap,
+            accent: 'border-l-destructive',
+            delay: 0.2,
+          },
+        ]
       : []),
     {
       title: 'Lives Impacted',
       value: formatNumber(
         results.clinicalOutcomes.avoidedStillbirths +
-        (results.clinicalOutcomes.avoidedNeonatalDeaths || 0)
+          (results.clinicalOutcomes.avoidedNeonatalDeaths || 0),
       ),
       subtitle: 'Avoided stillbirths & neonatal deaths',
       icon: 'lives',

@@ -91,7 +91,11 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family:
+      'Inter',
+      system-ui,
+      -apple-system,
+      sans-serif;
   }
 }
 
@@ -104,7 +108,9 @@
   }
 
   /* Remove overflow constraints */
-  *, html, body,
+  *,
+  html,
+  body,
   .flex.h-screen,
   .flex-1.flex.flex-col,
   main,
@@ -120,7 +126,10 @@
   }
 
   /* Remove shadows for cleaner print */
-  .shadow-sm, .shadow, .shadow-md, .shadow-lg {
+  .shadow-sm,
+  .shadow,
+  .shadow-md,
+  .shadow-lg {
     box-shadow: none !important;
   }
 
@@ -148,7 +157,7 @@
 
   /* Print header */
   body::before {
-    content: "OxNNet Economics – Impact Analysis Report";
+    content: 'OxNNet Economics – Impact Analysis Report';
     display: block;
     font-size: 18pt;
     font-weight: bold;

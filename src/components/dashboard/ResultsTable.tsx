@@ -1,6 +1,13 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { SimulationResults, SimulationInputs } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
@@ -11,18 +18,29 @@ interface ResultsTableProps {
   formatNumber: (val: number) => string;
 }
 
-const ResultsTable: React.FC<ResultsTableProps> = ({ results, inputs, formatCurrency, formatNumber }) => {
+const ResultsTable: React.FC<ResultsTableProps> = ({
+  results,
+  inputs,
+  formatCurrency,
+  formatNumber,
+}) => {
   const isUS = inputs.region === 'US';
 
   // Compute intermediate values
   const totalFGR = inputs.annualBirths * inputs.fgrPrevalence;
   const detectedOxailis = totalFGR * inputs.oxailisDetectionRate;
   const detectedCurrent = totalFGR * inputs.currentDetectionRate;
-  const highRiskOxailis = detectedOxailis / (1 - inputs.oxailisFalsePositiveRate);
-  const highRiskCurrent = detectedCurrent / (1 - inputs.currentFalsePositiveRate);
+  const highRiskOxailis =
+    detectedOxailis / (1 - inputs.oxailisFalsePositiveRate);
+  const highRiskCurrent =
+    detectedCurrent / (1 - inputs.currentFalsePositiveRate);
   const additionalHighRisk = highRiskOxailis - highRiskCurrent;
-  const midwifeToConsultantDiff = inputs.consultantAppointmentCost - inputs.midwifeAppointmentCost;
-  const costPerHighRisk = (3 * inputs.growthScanCost) + (2 * inputs.consultantAppointmentCost) + midwifeToConsultantDiff;
+  const midwifeToConsultantDiff =
+    inputs.consultantAppointmentCost - inputs.midwifeAppointmentCost;
+  const costPerHighRisk =
+    3 * inputs.growthScanCost +
+    2 * inputs.consultantAppointmentCost +
+    midwifeToConsultantDiff;
   const totalScansOxailis = highRiskOxailis * 3;
   const avoidedUndiagnosed = results.demographics.avoidedUndiagnosed;
 
@@ -33,10 +51,13 @@ const ResultsTable: React.FC<ResultsTableProps> = ({ results, inputs, formatCurr
   const avoidedCP = results.clinicalOutcomes.avoidedCPCases;
 
   // Individual UK cost items (matching Excel line items)
-  const cSectionSavings = results.clinicalOutcomes.avoidedCSections * inputs.cSectionCost;
+  const cSectionSavings =
+    results.clinicalOutcomes.avoidedCSections * inputs.cSectionCost;
   const mumStaySavings = avoidedHypoxic * 2537.333333;
-  const nicuSavings = results.clinicalOutcomes.avoidedNICUDays * inputs.nicuDailyCost;
-  const stillbirthSavings = avoidedStillbirths * inputs.stillbirthLitigationCost;
+  const nicuSavings =
+    results.clinicalOutcomes.avoidedNICUDays * inputs.nicuDailyCost;
+  const stillbirthSavings =
+    avoidedStillbirths * inputs.stillbirthLitigationCost;
   const cpLitigationSavings = avoidedCP * inputs.malpracticeClaimCost;
   const nndLitigationSavings = avoidedNND * inputs.neonatalDeathLitigationCost;
   const nndTrustCost = avoidedNND * inputs.stillbirthLitigationCost;
@@ -44,7 +65,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({ results, inputs, formatCurr
 
   // Screening costs
   const extraHighRiskPathwayCost = additionalHighRisk * costPerHighRisk;
-  const oxailisScreeningCost = inputs.annualBirths * inputs.combinedTestRate * inputs.oxailisScanCost;
+  const oxailisScreeningCost =
+    inputs.annualBirths * inputs.combinedTestRate * inputs.oxailisScanCost;
   const totalScreeningCost = extraHighRiskPathwayCost + oxailisScreeningCost;
 
   type RowType = {
@@ -74,7 +96,10 @@ const ResultsTable: React.FC<ResultsTableProps> = ({ results, inputs, formatCurr
         },
         {
           label: 'Major Morbidity Avoided (CP + Stillbirth)',
-          units: formatNumber(results.clinicalOutcomes.avoidedCPCases + results.clinicalOutcomes.avoidedStillbirths),
+          units: formatNumber(
+            results.clinicalOutcomes.avoidedCPCases +
+              results.clinicalOutcomes.avoidedStillbirths,
+          ),
           unitCost: formatCurrency(inputs.malpracticeClaimCost),
           impact: formatCurrency(results.financials.litigationSavings),
           type: 'saving',
@@ -107,7 +132,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({ results, inputs, formatCurr
         },
         {
           label: 'Total cost of Neonatal ICU avoided',
-          units: formatNumber(results.clinicalOutcomes.avoidedNICUDays) + ' days',
+          units:
+            formatNumber(results.clinicalOutcomes.avoidedNICUDays) + ' days',
           unitCost: formatCurrency(inputs.nicuDailyCost) + '/day',
           impact: formatCurrency(nicuSavings),
           type: 'saving',
@@ -168,18 +194,32 @@ const ResultsTable: React.FC<ResultsTableProps> = ({ results, inputs, formatCurr
     <Card>
       <CardHeader className="pb-2">
         <CardTitle className="text-sm font-bold">
-          {isUS ? 'Detailed Impact Analysis' : 'Cost of Undiagnosed FGR — Detailed Breakdown'}
+          {isUS
+            ? 'Detailed Impact Analysis'
+            : 'Cost of Undiagnosed FGR — Detailed Breakdown'}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
-              <TableHead className="text-xs font-bold uppercase tracking-wider">Outcome Measure</TableHead>
-              <TableHead className="text-right text-xs font-bold uppercase tracking-wider">Units</TableHead>
-              <TableHead className="text-right text-xs font-bold uppercase tracking-wider">Unit Cost</TableHead>
-              <TableHead className="text-right text-xs font-bold uppercase tracking-wider">Financial Impact</TableHead>
-              {!isUS && <TableHead className="text-right text-xs font-bold uppercase tracking-wider">Ref</TableHead>}
+              <TableHead className="text-xs font-bold uppercase tracking-wider">
+                Outcome Measure
+              </TableHead>
+              <TableHead className="text-right text-xs font-bold uppercase tracking-wider">
+                Units
+              </TableHead>
+              <TableHead className="text-right text-xs font-bold uppercase tracking-wider">
+                Unit Cost
+              </TableHead>
+              <TableHead className="text-right text-xs font-bold uppercase tracking-wider">
+                Financial Impact
+              </TableHead>
+              {!isUS && (
+                <TableHead className="text-right text-xs font-bold uppercase tracking-wider">
+                  Ref
+                </TableHead>
+              )}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -188,30 +228,50 @@ const ResultsTable: React.FC<ResultsTableProps> = ({ results, inputs, formatCurr
                 key={row.label}
                 className={cn(
                   row.type === 'cost' && 'bg-destructive/5',
-                  row.type === 'revenue' && 'bg-blue-50/50 dark:bg-blue-950/20'
+                  row.type === 'revenue' && 'bg-blue-50/50 dark:bg-blue-950/20',
                 )}
               >
-                <TableCell className="font-medium text-sm">{row.label}</TableCell>
-                <TableCell className={cn(
-                  "text-right font-mono text-sm",
-                  row.type === 'cost' ? 'text-destructive' : 'text-emerald-600'
-                )}>
-                  {row.type === 'saving' && row.units ? `${row.units}` : row.units}
+                <TableCell className="font-medium text-sm">
+                  {row.label}
                 </TableCell>
-                <TableCell className="text-right text-sm text-muted-foreground">{row.unitCost}</TableCell>
-                <TableCell className={cn(
-                  "text-right font-bold text-sm",
-                  row.type === 'cost' ? 'text-destructive' : 'text-foreground'
-                )}>
+                <TableCell
+                  className={cn(
+                    'text-right font-mono text-sm',
+                    row.type === 'cost'
+                      ? 'text-destructive'
+                      : 'text-emerald-600',
+                  )}
+                >
+                  {row.type === 'saving' && row.units
+                    ? `${row.units}`
+                    : row.units}
+                </TableCell>
+                <TableCell className="text-right text-sm text-muted-foreground">
+                  {row.unitCost}
+                </TableCell>
+                <TableCell
+                  className={cn(
+                    'text-right font-bold text-sm',
+                    row.type === 'cost'
+                      ? 'text-destructive'
+                      : 'text-foreground',
+                  )}
+                >
                   {row.impact}
                 </TableCell>
-                {!isUS && <TableCell className="text-right text-[10px] text-muted-foreground">{row.reference}</TableCell>}
+                {!isUS && (
+                  <TableCell className="text-right text-[10px] text-muted-foreground">
+                    {row.reference}
+                  </TableCell>
+                )}
               </TableRow>
             ))}
             {/* Gross savings total (UK) */}
             {!isUS && (
               <TableRow className="bg-muted/80 border-t-2 border-border">
-                <TableCell className="font-bold text-xs uppercase tracking-wider">Cost saving to NHS of various adverse outcomes</TableCell>
+                <TableCell className="font-bold text-xs uppercase tracking-wider">
+                  Cost saving to NHS of various adverse outcomes
+                </TableCell>
                 <TableCell colSpan={2} />
                 <TableCell className="text-right font-bold text-lg text-foreground">
                   {formatCurrency(results.financials.totalSavings)}

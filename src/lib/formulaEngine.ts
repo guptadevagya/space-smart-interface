@@ -16,16 +16,19 @@ export function extractVariables(formula: string): string[] {
   }
 }
 
-function topSort(formulas: FormulaDefinition[], inputVarIds: Set<string>): FormulaDefinition[] {
+function topSort(
+  formulas: FormulaDefinition[],
+  inputVarIds: Set<string>,
+): FormulaDefinition[] {
   const resolved = new Set(inputVarIds);
   const sorted: FormulaDefinition[] = [];
   const remaining = [...formulas];
   let maxIter = remaining.length * remaining.length + 1;
 
   while (remaining.length > 0 && maxIter-- > 0) {
-    const idx = remaining.findIndex(f => {
+    const idx = remaining.findIndex((f) => {
       const deps = extractVariables(f.formula);
-      return deps.every(d => resolved.has(d));
+      return deps.every((d) => resolved.has(d));
     });
     if (idx === -1) break;
     sorted.push(remaining[idx]);
@@ -38,7 +41,7 @@ function topSort(formulas: FormulaDefinition[], inputVarIds: Set<string>): Formu
 
 export function evaluateFormulas(
   formulas: FormulaDefinition[],
-  inputVariables: Record<string, number>
+  inputVariables: Record<string, number>,
 ): { values: Record<string, number>; errors: Record<string, string> } {
   const scope: Record<string, number> = { ...inputVariables };
   const errors: Record<string, string> = {};
@@ -57,11 +60,14 @@ export function evaluateFormulas(
   return { values: scope, errors };
 }
 
-export function validateFormula(formula: string, availableVars: Set<string>): string | null {
+export function validateFormula(
+  formula: string,
+  availableVars: Set<string>,
+): string | null {
   try {
     parse(formula);
     const vars = extractVariables(formula);
-    const missing = vars.filter(v => !availableVars.has(v));
+    const missing = vars.filter((v) => !availableVars.has(v));
     if (missing.length > 0) return `Unknown variables: ${missing.join(', ')}`;
     return null;
   } catch (e) {

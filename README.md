@@ -40,6 +40,7 @@ node --version
 You should see a version number like `v20.11.0`.
 
 **How to open a terminal:**
+
 - Windows: Press `Win + R`, type `cmd`, press Enter
 - macOS: Press `Cmd + Space`, type `Terminal`, press Enter
 
@@ -59,11 +60,13 @@ git clone <REPOSITORY_URL>
 ### Step 3: Open a Terminal in the Project Folder
 
 **Windows:**
+
 1. Open File Explorer and go to the project folder
 2. Click the address bar at the top
 3. Type `cmd` and press Enter
 
 **macOS:**
+
 1. Open Terminal
 2. Type `cd ` (with a space after it)
 3. Drag the project folder from Finder into the Terminal window
@@ -104,11 +107,11 @@ Open your browser and go to **http://localhost:8080**.
 
 ## Daily Usage
 
-| Action | Command |
-|---|---|
-| Start the dashboard | `npm run dev` |
-| Stop the dashboard | `Ctrl + C` in the terminal |
-| Restart the dashboard | Stop, then start again |
+| Action                | Command                    |
+| --------------------- | -------------------------- |
+| Start the dashboard   | `npm run dev`              |
+| Stop the dashboard    | `Ctrl + C` in the terminal |
+| Restart the dashboard | Stop, then start again     |
 
 Your settings are saved in the browser automatically. No internet connection is needed after the first setup. Clearing your browser data will reset saved settings.
 

@@ -6,10 +6,24 @@ import FinancialCharts from '@/components/dashboard/FinancialCharts';
 import ResultsTable from '@/components/dashboard/ResultsTable';
 import ReferencesPanel from '@/components/dashboard/ReferencesPanel';
 import FormulaExplorer from '@/components/dashboard/FormulaExplorer';
-import { DEFAULT_US_INPUTS, DEFAULT_UK_INPUTS, DEFAULT_GLOBAL_INPUTS } from '@/lib/constants';
+import {
+  DEFAULT_US_INPUTS,
+  DEFAULT_UK_INPUTS,
+  DEFAULT_GLOBAL_INPUTS,
+} from '@/lib/constants';
 import { evaluateFormulas } from '@/lib/formulaEngine';
-import { getDefaultFormulas, getInputVariableMap, formulaResultsToSimulation } from '@/lib/defaultFormulas';
-import { SimulationInputs, Region, FormulaDefinition, CustomVariable, CustomParameter } from '@/lib/types';
+import {
+  getDefaultFormulas,
+  getInputVariableMap,
+  formulaResultsToSimulation,
+} from '@/lib/defaultFormulas';
+import {
+  SimulationInputs,
+  Region,
+  FormulaDefinition,
+  CustomVariable,
+  CustomParameter,
+} from '@/lib/types';
 import { toast } from 'sonner';
 
 const STORAGE_KEY = 'oxnnet-simulator-configs';
@@ -32,7 +46,8 @@ const Index: React.FC = () => {
         const configs = JSON.parse(saved) as SavedConfig[];
         if (configs.length > 0) {
           const latest = configs[configs.length - 1];
-          if (latest.inputs?.region && latest.inputs?.annualBirths) return latest.inputs;
+          if (latest.inputs?.region && latest.inputs?.annualBirths)
+            return latest.inputs;
         }
       }
     } catch {}
@@ -52,61 +67,81 @@ const Index: React.FC = () => {
     return getDefaultFormulas('UK');
   });
 
-  const [customVariables, setCustomVariables] = useState<CustomVariable[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const configs = JSON.parse(saved) as SavedConfig[];
-        if (configs.length > 0 && configs[configs.length - 1].customVariables) {
-          return configs[configs.length - 1].customVariables!;
+  const [customVariables, setCustomVariables] = useState<CustomVariable[]>(
+    () => {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const configs = JSON.parse(saved) as SavedConfig[];
+          if (
+            configs.length > 0 &&
+            configs[configs.length - 1].customVariables
+          ) {
+            return configs[configs.length - 1].customVariables!;
+          }
         }
-      }
-    } catch {}
-    return [];
-  });
+      } catch {}
+      return [];
+    },
+  );
 
-  const [customParameters, setCustomParameters] = useState<CustomParameter[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const configs = JSON.parse(saved) as SavedConfig[];
-        if (configs.length > 0 && configs[configs.length - 1].customParameters) {
-          return configs[configs.length - 1].customParameters!;
+  const [customParameters, setCustomParameters] = useState<CustomParameter[]>(
+    () => {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const configs = JSON.parse(saved) as SavedConfig[];
+          if (
+            configs.length > 0 &&
+            configs[configs.length - 1].customParameters
+          ) {
+            return configs[configs.length - 1].customParameters!;
+          }
         }
-      }
-    } catch {}
-    return [];
-  });
+      } catch {}
+      return [];
+    },
+  );
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Build input variable map including custom variables
   const inputVarMap = useMemo(() => {
     const base = getInputVariableMap(inputs);
-    customVariables.forEach(v => { base[v.id] = v.value; });
-    customParameters.forEach(p => { base[p.id] = p.value; });
+    customVariables.forEach((v) => {
+      base[v.id] = v.value;
+    });
+    customParameters.forEach((p) => {
+      base[p.id] = p.value;
+    });
     return base;
   }, [inputs, customVariables, customParameters]);
 
   // Evaluate all formulas
   const { values: formulaValues, errors: formulaErrors } = useMemo(
     () => evaluateFormulas(formulas, inputVarMap),
-    [formulas, inputVarMap]
+    [formulas, inputVarMap],
   );
 
   // Convert to SimulationResults for existing dashboard components
   const results = useMemo(
     () => formulaResultsToSimulation(formulaValues, inputs.region),
-    [formulaValues, inputs.region]
+    [formulaValues, inputs.region],
   );
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   const switchRegion = (region: Region) => {
     switch (region) {
-      case 'US': setInputs(DEFAULT_US_INPUTS); break;
-      case 'UK': setInputs(DEFAULT_UK_INPUTS); break;
-      case 'Global': setInputs(DEFAULT_GLOBAL_INPUTS); break;
+      case 'US':
+        setInputs(DEFAULT_US_INPUTS);
+        break;
+      case 'UK':
+        setInputs(DEFAULT_UK_INPUTS);
+        break;
+      case 'Global':
+        setInputs(DEFAULT_GLOBAL_INPUTS);
+        break;
     }
     setFormulas(getDefaultFormulas(region));
     setCustomVariables([]);
@@ -122,7 +157,9 @@ const Index: React.FC = () => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       return saved ? JSON.parse(saved) : [];
-    } catch { return []; }
+    } catch {
+      return [];
+    }
   };
 
   const saveConfiguration = () => {
@@ -147,7 +184,7 @@ const Index: React.FC = () => {
 
   const loadConfiguration = (id: string) => {
     const configs = getSavedConfigs();
-    const config = configs.find(c => c.id === id);
+    const config = configs.find((c) => c.id === id);
     if (config) {
       setInputs(config.inputs);
       if (config.formulas) setFormulas(config.formulas);
@@ -161,7 +198,7 @@ const Index: React.FC = () => {
   };
 
   const deleteConfiguration = (id: string) => {
-    const configs = getSavedConfigs().filter(c => c.id !== id);
+    const configs = getSavedConfigs().filter((c) => c.id !== id);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(configs));
     toast.success('Configuration deleted');
   };
@@ -171,30 +208,40 @@ const Index: React.FC = () => {
   const currency = isUS ? 'USD' : 'GBP';
 
   const formatCurrency = (val: number) =>
-    new Intl.NumberFormat(locale, { style: 'currency', currency, maximumFractionDigits: 0 }).format(val);
+    new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency,
+      maximumFractionDigits: 0,
+    }).format(val);
 
   const formatNumber = (val: number) =>
     new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(val);
 
   const handleReferenceChange = (key: string, newValue: string) => {
-    setInputs(prev => ({
+    setInputs((prev) => ({
       ...prev,
-      inputReferences: { ...prev.inputReferences, [key]: newValue }
+      inputReferences: { ...prev.inputReferences, [key]: newValue },
     }));
   };
 
   const updateBibEntry = (index: number, newValue: string) => {
     const newBib = [...inputs.bibliography];
     newBib[index] = newValue;
-    setInputs(prev => ({ ...prev, bibliography: newBib }));
+    setInputs((prev) => ({ ...prev, bibliography: newBib }));
   };
 
   const removeBibEntry = (index: number) => {
-    setInputs(prev => ({ ...prev, bibliography: prev.bibliography.filter((_, i) => i !== index) }));
+    setInputs((prev) => ({
+      ...prev,
+      bibliography: prev.bibliography.filter((_, i) => i !== index),
+    }));
   };
 
   const addBibEntry = () => {
-    setInputs(prev => ({ ...prev, bibliography: [...prev.bibliography, "New Reference..."] }));
+    setInputs((prev) => ({
+      ...prev,
+      bibliography: [...prev.bibliography, 'New Reference...'],
+    }));
   };
 
   return (
@@ -218,14 +265,22 @@ const Index: React.FC = () => {
           onSave={saveConfiguration}
           onLoad={loadConfiguration}
           onDelete={deleteConfiguration}
-          getSavedConfigs={() => getSavedConfigs().map(({ id, name, timestamp }) => ({ id, name, timestamp }))}
+          getSavedConfigs={() =>
+            getSavedConfigs().map(({ id, name, timestamp }) => ({
+              id,
+              name,
+              timestamp,
+            }))
+          }
         />
 
         <main className="flex-1 overflow-y-auto">
           <div className="max-w-7xl mx-auto p-6 lg:p-10 space-y-8">
             {/* Section 1: KPIs */}
             <section>
-              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Executive Summary</h2>
+              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
+                Executive Summary
+              </h2>
               <KPICards
                 results={results}
                 region={inputs.region}
@@ -236,16 +291,17 @@ const Index: React.FC = () => {
 
             {/* Section 2: Charts */}
             <section>
-              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Financial Projections</h2>
-              <FinancialCharts
-                results={results}
-                region={inputs.region}
-              />
+              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
+                Financial Projections
+              </h2>
+              <FinancialCharts results={results} region={inputs.region} />
             </section>
 
             {/* Section 3: Detailed Table */}
             <section>
-              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Detailed Analysis</h2>
+              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
+                Detailed Analysis
+              </h2>
               <ResultsTable
                 results={results}
                 inputs={inputs}
@@ -272,7 +328,9 @@ const Index: React.FC = () => {
 
             {/* Section 4: References */}
             <section>
-              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Evidence Base</h2>
+              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
+                Evidence Base
+              </h2>
               <ReferencesPanel
                 inputs={inputs}
                 onReferenceChange={handleReferenceChange}
