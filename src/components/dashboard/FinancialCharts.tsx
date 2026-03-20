@@ -116,6 +116,11 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
           Benefit: results.financials.totalSavings,
           Cost: 0,
         },
+        {
+          name: 'Deployment Cost',
+          Benefit: 0,
+          Cost: results.financials.deploymentCosts || 0,
+        },
       ]
     : [
         {

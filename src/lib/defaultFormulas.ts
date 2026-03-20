@@ -423,6 +423,8 @@ export function formulaResultsToSimulation(
           fetalDeathSavings: values.fetalDeathSavings ?? 0,
           totalSavings: values.totalSavings ?? 0,
           totalEconomicImpact: values.totalEconomicImpact ?? 0,
+          deploymentCosts: values.usTotalDeploymentCost ?? 0,
+          netBenefit: values.netBenefit ?? 0,
         },
   };
 }
