@@ -161,9 +161,6 @@ const StateMarketTable: React.FC = () => {
                   <TableCell className="min-w-[140px]">
                     {pctBar(row.estPctControlled, 0.65, 'bg-primary')}
                   </TableCell>
-                  <TableCell className="min-w-[140px]">
-                    {pctBar(row.top3PctCombined, 0.92, 'bg-emerald-500')}
-                  </TableCell>
                 </TableRow>
               ))}
               {filtered.length === 0 && (
