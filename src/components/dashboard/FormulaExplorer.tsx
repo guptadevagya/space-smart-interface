@@ -192,7 +192,7 @@ const FormulaCard: React.FC<{
                 </div>
                 {showVars && (
                   <div className="bg-muted/50 rounded-md p-2 max-h-32 overflow-y-auto">
-                    <p className="text-[10px] text-muted-foreground mb-1.5 font-semibold uppercase tracking-wider">
+                    <p className="text-xs text-muted-foreground mb-1.5 font-medium uppercase tracking-wider">
                       Click to insert variable
                     </p>
                     <div className="flex flex-wrap gap-1">
