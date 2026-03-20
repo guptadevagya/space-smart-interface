@@ -532,25 +532,20 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
             <InputGroup title="Country Profile" defaultOpen={true}>
               <SliderField
                 label="Annual Live Births"
-                value={providerView === 'all' ? inputs.annualBirths : US_TOTAL_BIRTHS}
-                onChange={(v) => {
-                  if (providerView === 'all') update('annualBirths', v);
-                }}
+                value={inputs.annualBirths}
+                onChange={(v) => update('annualBirths', v)}
                 min={1000}
                 max={5000000}
                 step={1000}
-                disabled={providerView !== 'all'}
-                isDefault={providerView === 'all' ? !isChanged('annualBirths') : true}
+                isDefault={!isChanged('annualBirths')}
                 tooltip={inputs.inputReferences.annualBirths}
                 onEditReference={(ref) =>
                   handleReferenceChange('annualBirths', ref)
                 }
               />
-              {providerView !== 'all' && (
-                <p className="text-[10px] text-muted-foreground leading-relaxed">
-                  U.S. national births stay visible here while provider-level modeling runs below.
-                </p>
-              )}
+              <p className="text-[10px] text-muted-foreground leading-relaxed">
+                All dashboard sections use this national figure. Provider scope adds a comparison panel below.
+              </p>
             </InputGroup>
           )}
 
@@ -565,7 +560,6 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                       onClick={() => {
                         setProviderView(view);
                         setSelectedProviderId(null);
-                        update('annualBirths', getAggregateBirths(view));
                       }}
                       className={cn(
                         'px-3 py-1.5 text-xs font-bold rounded-md transition-all text-center',
@@ -583,10 +577,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
               {providerView === 'all' ? (
                 <div className="rounded-lg border border-dashed border-border bg-muted/20 p-3">
                   <p className="text-xs font-medium text-foreground">
-                    Select IDN or IPP to drill into provider-level cohorts.
-                  </p>
-                  <p className="mt-1 text-[10px] leading-relaxed text-muted-foreground">
-                    Executive summary and charts are currently showing the full U.S. market.
+                    Select IDN or IPP to compare provider-level cohorts against the national total.
                   </p>
                 </div>
               ) : (
@@ -600,11 +591,8 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                       onValueChange={(val) => {
                         if (val === '__aggregate__') {
                           setSelectedProviderId(null);
-                          update('annualBirths', getAggregateBirths(providerView));
                         } else {
                           setSelectedProviderId(val);
-                          const provider = getProviderById(val);
-                          if (provider) update('annualBirths', provider.annualBirths);
                         }
                       }}
                     >
@@ -630,6 +618,9 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                     return (
                       <div className="rounded-lg bg-muted/50 p-3 space-y-1">
                         <p className="text-xs font-semibold text-foreground">{provider.name}</p>
+                        <p className="text-[10px] text-muted-foreground">
+                          {provider.annualBirths.toLocaleString()} births/year
+                        </p>
                         <p className="text-[10px] text-muted-foreground italic">
                           {provider.source}
                         </p>
@@ -637,21 +628,13 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                     );
                   })()}
 
-                  <SliderField
-                    label={selectedProviderId ? 'Provider Births' : 'Annual Births'}
-                    value={inputs.annualBirths}
-                    onChange={(v) => {
-                      if (!selectedProviderId) update('annualBirths', v);
-                    }}
-                    min={1000}
-                    max={5000000}
-                    step={1000}
-                    isDefault={!isChanged('annualBirths')}
-                    tooltip={inputs.inputReferences.annualBirths}
-                    onEditReference={(ref) =>
-                      handleReferenceChange('annualBirths', ref)
-                    }
-                  />
+                  {!selectedProviderId && (
+                    <div className="rounded-lg bg-muted/30 px-3 py-2">
+                      <p className="text-[10px] text-muted-foreground">
+                        Aggregate: {getAggregateBirths(providerView).toLocaleString()} births across {getProvidersByType(providerView).length} systems
+                      </p>
+                    </div>
+                  )}
                 </>
               )}
               {renderCustomParams('Provider Profile')}
