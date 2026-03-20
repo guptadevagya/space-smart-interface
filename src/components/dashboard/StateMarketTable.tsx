@@ -19,7 +19,7 @@ import { STATE_MARKET_DATA, StateMarketData } from '@/lib/stateMarketData';
 import { cn } from '@/lib/utils';
 import { Search, ArrowUpDown } from 'lucide-react';
 
-type SortKey = 'state' | 'totalBirths' | 'estPctControlled' | 'top3PctCombined';
+type SortKey = 'state' | 'totalBirths' | 'estPctControlled';
 type SortDir = 'asc' | 'desc';
 
 const StateMarketTable: React.FC = () => {
