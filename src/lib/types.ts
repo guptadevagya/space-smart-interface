@@ -34,6 +34,10 @@ export interface SimulationInputs {
   oxailisScanCost: number;
   combinedTestRate: number;
 
+  // US Litigation (new)
+  fetalDeathPayout: number;
+  litigationSuccessRate: number;
+
   // Documentation
   bibliography: string[];
   inputReferences: Record<string, string>;

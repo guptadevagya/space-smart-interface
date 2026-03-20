@@ -235,9 +235,23 @@ export function getDefaultFormulas(region: Region): FormulaDefinition[] {
   } else {
     financial.push(
       {
+        id: 'cpLitigationSavings',
+        name: 'CP Litigation Savings',
+        formula: 'avoidedCPCases * litigationSuccessRate * malpracticeClaimCost',
+        group: 'financial',
+        format: 'currency',
+      },
+      {
+        id: 'fetalDeathSavings',
+        name: 'Fetal Death Litigation Savings',
+        formula: 'avoidedStillbirths * fetalDeathPayout',
+        group: 'financial',
+        format: 'currency',
+      },
+      {
         id: 'litigationSavings',
-        name: 'Litigation Savings',
-        formula: '(avoidedCPCases + avoidedStillbirths) * malpracticeClaimCost',
+        name: 'Total Litigation Savings',
+        formula: 'cpLitigationSavings + fetalDeathSavings',
         group: 'financial',
         format: 'currency',
       },
@@ -306,6 +320,8 @@ export function getInputVariableMap(
     stillbirthLitigationCost: inputs.stillbirthLitigationCost,
     oxailisScanCost: inputs.oxailisScanCost,
     combinedTestRate: inputs.combinedTestRate,
+    fetalDeathPayout: inputs.fetalDeathPayout,
+    litigationSuccessRate: inputs.litigationSuccessRate,
   };
 }
 
@@ -330,6 +346,8 @@ export const INPUT_VARIABLE_LABELS: Record<string, string> = {
   combinedTestRate: 'Combined Test Rate',
   neonatalDeathLitigationCost: 'NND Litigation Cost',
   stillbirthLitigationCost: 'Stillbirth Litigation Cost',
+  fetalDeathPayout: 'Fetal Death Payout',
+  litigationSuccessRate: 'Litigation Success Rate',
 };
 
 export function formulaResultsToSimulation(
