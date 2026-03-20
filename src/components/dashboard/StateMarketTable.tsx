@@ -133,7 +133,7 @@ const StateMarketTable: React.FC = () => {
                   Type
                 </TableHead>
                 <SortHeader label="% Controlled" field="estPctControlled" />
-                <SortHeader label="Top 3 Combined" field="top3PctCombined" />
+                
               </TableRow>
             </TableHeader>
             <TableBody>
