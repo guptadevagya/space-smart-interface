@@ -235,9 +235,23 @@ export function getDefaultFormulas(region: Region): FormulaDefinition[] {
   } else {
     financial.push(
       {
+        id: 'cpLitigationSavings',
+        name: 'CP Litigation Savings',
+        formula: 'avoidedCPCases * litigationSuccessRate * malpracticeClaimCost',
+        group: 'financial',
+        format: 'currency',
+      },
+      {
+        id: 'fetalDeathSavings',
+        name: 'Fetal Death Litigation Savings',
+        formula: 'avoidedStillbirths * fetalDeathPayout',
+        group: 'financial',
+        format: 'currency',
+      },
+      {
         id: 'litigationSavings',
-        name: 'Litigation Savings',
-        formula: '(avoidedCPCases + avoidedStillbirths) * malpracticeClaimCost',
+        name: 'Total Litigation Savings',
+        formula: 'cpLitigationSavings + fetalDeathSavings',
         group: 'financial',
         format: 'currency',
       },
