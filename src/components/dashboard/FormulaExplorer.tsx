@@ -201,10 +201,10 @@ const FormulaCard: React.FC<{
                           key={vid}
                           type="button"
                           onClick={() => insertVariable(vid)}
-                          className="inline-flex items-center rounded-full border border-border bg-background px-2 py-0.5 text-[11px] font-mono hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer"
+                          className="inline-flex items-center rounded-full border border-border bg-background px-2 py-0.5 text-xs font-mono hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer"
                         >
                           {vid}
-                          <span className="text-muted-foreground ml-1 text-[10px]">
+                          <span className="text-muted-foreground ml-1 text-xs">
                             {labelMap[vid] || ''}
                           </span>
                         </button>
