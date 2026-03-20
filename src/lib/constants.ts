@@ -77,6 +77,8 @@ export const DEFAULT_US_INPUTS: SimulationInputs = {
     combinedTestRate: 'NCHS Data Brief No. 550 - 75.5% first-trimester care initiation',
     fetalDeathPayout: 'AJOG 2025 NPDB Analysis (Gold et al.) - $492,000 avg per case',
     litigationSuccessRate: 'Clin Orthop Relat Res - 50% trial risk (physicians win 80-90% weak cases)',
+    implementationCost: 'Estimated annual platform licensing & integration cost',
+    perScanScreeningCost: 'Estimated per-scan AI screening cost',
   },
 };
 
