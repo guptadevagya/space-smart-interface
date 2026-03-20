@@ -23,7 +23,9 @@ import {
   FormulaDefinition,
   CustomVariable,
   CustomParameter,
+  USProviderView,
 } from '@/lib/types';
+import { getProviderById } from '@/lib/providerProfiles';
 import { toast } from 'sonner';
 
 const STORAGE_KEY = 'oxnnet-simulator-configs';
