@@ -108,30 +108,30 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
     ? [
         {
           name: 'Revenue',
-          Benefit: results.financials.revenueGenerated,
-          Cost: 0,
+          value: results.financials.revenueGenerated,
+          type: 'benefit' as const,
         },
         {
           name: 'Cost Savings',
-          Benefit: results.financials.totalSavings,
-          Cost: 0,
+          value: results.financials.totalSavings,
+          type: 'benefit' as const,
         },
         {
           name: 'Deployment Cost',
-          Benefit: 0,
-          Cost: results.financials.deploymentCosts || 0,
+          value: results.financials.deploymentCosts || 0,
+          type: 'cost' as const,
         },
       ]
     : [
         {
           name: 'Clinical Savings',
-          Benefit: results.financials.totalSavings,
-          Cost: 0,
+          value: results.financials.totalSavings,
+          type: 'benefit' as const,
         },
         {
           name: 'Screening Costs',
-          Benefit: 0,
-          Cost: results.financials.growthScanCosts || 0,
+          value: results.financials.growthScanCosts || 0,
+          type: 'cost' as const,
         },
       ];
 
