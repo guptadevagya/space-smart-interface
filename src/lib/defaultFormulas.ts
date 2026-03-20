@@ -320,6 +320,8 @@ export function getInputVariableMap(
     stillbirthLitigationCost: inputs.stillbirthLitigationCost,
     oxailisScanCost: inputs.oxailisScanCost,
     combinedTestRate: inputs.combinedTestRate,
+    fetalDeathPayout: inputs.fetalDeathPayout,
+    litigationSuccessRate: inputs.litigationSuccessRate,
   };
 }
 
