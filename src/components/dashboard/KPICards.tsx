@@ -58,9 +58,9 @@ const KPIItem: React.FC<KPIItemProps> = ({
           accent,
         )}
       >
-        <CardContent className="p-4 flex flex-col justify-between h-full min-h-[120px]">
+        <CardContent className="p-5 flex flex-col justify-between h-full">
           <div className="flex items-start justify-between gap-2">
-            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider leading-tight">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider leading-tight">
               {title}
             </p>
             <div className="p-1.5 bg-muted rounded-lg shrink-0">
@@ -68,10 +68,10 @@ const KPIItem: React.FC<KPIItemProps> = ({
             </div>
           </div>
           <div>
-            <p className="text-xl font-bold text-foreground leading-none truncate">
+            <p className="text-2xl font-bold text-foreground leading-none truncate">
               {value}
             </p>
-            <p className="text-[10px] text-muted-foreground mt-1.5 leading-tight">
+            <p className="text-xs text-muted-foreground mt-1.5 leading-tight">
               {subtitle}
             </p>
           </div>
