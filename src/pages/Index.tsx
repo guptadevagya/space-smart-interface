@@ -164,6 +164,7 @@ const Index: React.FC = () => {
   const [selectedProviderId, setSelectedProviderId] = useState<string | null>(
     null,
   );
+  const [providerBirthOverrides, setProviderBirthOverrides] = useState<Record<string, number>>({});
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
