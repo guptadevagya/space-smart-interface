@@ -94,7 +94,6 @@ const USHeatmap: React.FC<USHeatmapProps> = ({ providerView, selectedProviderId 
             defaultState={{
               fill: 'hsl(215, 15%, 90%)',
               stroke: 'hsl(215, 15%, 70%)',
-              strokeWidth: 0.5,
             }}
             width="100%"
             showStateLabels={true}
