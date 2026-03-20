@@ -606,6 +606,14 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                 );
               })()}
 
+              {/* Always show national total context */}
+              {(selectedProviderId || providerView !== 'all') && (
+                <div className="flex items-center justify-between rounded-md bg-primary/5 border border-primary/10 px-3 py-2">
+                  <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">U.S. National Total</span>
+                  <span className="text-xs font-bold text-foreground">{US_TOTAL_BIRTHS.toLocaleString()}</span>
+                </div>
+              )}
+
               <SliderField
                 label="Annual Births"
                 value={inputs.annualBirths}
