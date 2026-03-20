@@ -350,6 +350,8 @@ export const INPUT_VARIABLE_LABELS: Record<string, string> = {
   stillbirthLitigationCost: 'Stillbirth Litigation Cost',
   fetalDeathPayout: 'Fetal Death Payout',
   litigationSuccessRate: 'Litigation Success Rate',
+  implementationCost: 'Implementation Cost',
+  perScanScreeningCost: 'Per-Scan Screening Cost',
 };
 
 export function formulaResultsToSimulation(
