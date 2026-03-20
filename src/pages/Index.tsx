@@ -151,6 +151,8 @@ const Index: React.FC = () => {
     setFormulas(getDefaultFormulas(region));
     setCustomVariables([]);
     setCustomParameters([]);
+    setProviderView('all');
+    setSelectedProviderId(null);
   };
 
   const resetFormulas = () => {

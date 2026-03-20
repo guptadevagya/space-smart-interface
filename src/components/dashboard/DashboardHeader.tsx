@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Region } from '@/lib/types';
+import { Region, USProviderView } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Menu, Printer, Save, FolderOpen, Trash2, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -9,6 +9,7 @@ import {
   PopoverContent,
 } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { getProviderById } from '@/lib/providerProfiles';
 
 interface SavedConfigMeta {
   id: string;
@@ -25,6 +26,9 @@ interface DashboardHeaderProps {
   onLoad: (id: string) => void;
   onDelete: (id: string) => void;
   getSavedConfigs: () => SavedConfigMeta[];
+  providerView?: USProviderView;
+  selectedProviderId?: string | null;
+  annualBirths?: number;
 }
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({
