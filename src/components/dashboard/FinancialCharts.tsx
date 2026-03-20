@@ -221,7 +221,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
       {/* Savings breakdown */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-bold">Savings Breakdown</CardTitle>
+          <CardTitle className="text-sm font-bold">Savings breakdown</CardTitle>
           <CardDescription className="text-xs">
             By clinical category
           </CardDescription>
@@ -251,7 +251,22 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
                   dataKey="name"
                   type="category"
                   width={80}
-                  fontSize={11}
+                  tick={({ x, y, payload }: any) => {
+                    const entry = breakdownData.find((d) => d.name === payload.value);
+                    return (
+                      <text
+                        x={x - 4}
+                        y={y}
+                        textAnchor="end"
+                        dominantBaseline="central"
+                        fontSize={11}
+                        fontWeight={500}
+                        fill={entry?.color || 'hsl(var(--muted-foreground))'}
+                      >
+                        {payload.value}
+                      </text>
+                    );
+                  }}
                   tickLine={false}
                   axisLine={false}
                 />
