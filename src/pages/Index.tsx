@@ -238,8 +238,9 @@ const Index: React.FC = () => {
     const config = configs.find((c) => c.id === id);
     if (config) {
       setInputs(config.inputs);
-      if (config.formulas) setFormulas(config.formulas);
-      else setFormulas(getDefaultFormulas(config.inputs.region));
+      setFormulas(
+        mergeWithDefaultFormulas(config.inputs.region, config.formulas),
+      );
       if (config.customVariables) setCustomVariables(config.customVariables);
       else setCustomVariables([]);
       if (config.customParameters) setCustomParameters(config.customParameters);

@@ -685,7 +685,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
             </InputGroup>
           )}
 
-          <InputGroup title="Clinical Assumptions" onAddParameter={() => {}}>
+          <InputGroup title="Clinical Assumptions">
             <SliderField
               label="FGR Prevalence"
               value={inputs.fgrPrevalence}
@@ -769,7 +769,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
             />
           </InputGroup>
 
-          <InputGroup title="Cost Parameters" onAddParameter={() => {}}>
+          <InputGroup title="Cost Parameters">
             {inputs.region === 'US' ? (
               <>
                 <SliderField
