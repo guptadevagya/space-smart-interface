@@ -127,7 +127,7 @@ const KPICards: React.FC<KPICardsProps> = ({
     },
     {
       title: 'Cases Identified',
-      value: formatNumber(results.demographics.avoidedUndiagnosed),
+      value: formatNumber(Math.round(results.demographics.avoidedUndiagnosed)),
       subtitle: 'Additional FGR detections per year',
       icon: 'clinical',
       accent: 'border-l-amber-500',
