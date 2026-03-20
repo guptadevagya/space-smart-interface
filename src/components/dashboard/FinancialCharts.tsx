@@ -186,7 +186,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
                 />
                 <XAxis
                   dataKey="name"
-                  fontSize={11}
+                  tick={renderColoredTick(comparisonColorMap)}
                   tickLine={false}
                   axisLine={false}
                 />
