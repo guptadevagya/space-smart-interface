@@ -228,7 +228,7 @@ const SliderField: React.FC<SliderFieldProps> = ({
                 onChange(suffix === '%' ? raw / 100 : raw);
               }
             }}
-            className="h-7 w-24 text-xs text-right font-mono bg-muted/30 border-border disabled:cursor-not-allowed disabled:opacity-100"
+            className="h-7 w-28 text-xs text-right font-mono bg-muted/30 border-border disabled:cursor-not-allowed disabled:opacity-100"
           />
           {suffix && (
             <span className="text-xs text-muted-foreground">{suffix}</span>
