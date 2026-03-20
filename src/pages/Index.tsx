@@ -324,8 +324,21 @@ const Index: React.FC = () => {
               <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
                 Financial Projections
               </h2>
-              <FinancialCharts results={results} region={inputs.region} />
+              <FinancialCharts results={results} region={inputs.region} providerLabel={providerLabel} />
             </section>
+
+            {/* Section 2.5: US Heatmap */}
+            {isUS && (
+              <section>
+                <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
+                  Geographic Distribution
+                </h2>
+                <USHeatmap
+                  providerView={providerView}
+                  selectedProviderId={selectedProviderId}
+                />
+              </section>
+            )}
 
             {/* Section 3: Detailed Table */}
             <section>
