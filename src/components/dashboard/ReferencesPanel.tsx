@@ -31,7 +31,9 @@ const ReferencesPanel: React.FC<ReferencesPanelProps> = ({
   const [assumptionsOpen, setAssumptionsOpen] = React.useState(false);
   const [refsOpen, setRefsOpen] = React.useState(false);
 
-  const parameterRows = [
+  const isUS = inputs.region === 'US';
+
+  const baseRows = [
     { key: 'annualBirths', label: 'Annual Births', format: formatNumber },
     {
       key: 'fgrPrevalence',
@@ -52,7 +54,7 @@ const ReferencesPanel: React.FC<ReferencesPanelProps> = ({
     { key: 'nicuDailyCost', label: 'NICU Daily Cost', format: formatCurrency },
     {
       key: 'malpracticeClaimCost',
-      label: 'Litigation Cost',
+      label: isUS ? 'CP Verdict (Median)' : 'Litigation Cost',
       format: formatCurrency,
     },
     {
@@ -61,6 +63,36 @@ const ReferencesPanel: React.FC<ReferencesPanelProps> = ({
       format: (v: number) => (v * 100).toFixed(2) + '%',
     },
   ];
+
+  const usExtraRows = [
+    {
+      key: 'scanReimbursement',
+      label: 'Scan Reimbursement',
+      format: formatCurrency,
+    },
+    {
+      key: 'fetalDeathPayout',
+      label: 'Fetal Death Payout',
+      format: formatCurrency,
+    },
+    {
+      key: 'litigationSuccessRate',
+      label: 'Litigation Success Rate',
+      format: (v: number) => (v * 100).toFixed(0) + '%',
+    },
+    {
+      key: 'combinedTestRate',
+      label: 'Screening Uptake',
+      format: (v: number) => (v * 100).toFixed(1) + '%',
+    },
+    {
+      key: 'emergencyCSectionRateUndiagnosed',
+      label: 'Emergency C-Section Rate',
+      format: (v: number) => (v * 100).toFixed(0) + '%',
+    },
+  ];
+
+  const parameterRows = isUS ? [...baseRows, ...usExtraRows] : baseRows;
 
   const assumptionsContent = (
     <div className="divide-y divide-border">

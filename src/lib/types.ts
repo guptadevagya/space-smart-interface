@@ -55,6 +55,8 @@ export interface SimulationResults {
     cSectionSavings: number;
     nicuSavings: number;
     litigationSavings: number;
+    cpLitigationSavings?: number;
+    fetalDeathSavings?: number;
     totalSavings: number;
     totalEconomicImpact: number;
     growthScanCosts?: number;

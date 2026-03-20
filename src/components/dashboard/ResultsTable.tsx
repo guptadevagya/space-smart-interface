@@ -78,6 +78,10 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
     reference?: string;
   };
 
+  // US intermediates for split litigation
+  const usCpLitigationSavings = results.financials.cpLitigationSavings ?? 0;
+  const usFetalDeathSavings = results.financials.fetalDeathSavings ?? 0;
+
   const rows: RowType[] = isUS
     ? [
         {
@@ -86,6 +90,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
           unitCost: formatCurrency(inputs.cSectionCost),
           impact: formatCurrency(results.financials.cSectionSavings),
           type: 'saving',
+          reference: 'Peterson-KFF',
         },
         {
           label: 'NICU Days Saved',
@@ -93,16 +98,23 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
           unitCost: formatCurrency(inputs.nicuDailyCost),
           impact: formatCurrency(results.financials.nicuSavings),
           type: 'saving',
+          reference: 'HCCI',
         },
         {
-          label: 'Major Morbidity Avoided (CP + Stillbirth)',
-          units: formatNumber(
-            results.clinicalOutcomes.avoidedCPCases +
-              results.clinicalOutcomes.avoidedStillbirths,
-          ),
-          unitCost: formatCurrency(inputs.malpracticeClaimCost),
-          impact: formatCurrency(results.financials.litigationSavings),
+          label: 'CP Litigation Avoided',
+          units: formatNumber(results.clinicalOutcomes.avoidedCPCases) + ' cases',
+          unitCost: `${formatCurrency(inputs.malpracticeClaimCost)} × ${(inputs.litigationSuccessRate * 100).toFixed(0)}%`,
+          impact: formatCurrency(usCpLitigationSavings),
           type: 'saving',
+          reference: 'Jena et al.',
+        },
+        {
+          label: 'Fetal Death Litigation Avoided',
+          units: formatNumber(results.clinicalOutcomes.avoidedStillbirths),
+          unitCost: formatCurrency(inputs.fetalDeathPayout),
+          impact: formatCurrency(usFetalDeathSavings),
+          type: 'saving',
+          reference: 'Gold et al.',
         },
         {
           label: 'Indicated Scan Revenue',
@@ -110,6 +122,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
           unitCost: formatCurrency(inputs.scanReimbursement),
           impact: formatCurrency(results.financials.revenueGenerated),
           type: 'revenue',
+          reference: 'CPT Code',
         },
       ]
     : [
@@ -215,11 +228,9 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               <TableHead className="text-right text-xs font-bold uppercase tracking-wider">
                 Financial Impact
               </TableHead>
-              {!isUS && (
-                <TableHead className="text-right text-xs font-bold uppercase tracking-wider">
-                  Ref
-                </TableHead>
-              )}
+              <TableHead className="text-right text-xs font-bold uppercase tracking-wider">
+                Ref
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -259,11 +270,9 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                 >
                   {row.impact}
                 </TableCell>
-                {!isUS && (
-                  <TableCell className="text-right text-[10px] text-muted-foreground">
-                    {row.reference}
-                  </TableCell>
-                )}
+                <TableCell className="text-right text-[10px] text-muted-foreground">
+                  {row.reference}
+                </TableCell>
               </TableRow>
             ))}
             {/* Gross savings total (UK) */}
@@ -284,7 +293,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               <TableCell className="font-bold text-xs uppercase tracking-wider">
                 {isUS ? 'Net Annual Benefit' : 'Total saving by the NHS'}
               </TableCell>
-              <TableCell colSpan={isUS ? 2 : 3} />
+              <TableCell colSpan={3} />
               <TableCell className="text-right font-bold text-lg">
                 {formatCurrency(results.financials.totalEconomicImpact)}
               </TableCell>

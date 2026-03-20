@@ -47,6 +47,8 @@ const calculateUSImpact = (inputs: SimulationInputs): SimulationResults => {
       cSectionSavings,
       nicuSavings,
       litigationSavings,
+      cpLitigationSavings,
+      fetalDeathSavings,
       totalSavings,
       totalEconomicImpact: revenueGenerated + totalSavings,
     },

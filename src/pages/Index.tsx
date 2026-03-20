@@ -6,6 +6,7 @@ import FinancialCharts from '@/components/dashboard/FinancialCharts';
 import ResultsTable from '@/components/dashboard/ResultsTable';
 import ReferencesPanel from '@/components/dashboard/ReferencesPanel';
 import FormulaExplorer from '@/components/dashboard/FormulaExplorer';
+import USHeatmap from '@/components/dashboard/USHeatmap';
 import {
   DEFAULT_US_INPUTS,
   DEFAULT_UK_INPUTS,
@@ -218,6 +219,14 @@ const Index: React.FC = () => {
   };
 
   const isUS = inputs.region === 'US';
+  const selectedProvider = selectedProviderId ? getProviderById(selectedProviderId) : null;
+  const providerLabel = isUS
+    ? selectedProvider
+      ? `${selectedProvider.name} (${selectedProvider.type.toUpperCase()})`
+      : providerView === 'all'
+        ? 'All U.S.'
+        : `All ${providerView.toUpperCase()}s`
+    : undefined;
   const locale = isUS ? 'en-US' : 'en-GB';
   const currency = isUS ? 'USD' : 'GBP';
 
@@ -315,8 +324,21 @@ const Index: React.FC = () => {
               <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
                 Financial Projections
               </h2>
-              <FinancialCharts results={results} region={inputs.region} />
+              <FinancialCharts results={results} region={inputs.region} providerLabel={providerLabel} />
             </section>
+
+            {/* Section 2.5: US Heatmap */}
+            {isUS && (
+              <section>
+                <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
+                  Geographic Distribution
+                </h2>
+                <USHeatmap
+                  providerView={providerView}
+                  selectedProviderId={selectedProviderId}
+                />
+              </section>
+            )}
 
             {/* Section 3: Detailed Table */}
             <section>

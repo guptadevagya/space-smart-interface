@@ -394,6 +394,8 @@ export function formulaResultsToSimulation(
           cSectionSavings: values.cSectionSavings ?? 0,
           nicuSavings: values.nicuSavings ?? 0,
           litigationSavings: values.litigationSavings ?? 0,
+          cpLitigationSavings: values.cpLitigationSavings ?? 0,
+          fetalDeathSavings: values.fetalDeathSavings ?? 0,
           totalSavings: values.totalSavings ?? 0,
           totalEconomicImpact: values.totalEconomicImpact ?? 0,
         },
