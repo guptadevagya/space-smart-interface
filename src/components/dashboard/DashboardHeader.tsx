@@ -87,15 +87,6 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                   : 'Global'}{' '}
               Impact Analysis
             </p>
-            {region === 'US' && (
-              <p className="text-[10px] text-muted-foreground/70 leading-tight mt-0.5">
-                {selectedProvider
-                  ? `${selectedProvider.name} (${selectedProvider.type.toUpperCase()}) - ${selectedProvider.annualBirths.toLocaleString()} births · U.S. total ${US_TOTAL_BIRTHS.toLocaleString()}`
-                  : providerView === 'all'
-                    ? `All U.S. - ${(annualBirths || 0).toLocaleString()} births`
-                    : `All ${providerView?.toUpperCase()}s - ${(annualBirths || 0).toLocaleString()} births · U.S. total ${US_TOTAL_BIRTHS.toLocaleString()}`}
-              </p>
-            )}
           </div>
         </div>
       </div>
