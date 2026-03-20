@@ -22,8 +22,10 @@ const calculateUSImpact = (inputs: SimulationInputs): SimulationResults => {
 
   const cSectionSavings = avoidedCSections * inputs.cSectionCost;
   const nicuSavings = avoidedNICUDays * inputs.nicuDailyCost;
-  const litigationSavings =
-    (avoidedCPCases + avoidedStillbirths) * inputs.malpracticeClaimCost;
+  const cpLitigationSavings =
+    avoidedCPCases * inputs.litigationSuccessRate * inputs.malpracticeClaimCost;
+  const fetalDeathSavings = avoidedStillbirths * inputs.fetalDeathPayout;
+  const litigationSavings = cpLitigationSavings + fetalDeathSavings;
   const totalSavings = cSectionSavings + nicuSavings + litigationSavings;
 
   return {
