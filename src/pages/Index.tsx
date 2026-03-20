@@ -6,6 +6,7 @@ import FinancialCharts from '@/components/dashboard/FinancialCharts';
 import ResultsTable from '@/components/dashboard/ResultsTable';
 import ReferencesPanel from '@/components/dashboard/ReferencesPanel';
 import FormulaExplorer from '@/components/dashboard/FormulaExplorer';
+import USHeatmap from '@/components/dashboard/USHeatmap';
 import {
   DEFAULT_US_INPUTS,
   DEFAULT_UK_INPUTS,
