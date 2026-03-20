@@ -44,6 +44,8 @@ export const DEFAULT_US_INPUTS: SimulationInputs = {
   combinedTestRate: 0.755,
   fetalDeathPayout: 492000,
   litigationSuccessRate: 0.50,
+  implementationCost: 500000,
+  perScanScreeningCost: 10,
   bibliography: [
     'NCHS Data Brief No. 535 (July 2025) - Births in the United States, 2024',
     'NCHS Data Brief No. 550 - Changes in Timing of Prenatal Care Initiation, 2021-2024',
@@ -75,6 +77,8 @@ export const DEFAULT_US_INPUTS: SimulationInputs = {
     combinedTestRate: 'NCHS Data Brief No. 550 - 75.5% first-trimester care initiation',
     fetalDeathPayout: 'AJOG 2025 NPDB Analysis (Gold et al.) - $492,000 avg per case',
     litigationSuccessRate: 'Clin Orthop Relat Res - 50% trial risk (physicians win 80-90% weak cases)',
+    implementationCost: 'Estimated annual platform licensing & integration cost',
+    perScanScreeningCost: 'Estimated per-scan AI screening cost',
   },
 };
 
@@ -102,6 +106,8 @@ export const DEFAULT_UK_INPUTS: SimulationInputs = {
   combinedTestRate: 0.85,
   fetalDeathPayout: 0,
   litigationSuccessRate: 1.0,
+  implementationCost: 0,
+  perScanScreeningCost: 0,
   bibliography: DEFAULT_BIBLIOGRAPHY,
   inputReferences: {
     annualBirths: 'NHS Trust Annual Report',
@@ -157,6 +163,8 @@ export const DEFAULT_GLOBAL_INPUTS: SimulationInputs = {
   combinedTestRate: 0.85,
   fetalDeathPayout: 0,
   litigationSuccessRate: 1.0,
+  implementationCost: 0,
+  perScanScreeningCost: 0,
   bibliography: DEFAULT_BIBLIOGRAPHY,
   inputReferences: {
     annualBirths: 'Ref 18: Countries doing 1st trimester screening',

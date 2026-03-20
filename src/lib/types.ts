@@ -38,6 +38,10 @@ export interface SimulationInputs {
   fetalDeathPayout: number;
   litigationSuccessRate: number;
 
+  // US Deployment Costs
+  implementationCost: number;
+  perScanScreeningCost: number;
+
   // Documentation
   bibliography: string[];
   inputReferences: Record<string, string>;
@@ -59,8 +63,9 @@ export interface SimulationResults {
     fetalDeathSavings?: number;
     totalSavings: number;
     totalEconomicImpact: number;
-    growthScanCosts?: number;
-    netBenefit?: number;
+      growthScanCosts?: number;
+      deploymentCosts?: number;
+      netBenefit?: number;
   };
   clinicalOutcomes: {
     avoidedCSections: number;

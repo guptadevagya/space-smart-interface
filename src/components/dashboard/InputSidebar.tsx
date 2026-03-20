@@ -851,6 +851,34 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   }
                 />
                 <SliderField
+                  label="Implementation Cost (Annual)"
+                  value={inputs.implementationCost}
+                  onChange={(v) => update('implementationCost', v)}
+                  min={0}
+                  max={5000000}
+                  step={50000}
+                  prefix="$"
+                  isDefault={!isChanged('implementationCost')}
+                  tooltip={inputs.inputReferences.implementationCost}
+                  onEditReference={(ref) =>
+                    handleReferenceChange('implementationCost', ref)
+                  }
+                />
+                <SliderField
+                  label="Per-Scan Screening Cost"
+                  value={inputs.perScanScreeningCost}
+                  onChange={(v) => update('perScanScreeningCost', v)}
+                  min={0}
+                  max={100}
+                  step={1}
+                  prefix="$"
+                  isDefault={!isChanged('perScanScreeningCost')}
+                  tooltip={inputs.inputReferences.perScanScreeningCost}
+                  onEditReference={(ref) =>
+                    handleReferenceChange('perScanScreeningCost', ref)
+                  }
+                />
+                <SliderField
                   label="Screening Uptake"
                   value={inputs.combinedTestRate}
                   onChange={(v) => update('combinedTestRate', v)}

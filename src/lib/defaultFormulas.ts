@@ -284,9 +284,30 @@ export function getDefaultFormulas(region: Region): FormulaDefinition[] {
         format: 'currency',
       },
       {
+        id: 'usScreeningCost',
+        name: 'Screening Cost',
+        formula: 'totalScansOxailis * perScanScreeningCost',
+        group: 'financial',
+        format: 'currency',
+      },
+      {
+        id: 'usTotalDeploymentCost',
+        name: 'Total Deployment Cost',
+        formula: 'implementationCost + usScreeningCost',
+        group: 'financial',
+        format: 'currency',
+      },
+      {
         id: 'totalEconomicImpact',
         name: 'Total Economic Impact',
         formula: 'revenueGenerated + totalSavings',
+        group: 'financial',
+        format: 'currency',
+      },
+      {
+        id: 'netBenefit',
+        name: 'Net Benefit',
+        formula: 'totalEconomicImpact - usTotalDeploymentCost',
         group: 'financial',
         format: 'currency',
       },
@@ -322,6 +343,8 @@ export function getInputVariableMap(
     combinedTestRate: inputs.combinedTestRate,
     fetalDeathPayout: inputs.fetalDeathPayout,
     litigationSuccessRate: inputs.litigationSuccessRate,
+    implementationCost: inputs.implementationCost,
+    perScanScreeningCost: inputs.perScanScreeningCost,
   };
 }
 
@@ -348,6 +371,8 @@ export const INPUT_VARIABLE_LABELS: Record<string, string> = {
   stillbirthLitigationCost: 'Stillbirth Litigation Cost',
   fetalDeathPayout: 'Fetal Death Payout',
   litigationSuccessRate: 'Litigation Success Rate',
+  implementationCost: 'Implementation Cost',
+  perScanScreeningCost: 'Per-Scan Screening Cost',
 };
 
 export function formulaResultsToSimulation(
@@ -398,6 +423,8 @@ export function formulaResultsToSimulation(
           fetalDeathSavings: values.fetalDeathSavings ?? 0,
           totalSavings: values.totalSavings ?? 0,
           totalEconomicImpact: values.totalEconomicImpact ?? 0,
+          deploymentCosts: values.usTotalDeploymentCost ?? 0,
+          netBenefit: values.netBenefit ?? 0,
         },
   };
 }
