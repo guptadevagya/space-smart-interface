@@ -185,7 +185,7 @@ const FormulaCard: React.FC<{
                     onFocus={() => setShowVars(true)}
                   />
                   {validationError && (
-                    <p className="text-[11px] text-destructive mt-1">
+                    <p className="text-xs text-destructive mt-1">
                       {validationError}
                     </p>
                   )}
