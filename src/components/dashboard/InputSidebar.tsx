@@ -524,10 +524,6 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {inputs.region === 'US' && (
             <InputGroup title="Country Profile" defaultOpen={true}>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-muted-foreground">Country</span>
-                <span className="text-xs font-bold text-foreground">United States</span>
-              </div>
               <SliderField
                 label="Annual Live Births"
                 value={inputs.annualBirths}
