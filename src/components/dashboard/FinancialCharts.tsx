@@ -36,6 +36,7 @@ const CHART_COLORS = {
 const FinancialCharts: React.FC<FinancialChartsProps> = ({
   results,
   region,
+  providerLabel,
 }) => {
   const isUS = region === 'US';
   const locale = isUS ? 'en-US' : 'en-GB';
