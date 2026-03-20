@@ -151,7 +151,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                   <p className="text-xs text-muted-foreground">
                     No saved configurations yet.
                   </p>
-                  <p className="text-[10px] text-muted-foreground mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Click "Save" to store your current setup.
                   </p>
                 </div>
