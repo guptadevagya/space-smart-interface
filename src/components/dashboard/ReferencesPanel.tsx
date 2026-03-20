@@ -116,7 +116,7 @@ const ReferencesPanel: React.FC<ReferencesPanelProps> = ({
     <div className="divide-y divide-border">
       {inputs.bibliography.map((entry, i) => (
         <div key={i} className="px-5 py-2.5 flex items-start gap-3">
-          <span className="text-[10px] font-bold text-muted-foreground mt-1 shrink-0">
+          <span className="text-xs font-bold text-muted-foreground mt-1 shrink-0">
             [{i + 1}]
           </span>
           <p className="flex-1 text-xs text-muted-foreground">{entry}</p>
