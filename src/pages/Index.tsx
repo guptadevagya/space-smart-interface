@@ -259,6 +259,10 @@ const Index: React.FC = () => {
         onSave={saveConfiguration}
         customParameters={customParameters}
         setCustomParameters={setCustomParameters}
+        providerView={providerView}
+        setProviderView={setProviderView}
+        selectedProviderId={selectedProviderId}
+        setSelectedProviderId={setSelectedProviderId}
       />
 
       <div className="flex-1 flex flex-col h-full overflow-hidden">
