@@ -64,6 +64,8 @@ interface InputSidebarProps {
   setProviderView: (view: USProviderView) => void;
   selectedProviderId: string | null;
   setSelectedProviderId: (id: string | null) => void;
+  providerBirthOverrides: Record<string, number>;
+  setProviderBirthOverrides: React.Dispatch<React.SetStateAction<Record<string, number>>>;
 }
 
 const getDefaults = (region: Region): SimulationInputs => {
