@@ -395,7 +395,7 @@ const Index: React.FC = () => {
 
             {/* Section 2: Charts — always national */}
             <section>
-              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
+              <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4">
                 Financial Projections
               </h2>
               <FinancialCharts
