@@ -105,6 +105,9 @@ const Index: React.FC = () => {
     },
   );
 
+  const [providerView, setProviderView] = useState<USProviderView>('all');
+  const [selectedProviderId, setSelectedProviderId] = useState<string | null>(null);
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Build input variable map including custom variables
