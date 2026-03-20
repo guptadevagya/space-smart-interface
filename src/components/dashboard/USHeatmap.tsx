@@ -55,21 +55,36 @@ const USHeatmap: React.FC<USHeatmapProps> = ({ providerView, selectedProviderId 
     const data = stateData[stateCode];
     if (!data || data.count === 0) return 'hsl(215, 15%, 90%)';
     const intensity = maxCount > 0 ? data.count / maxCount : 0;
-    // Scale from light blue to deep primary
-    const lightness = 82 - intensity * 42; // 82% → 40%
-    const saturation = 20 + intensity * 30; // 20% → 50%
+    const lightness = 82 - intensity * 42;
+    const saturation = 20 + intensity * 30;
     return `hsl(222, ${saturation}%, ${lightness}%)`;
   }, [stateData, maxCount]);
 
-  // Build customStates object for USAMap
+  // Build customStates for USAMap with per-state tooltip
   const customStates = useMemo(() => {
-    const allStates = Object.keys(STATE_NAMES) as USAStateAbbreviation[];
-    const result: Record<string, { fill: string }> = {};
-    allStates.forEach((code) => {
-      result[code] = { fill: getStateFill(code) };
+    const allCodes = Object.keys(STATE_NAMES) as USAStateAbbreviation[];
+    const result: Partial<Record<USAStateAbbreviation, {
+      fill: string;
+      stroke: string;
+      onHover: (state: USAStateAbbreviation) => void;
+      onLeave: () => void;
+      tooltip: { enabled: boolean; render: (state: USAStateAbbreviation) => React.ReactNode };
+      label: { enabled: boolean };
+    }>> = {};
+
+    allCodes.forEach((code) => {
+      const data = stateData[code];
+      result[code] = {
+        fill: getStateFill(code),
+        stroke: data && data.count > 0 ? 'hsl(222, 30%, 55%)' : 'hsl(215, 15%, 75%)',
+        onHover: (state) => setHoveredState(state),
+        onLeave: () => setHoveredState(null),
+        tooltip: { enabled: false, render: () => null },
+        label: { enabled: true },
+      };
     });
     return result;
-  }, [getStateFill]);
+  }, [getStateFill, stateData]);
 
   const hoveredData = hoveredState ? stateData[hoveredState] : null;
 
@@ -93,16 +108,14 @@ const USHeatmap: React.FC<USHeatmapProps> = ({ providerView, selectedProviderId 
             customStates={customStates}
             defaultState={{
               fill: 'hsl(215, 15%, 90%)',
-              stroke: 'hsl(215, 15%, 70%)',
+              stroke: 'hsl(215, 15%, 75%)',
+              label: { enabled: true },
             }}
-            width="100%"
-            showStateLabels={true}
-            onStateHover={(_state, abbr) => setHoveredState(abbr)}
-            onStateMouseLeave={() => setHoveredState(null)}
+            mapSettings={{ width: '100%', height: 'fit-content' }}
           />
         </div>
 
-        {/* Hover tooltip */}
+        {/* Custom hover tooltip (positioned top-right) */}
         {hoveredState && (
           <div className="absolute top-4 right-4 bg-card border border-border rounded-lg shadow-lg p-3 max-w-[220px] pointer-events-none z-10">
             <p className="font-bold text-xs">{STATE_NAMES[hoveredState] || hoveredState}</p>
