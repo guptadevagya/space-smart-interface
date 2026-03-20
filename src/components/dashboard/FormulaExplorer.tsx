@@ -261,7 +261,7 @@ const FormulaCard: React.FC<{
                   )}
                 </div>
                 {error && (
-                  <p className="text-[11px] text-destructive">{error}</p>
+                  <p className="text-xs text-destructive">{error}</p>
                 )}
                 <div className="flex flex-wrap gap-1">
                   {usedVars.map((vid) => (
