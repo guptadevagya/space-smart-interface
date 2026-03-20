@@ -421,7 +421,7 @@ const Index: React.FC = () => {
 
             {/* Section 3: Detailed Table — always national */}
             <section>
-              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
+              <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4">
                 Detailed Analysis
               </h2>
               <ResultsTable
