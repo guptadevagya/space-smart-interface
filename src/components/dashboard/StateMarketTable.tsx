@@ -19,7 +19,7 @@ import { STATE_MARKET_DATA, StateMarketData } from '@/lib/stateMarketData';
 import { cn } from '@/lib/utils';
 import { Search, ArrowUpDown } from 'lucide-react';
 
-type SortKey = 'state' | 'totalBirths' | 'estPctControlled' | 'top3PctCombined';
+type SortKey = 'state' | 'totalBirths' | 'estPctControlled';
 type SortDir = 'asc' | 'desc';
 
 const StateMarketTable: React.FC = () => {
@@ -133,7 +133,7 @@ const StateMarketTable: React.FC = () => {
                   Type
                 </TableHead>
                 <SortHeader label="% Controlled" field="estPctControlled" />
-                <SortHeader label="Top 3 Combined" field="top3PctCombined" />
+                
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -161,14 +161,11 @@ const StateMarketTable: React.FC = () => {
                   <TableCell className="min-w-[140px]">
                     {pctBar(row.estPctControlled, 0.65, 'bg-primary')}
                   </TableCell>
-                  <TableCell className="min-w-[140px]">
-                    {pctBar(row.top3PctCombined, 0.92, 'bg-emerald-500')}
-                  </TableCell>
                 </TableRow>
               ))}
               {filtered.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-sm text-muted-foreground py-8">
+                  <TableCell colSpan={5} className="text-center text-sm text-muted-foreground py-8">
                     No states match "{search}"
                   </TableCell>
                 </TableRow>
