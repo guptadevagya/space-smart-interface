@@ -1,71 +1,128 @@
 
 
-# Restructure US Sidebar + Add Heatmap + Update References
+# UI/UX Deep Dive + Data Verification Plan
 
-## Summary
+## Part 1: UI/UX Audit (Apple HIG Alignment)
 
-Split the US sidebar into separate "Country Profile" and "Provider Profile" cards, add a US state heatmap showing IDN/IPP geographic presence, enhance charts with provider context, and update the US assumptions register and references to match the recalibrated data.
+### Typography Issues
 
-## Changes
+1. **Minimum font sizes violated** — Multiple instances of `text-[9px]` and `text-[10px]` throughout the app (KPI subtitles, section headers, references, sidebar labels). Apple HIG minimum for web is 10pt (~13px). These are illegible at distance and fail accessibility.
+   - Files: `KPICards.tsx` (10px subtitles, 11px titles), `DashboardHeader.tsx` (9px "Total Impact" label, 10px timestamps), `StateMarketTable.tsx` (10px badges), `ReferencesPanel.tsx` (10px ref numbers), `InputSidebar.tsx` (10px helper text), `USHeatmap.tsx` (10px tooltip text)
+   - **Fix**: Bump all `text-[9px]` to `text-xs` (12px) minimum. Bump `text-[10px]` to `text-xs`. Bump `text-[11px]` to `text-xs`.
 
-### 1. InputSidebar.tsx - Split US into two sections
+2. **Type hierarchy inconsistency** — Section headers use `text-xs` uppercase tracking-widest, but card titles also use `text-sm font-bold`. The visual weight difference is too subtle. Apple HIG recommends clear size differentiation between hierarchy levels.
+   - **Fix**: Make section headers `text-sm` and card titles `text-base`. Increase main KPI values from `text-xl` to `text-2xl` for stronger emphasis.
 
-Currently the US has one "Provider Profile" group that mixes national births with IDN/IPP selection. Split into:
+3. **Font weight overuse** — Almost everything is `font-bold` or `font-semibold`, reducing differentiation. HIG says use weight variation purposefully.
+   - **Fix**: Reserve `font-bold` for primary values and headings. Use `font-medium` for labels, `font-normal` for body text.
 
-- **Country Profile** (always visible for US): Shows "Annual Births" locked at 3,628,934 for the whole US. Not editable -- just a display card showing the national context. Same as UK's "Hospital Profile" concept.
-- **Provider Profile** (US only, below Country Profile): The IDN/IPP toggle and provider dropdown. When a provider is selected, a secondary "Provider Births" value shows that system's volume. The model runs using the *provider's* birth volume but the national total is always visible above.
+### Spacing Issues
 
-This mirrors the UK "Hospital Profile" pattern -- UK shows one card with annual births, US shows country + provider.
+4. **Inconsistent padding** — Sidebar uses `p-4` internally but `px-5 py-4` for header. KPI cards use `p-4` while chart cards use default `p-6`. Main content uses `p-6 lg:p-10` creating different feel from sidebar.
+   - **Fix**: Standardize card padding to `p-5`. Standardize section spacing to `space-y-10` (currently `space-y-8`). Keep sidebar at `p-4` (narrower context is fine).
 
-### 2. New Component: USHeatmap.tsx
+5. **KPI card min-height** — `min-h-[120px]` is a magic number. Some cards have 2-line subtitles, others don't. Heights feel uneven.
+   - **Fix**: Remove `min-h` and let content breathe naturally with consistent padding.
 
-An SVG-based US state map that color-codes states by IDN/IPP presence.
+6. **Section gap between KPIs and charts** — Double empty line (line 396 in Index.tsx) creates irregular spacing.
+   - **Fix**: Remove extra blank line; rely on `space-y-8` on parent.
 
-- Use a simplified inline SVG path dataset for all 50 US states (standard approach, no external dependency needed).
-- When "All U.S." is selected: states with any provider colored by count (more systems = darker).
-- When "IDN" or "IPP" is selected: only states with that type highlighted.
-- When a specific provider is selected: only that provider's states highlighted.
-- Tooltip on hover shows state name + which systems operate there.
-- Placed in the dashboard main area, either as a new section between KPIs and Charts, or as a third chart card.
+### Color & Visual Issues
 
-### 3. FinancialCharts.tsx - Add provider context
+7. **Border-left accent on KPI cards** — `border-l-4` is a fine pattern but the color meanings aren't documented or consistent. Emerald for "benefit", blue for "revenue/savings", indigo for "litigation", amber for "cases", rose for "lives" — this is arbitrary.
+   - **Fix**: Simplify to 2-3 semantic colors: green (positive financial), amber (clinical), red (cost/risk). Add a subtle legend or remove border colors entirely for cleaner HIG look.
 
-- When a specific provider is selected, add the provider name to chart titles.
-- For the US savings breakdown, split litigation bar into "CP Litigation" and "Fetal Death" (two separate bars) to match the recalibrated model.
-- Keep the same chart structure as UK (two charts side by side) for consistency.
+8. **Chart tooltip cursor** — Uses `hsl(var(--muted) / 0.3)` which may not render correctly in all browsers (CSS variable in hsl function).
+   - **Fix**: Use a direct color value or proper Tailwind class.
 
-### 4. ReferencesPanel.tsx - Update US assumptions register
+9. **Region selector pill** — Uses custom `bg-muted rounded-lg p-0.5` with inner `bg-card shadow-sm` for active. This is a solid segmented control pattern aligned with HIG. No change needed.
 
-Currently the assumptions register shows the same 8 rows regardless of region. For US, add rows for:
-- Screening Uptake (combinedTestRate)
-- Fetal Death Payout (fetalDeathPayout)  
-- Litigation Success Rate (litigationSuccessRate)
-- Scan Reimbursement (scanReimbursement)
-- Emergency C-Section Rate (emergencyCSectionRateUndiagnosed)
+### Interaction Issues
 
-These parameters already exist in the model but are missing from the register display.
+10. **Slider field input width** — `w-24` is too narrow for large numbers like 3,628,934. The input truncates.
+    - **Fix**: Widen to `w-28` or use `min-w-[7rem]`.
 
-### 5. ResultsTable.tsx - Split US litigation rows
+11. **No focus ring on custom buttons** — Many `<button>` elements lack `focus-visible:ring` styles (sidebar collapsible triggers, reference edit buttons, sort headers).
+    - **Fix**: Add consistent focus-visible styles to all interactive elements.
 
-Currently US shows "Major Morbidity Avoided (CP + Stillbirth)" as one row. Split into:
-- CP Litigation Avoided (cases x success rate x $6.9M)
-- Fetal Death Litigation Avoided (stillbirths x $492K)
+12. **ResultsTable net total row** — The final row uses `bg-primary text-primary-foreground` but places the total in the last (Ref) column with `colSpan={3}` skipping middle columns. This is confusing layout.
+    - **Fix**: Place total value in the "Financial Impact" column where users expect it.
 
-This matches the separated logic already in modelLogic.ts.
+---
 
-## Files Modified
+## Part 2: Data & Calculations Verification
 
-1. `src/components/dashboard/InputSidebar.tsx` - Split US section into Country Profile + Provider Profile
-2. `src/components/dashboard/USHeatmap.tsx` (new) - SVG state heatmap component  
-3. `src/components/dashboard/FinancialCharts.tsx` - Split US litigation bar, add provider context
-4. `src/components/dashboard/ResultsTable.tsx` - Split US litigation into CP + Fetal Death rows
-5. `src/components/dashboard/ReferencesPanel.tsx` - Add US-specific assumption rows
-6. `src/pages/Index.tsx` - Pass provider props to new heatmap + charts
+### US Model Numbers Check
 
-## What stays the same
+Given defaults: 3,628,934 births, 8% FGR prevalence, 33% current detection, 66% OxNNet detection:
 
-- UK and Global models completely untouched (UK is the reference, US adapts to match its structure)
-- All calculation logic in modelLogic.ts unchanged
-- Formula engine, custom parameters all work as before
-- Provider data in providerProfiles.ts unchanged
+- **Total FGR**: 3,628,934 × 0.08 = 290,314.7 ✓
+- **Avoided Undiagnosed**: 290,314.7 × (0.66 - 0.33) = 95,803.9 ✓ (matches screenshot)
+- **Avoided C-Sections**: 95,803.9 × 0.40 = 38,321.6
+- **C-Section Savings**: 38,321.6 × $28,998 = ~$1.11B ✓ (matches chart showing C-Section as largest bar ~$1.1B)
+- **Avoided Hypoxic Events**: 95,803.9 × 0.011 = 1,053.8
+- **NICU Days**: 1,053.8 × 7 = 7,376.9
+- **NICU Savings**: 7,376.9 × $5,082 = ~$37.5M ✓ (matches small NICU bar)
+- **CP Cases**: 1,053.8 × 0.25 = 263.5
+- **CP Litigation**: 263.5 × 0.50 × $6,944,500 = ~$914.7M ✓
+- **Stillbirths Avoided**: 95,803.9 × 0.0168 = 1,609.5 ✓ (matches "Lives Impacted" 1,609.5)
+- **Fetal Death Savings**: 1,609.5 × $492,000 = ~$791.9M
+- **Total Litigation**: $914.7M + $791.9M = ~$1.707B ✓ (matches $1,706,677,463)
+- **Revenue**: High-risk cohort = (290,314.7 × 0.66) / (1 - 0.25) = 255,477.0; scans = 255,477 × 3 = 766,431; revenue = 766,431 × $180 = ~$137.96M ✓ (matches $137,957,555)
+- **Total Impact**: $137.96M + $1.11B + $37.5M + $1.707B = ~$2.99B ✓ (matches $2,993,372,514)
+
+**US numbers verified. All correct.**
+
+### UK Model Numbers Check
+
+Given defaults: 600,000 births, 8% FGR, 33.3% detection, 66.7% OxNNet:
+
+- **Total FGR**: 48,000
+- **Avoided Undiagnosed**: 48,000 × (2/3 - 1/3) = 16,000 ✓
+- **Avoided C-Sections**: 16,000 × 0.15 = 2,400; savings = 2,400 × £3,019 = £7,245,600
+- **Avoided Hypoxic**: 16,000 × 0.004 = 64
+- **Mum stay savings**: 64 × £2,537.33 = £162,389
+- **NICU**: 64 × 7 = 448 days; savings = 448 × £1,445 = £647,360
+- **NICU on KPI card** shows £84,230,030 as "Clinical Savings" — this is totalClinicalSavings (all savings summed), not just NICU. ✓
+- **Stillbirths**: 16,000 × 0.0168 = 268.8; savings = 268.8 × £4,191 = £1,126,541
+- **CP**: 64 × 0.0585 = 3.744; savings = 3.744 × £18,500,000 = £69,264,000
+- **NND**: 64 × 0.09 = 5.76; litigation = 5.76 × £500,000 = £2,880,000; trust = 5.76 × £4,191 = £24,140; total NND = £2,904,140
+- **Total savings**: £7,245,600 + £162,389 + £647,360 + £1,126,541 + £69,264,000 + £2,880,000 + £2,904,140 = ~£84.2M ✓ (matches £84,230,030)
+- **Screening cost**: high-risk current = (48000×1/3)/(1-0.5) = 32,000; high-risk Ox = (48000×2/3)/(1-0.2) = 40,000; additional = 8,000; costPerHR = 3×91 + 2×177.83 + (177.83-86.8) = 273 + 355.66 + 91.03 = £719.69; extra pathway = 8,000 × £719.69 = £5,757,520; Oxailis screening = 600,000 × 0.85 × £10 = £5,100,000; total = £10,857,520 ✓ (matches screenshot)
+- **Net benefit**: £84,230,030 - £10,857,520 = £73,372,510 ✓ (matches £73,372,510)
+
+**UK numbers verified. All correct.**
+
+### Data Issues Found
+
+13. **"Lives Impacted" includes avoidedNeonatalDeaths which is 0 for US** — The US formula set doesn't define `avoidedNND`, so the value falls back to 0. The "Lives Impacted" KPI shows only stillbirths (1,609.5) which is correct but the subtitle says "Avoided stillbirths & neonatal deaths" — slightly misleading for US since neonatal deaths aren't modeled.
+    - **Fix**: Change US subtitle to "Avoided stillbirths" only.
+
+14. **Decimal places on "Cases Identified"** — Shows 95,803.9 and "Lives Impacted" shows 1,609.5. Fractional people look odd.
+    - **Fix**: Round to whole numbers in KPI display using `Math.round()` before formatting.
+
+15. **ResultsTable net total misalignment** — The net total value is placed in the Ref column (last column) instead of Financial Impact column due to `colSpan` error. Line 296-298: `<TableCell colSpan={3} />` then value in next cell — this pushes value to column 5 (Ref) instead of column 4 (Impact).
+    - **Fix**: Change to `colSpan={2}` so total aligns with Financial Impact column.
+
+16. **State market table total** — `STATE_MARKET_DATA.reduce()` gives 3,628,709 vs `US_TOTAL_BIRTHS` constant of 3,628,934. Off by 225 births due to rounding in individual state data.
+    - **Fix**: Add a note or adjust individual state figures to sum exactly to 3,628,934.
+
+---
+
+## Implementation Summary
+
+### Files to edit:
+1. **`src/index.css`** — No changes needed
+2. **`src/components/dashboard/KPICards.tsx`** — Bump font sizes, round values, fix US subtitle
+3. **`src/components/dashboard/DashboardHeader.tsx`** — Bump 9px label to 12px
+4. **`src/components/dashboard/FinancialCharts.tsx`** — No critical changes
+5. **`src/components/dashboard/ResultsTable.tsx`** — Fix colSpan alignment on net total row
+6. **`src/components/dashboard/StateMarketTable.tsx`** — Bump tiny font sizes
+7. **`src/components/dashboard/USHeatmap.tsx`** — Bump tooltip font sizes
+8. **`src/components/dashboard/ReferencesPanel.tsx`** — Bump ref number sizes
+9. **`src/components/dashboard/InputSidebar.tsx`** — Widen number input, bump helper text sizes
+10. **`src/components/dashboard/FormulaExplorer.tsx`** — Bump tiny font sizes
+11. **`src/pages/Index.tsx`** — Remove extra blank line, bump section header sizes
+
+All changes are cosmetic typography/spacing adjustments and one table layout fix. No formula or data logic changes needed — all calculations are verified correct.
 
