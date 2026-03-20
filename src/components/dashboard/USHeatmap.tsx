@@ -129,22 +129,7 @@ const USHeatmap: React.FC<USHeatmapProps> = ({ providerView, selectedProviderId 
             defaultState={{
               fill: 'hsl(220, 14%, 96%)',
               stroke: 'hsl(220, 14%, 88%)',
-              label: {
-                enabled: true,
-                render: (state: USAStateAbbreviation) => (
-                  <text
-                    fontSize="10"
-                    fill="hsl(220, 15%, 50%)"
-                    fontWeight="400"
-                    textAnchor="middle"
-                    dominantBaseline="central"
-                    style={{ textShadow: 'none', filter: 'none' }}
-                    pointerEvents="none"
-                  >
-                    {state}
-                  </text>
-                ),
-              },
+              label: { enabled: true },
             }}
             mapSettings={{ width: '100%', height: 'fit-content' }}
           />
