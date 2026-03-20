@@ -548,7 +548,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
               <div className="space-y-2">
                 <label className="text-xs font-medium text-muted-foreground">Provider Type</label>
                 <div className="flex items-center bg-muted rounded-lg p-0.5">
-                  {(['idn', 'ipp'] as USProviderView[]).map((view) => (
+                  {(['idn', 'ipp'] as const).map((view) => (
                     <button
                       key={view}
                       onClick={() => {
