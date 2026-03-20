@@ -60,12 +60,11 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
   const fmtNum = (value: number) =>
     new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }).format(value);
 
-  // Financial breakdown data
-  // For US, split litigation into CP and Fetal Death; for UK keep as CNST
-  const breakdownData = isUS
+  // Financial breakdown data — filter out zero values
+  const breakdownData = (isUS
     ? [
         {
-          name: 'C-Section',
+          name: 'C-section',
           value: results.financials.cSectionSavings,
           color: CHART_COLORS.primary,
         },
@@ -75,19 +74,19 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
           color: CHART_COLORS.secondary,
         },
         {
-          name: 'CP Litigation',
+          name: 'CP litigation',
           value: results.financials.cpLitigationSavings ?? 0,
           color: CHART_COLORS.savings,
         },
         {
-          name: 'Fetal Death',
+          name: 'Fetal death',
           value: results.financials.fetalDeathSavings ?? 0,
           color: CHART_COLORS.accent,
         },
       ]
     : [
         {
-          name: 'C-Section',
+          name: 'C-section',
           value: results.financials.cSectionSavings,
           color: CHART_COLORS.primary,
         },
@@ -101,10 +100,11 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
           value: results.financials.litigationSavings,
           color: CHART_COLORS.savings,
         },
-      ];
+      ]
+  ).filter((d) => d.value > 0);
 
-  // Cost vs benefit comparison
-  const comparisonData = isUS
+  // Cost vs benefit comparison — filter out zero values
+  const comparisonData = (isUS
     ? [
         {
           name: 'Revenue',
@@ -112,28 +112,51 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
           type: 'benefit' as const,
         },
         {
-          name: 'Cost Savings',
+          name: 'Cost savings',
           value: results.financials.totalSavings,
           type: 'benefit' as const,
         },
         {
-          name: 'Deployment Cost',
+          name: 'Deployment cost',
           value: results.financials.deploymentCosts || 0,
           type: 'cost' as const,
         },
       ]
     : [
         {
-          name: 'Clinical Savings',
+          name: 'Clinical savings',
           value: results.financials.totalSavings,
           type: 'benefit' as const,
         },
         {
-          name: 'Screening Costs',
+          name: 'Screening costs',
           value: results.financials.growthScanCosts || 0,
           type: 'cost' as const,
         },
-      ];
+      ]
+  ).filter((d) => d.value > 0);
+
+  // Build a color map for comparison chart X-axis ticks
+  const comparisonColorMap = Object.fromEntries(
+    comparisonData.map((d) => [
+      d.name,
+      d.type === 'cost' ? CHART_COLORS.cost : CHART_COLORS.savings,
+    ]),
+  );
+
+  const renderColoredTick = (colorMap: Record<string, string>) =>
+    ({ x, y, payload }: any) => (
+      <text
+        x={x}
+        y={y + 12}
+        textAnchor="middle"
+        fontSize={11}
+        fill={colorMap[payload.value] || 'hsl(var(--muted-foreground))'}
+        fontWeight={500}
+      >
+        {payload.value}
+      </text>
+    );
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
