@@ -39,16 +39,16 @@ const MetricCard: React.FC<MetricCardProps> = ({
     transition={{ duration: 0.35, delay }}
   >
     <Card className="h-full hover:shadow-md transition-shadow">
-      <CardContent className="p-6 space-y-3">
-        <div className="flex items-center justify-between">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+      <CardContent className="p-4 space-y-1.5">
+        <div className="flex items-center justify-between gap-1">
+          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
             {title}
           </p>
-          <div className="p-1.5 bg-muted/50 rounded-lg">
+          <div className="p-1 bg-muted/50 rounded-md shrink-0">
             {icon}
           </div>
         </div>
-        <p className="text-2xl font-semibold text-foreground leading-none">
+        <p className="text-lg font-semibold text-foreground leading-none">
           {providerValue}
         </p>
       </CardContent>
@@ -65,7 +65,7 @@ const ProviderComparison: React.FC<ProviderComparisonProps> = ({
   formatCurrency,
   formatNumber,
 }) => {
-  const iconClass = 'h-3.5 w-3.5 text-muted-foreground';
+  const iconClass = 'h-3 w-3 text-muted-foreground';
 
   const metrics: MetricCardProps[] = [
     {
@@ -106,7 +106,7 @@ const ProviderComparison: React.FC<ProviderComparisonProps> = ({
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
       {metrics.map((m) => (
         <MetricCard key={m.title} {...m} />
       ))}
