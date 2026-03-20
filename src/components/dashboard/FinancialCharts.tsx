@@ -108,30 +108,30 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
     ? [
         {
           name: 'Revenue',
-          Benefit: results.financials.revenueGenerated,
-          Cost: 0,
+          value: results.financials.revenueGenerated,
+          type: 'benefit' as const,
         },
         {
           name: 'Cost Savings',
-          Benefit: results.financials.totalSavings,
-          Cost: 0,
+          value: results.financials.totalSavings,
+          type: 'benefit' as const,
         },
         {
           name: 'Deployment Cost',
-          Benefit: 0,
-          Cost: results.financials.deploymentCosts || 0,
+          value: results.financials.deploymentCosts || 0,
+          type: 'cost' as const,
         },
       ]
     : [
         {
           name: 'Clinical Savings',
-          Benefit: results.financials.totalSavings,
-          Cost: 0,
+          value: results.financials.totalSavings,
+          type: 'benefit' as const,
         },
         {
           name: 'Screening Costs',
-          Benefit: 0,
-          Cost: results.financials.growthScanCosts || 0,
+          value: results.financials.growthScanCosts || 0,
+          type: 'cost' as const,
         },
       ];
 
@@ -178,17 +178,17 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
                   cursor={{ fill: 'hsl(var(--muted) / 0.3)' }}
                 />
                 <Bar
-                  dataKey="Benefit"
-                  fill={CHART_COLORS.savings}
+                  dataKey="value"
                   radius={[4, 4, 0, 0]}
                   maxBarSize={80}
-                />
-                <Bar
-                  dataKey="Cost"
-                  fill={CHART_COLORS.cost}
-                  radius={[4, 4, 0, 0]}
-                  maxBarSize={80}
-                />
+                >
+                  {comparisonData.map((entry, i) => (
+                    <Cell
+                      key={i}
+                      fill={entry.type === 'cost' ? CHART_COLORS.cost : CHART_COLORS.savings}
+                    />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
