@@ -219,6 +219,14 @@ const Index: React.FC = () => {
   };
 
   const isUS = inputs.region === 'US';
+  const selectedProvider = selectedProviderId ? getProviderById(selectedProviderId) : null;
+  const providerLabel = isUS
+    ? selectedProvider
+      ? `${selectedProvider.name} (${selectedProvider.type.toUpperCase()})`
+      : providerView === 'all'
+        ? 'All U.S.'
+        : `All ${providerView.toUpperCase()}s`
+    : undefined;
   const locale = isUS ? 'en-US' : 'en-GB';
   const currency = isUS ? 'USD' : 'GBP';
 
