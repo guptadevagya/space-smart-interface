@@ -1,85 +1,71 @@
 
 
-# Add US Provider Profiles (IDN/IPP) to Dashboard
+# Restructure US Sidebar + Add Heatmap + Update References
 
 ## Summary
 
-Add a provider profile system to the US model so users can view the impact analysis at three levels: overall national (3.6M births), per individual IDN, or per individual IPP. A dropdown in the sidebar lets the user pick a specific health system or "All U.S." to see how the model scales to that system's birth volume.
+Split the US sidebar into separate "Country Profile" and "Provider Profile" cards, add a US state heatmap showing IDN/IPP geographic presence, enhance charts with provider context, and update the US assumptions register and references to match the recalibrated data.
 
-## What Changes
+## Changes
 
-### 1. Provider Data (new file: `src/lib/providerProfiles.ts`)
+### 1. InputSidebar.tsx - Split US into two sections
 
-A static dataset of the Top 20 health systems from your market concentration document:
+Currently the US has one "Provider Profile" group that mixes national births with IDN/IPP selection. Split into:
 
-| System | Type | Births |
-|--------|------|--------|
-| HCA Healthcare | IDN | 212,000 |
-| Kaiser Permanente | IPP | 116,000 |
-| CommonSpirit Health | IDN | 85,000 |
-| Ascension | IDN | 75,753 |
-| Advocate Health | IDN | 65,000 |
-| Providence | IDN | 60,000 |
-| Trinity Health | IDN | 50,000 |
-| Tenet Healthcare | IDN | 45,000 |
-| Baylor Scott & White | IDN | 40,000 |
-| AdventHealth | IDN | 40,000 |
-| Intermountain Health | IPP | 37,477 |
-| UHS | IDN | 34,900 |
-| Northwell Health | IDN | 30,500 |
-| Corewell Health | IDN | 28,000 |
-| Sutter Health | IDN | 26,000 |
-| UPMC | IPP | 25,000 |
-| Mass General Brigham | IDN | 22,000 |
-| UC Health | IDN | 20,000 |
-| Cleveland Clinic | IDN | 15,000 |
-| Mayo Clinic | IDN | 15,000 |
+- **Country Profile** (always visible for US): Shows "Annual Births" locked at 3,628,934 for the whole US. Not editable -- just a display card showing the national context. Same as UK's "Hospital Profile" concept.
+- **Provider Profile** (US only, below Country Profile): The IDN/IPP toggle and provider dropdown. When a provider is selected, a secondary "Provider Births" value shows that system's volume. The model runs using the *provider's* birth volume but the national total is always visible above.
 
-Each entry includes: name, type (IDN or IPP), birth volume, states operated, and source type.
+This mirrors the UK "Hospital Profile" pattern -- UK shows one card with annual births, US shows country + provider.
 
-### 2. Sidebar UI Changes (`InputSidebar.tsx`)
+### 2. New Component: USHeatmap.tsx
 
-Replace the current "Hospital Profile" section (US mode only) with a "Provider Profile" section containing:
+An SVG-based US state map that color-codes states by IDN/IPP presence.
 
-- **Provider Type toggle**: "All U.S." / "IDN" / "IPP"
-  - "All U.S." shows the national 3,628,934 births total
-  - "IDN" filters the dropdown to IDN systems only
-  - "IPP" filters the dropdown to IPP systems only
-- **Provider dropdown**: Select a specific system (e.g., "HCA Healthcare - 212,000 births") or "All IDNs" / "All IPPs" for the aggregate
-- When a specific provider is selected, Annual Births auto-fills with that system's birth volume and locks the slider
-- When "All U.S." is selected, the slider stays at 3,628,934 and is adjustable
+- Use a simplified inline SVG path dataset for all 50 US states (standard approach, no external dependency needed).
+- When "All U.S." is selected: states with any provider colored by count (more systems = darker).
+- When "IDN" or "IPP" is selected: only states with that type highlighted.
+- When a specific provider is selected: only that provider's states highlighted.
+- Tooltip on hover shows state name + which systems operate there.
+- Placed in the dashboard main area, either as a new section between KPIs and Charts, or as a third chart card.
 
-UK/Global modes are unchanged and keep the current "Hospital Profile" section as-is.
+### 3. FinancialCharts.tsx - Add provider context
 
-### 3. State Changes (`types.ts` and `Index.tsx`)
+- When a specific provider is selected, add the provider name to chart titles.
+- For the US savings breakdown, split litigation bar into "CP Litigation" and "Fetal Death" (two separate bars) to match the recalibrated model.
+- Keep the same chart structure as UK (two charts side by side) for consistency.
 
-Add to types:
-- `providerType`: `'all' | 'idn' | 'ipp'` (new field, US only)
-- `selectedProvider`: `string | null` (provider ID or null for aggregate)
+### 4. ReferencesPanel.tsx - Update US assumptions register
 
-Add state in `Index.tsx` to track the selected provider, and pass it down. When a provider is selected, override `annualBirths` in the inputs before calculation.
+Currently the assumptions register shows the same 8 rows regardless of region. For US, add rows for:
+- Screening Uptake (combinedTestRate)
+- Fetal Death Payout (fetalDeathPayout)  
+- Litigation Success Rate (litigationSuccessRate)
+- Scan Reimbursement (scanReimbursement)
+- Emergency C-Section Rate (emergencyCSectionRateUndiagnosed)
 
-### 4. Dashboard Header Context
+These parameters already exist in the model but are missing from the register display.
 
-When a specific provider is selected, show its name in the header subtitle (e.g., "HCA Healthcare (IDN) - 212,000 births") so the user knows which profile they're viewing.
+### 5. ResultsTable.tsx - Split US litigation rows
 
-### 5. Results Table / KPI Context
+Currently US shows "Major Morbidity Avoided (CP + Stillbirth)" as one row. Split into:
+- CP Litigation Avoided (cases x success rate x $6.9M)
+- Fetal Death Litigation Avoided (stillbirths x $492K)
 
-Add a small label above the results showing "Viewing: All U.S. (3,628,934 births)" or "Viewing: Kaiser Permanente (IPP - 116,000 births)" so the output context is always clear.
+This matches the separated logic already in modelLogic.ts.
 
 ## Files Modified
 
-1. **New**: `src/lib/providerProfiles.ts` - Provider dataset
-2. `src/lib/types.ts` - Add providerType and selectedProvider fields
-3. `src/components/dashboard/InputSidebar.tsx` - Provider profile selector UI (US only)
-4. `src/pages/Index.tsx` - Provider selection state management
-5. `src/components/dashboard/DashboardHeader.tsx` - Show active provider context
-6. `src/components/dashboard/KPICards.tsx` - Show provider label
+1. `src/components/dashboard/InputSidebar.tsx` - Split US section into Country Profile + Provider Profile
+2. `src/components/dashboard/USHeatmap.tsx` (new) - SVG state heatmap component  
+3. `src/components/dashboard/FinancialCharts.tsx` - Split US litigation bar, add provider context
+4. `src/components/dashboard/ResultsTable.tsx` - Split US litigation into CP + Fetal Death rows
+5. `src/components/dashboard/ReferencesPanel.tsx` - Add US-specific assumption rows
+6. `src/pages/Index.tsx` - Pass provider props to new heatmap + charts
 
-## What Stays the Same
+## What stays the same
 
-- UK and Global models are completely untouched
-- All calculation logic in `modelLogic.ts` stays the same (it just receives different `annualBirths`)
-- Formula engine, charts, references panel all work as before
-- The existing approved plan for updating US default values (costs, litigation, etc.) is independent and can be done before or after this
+- UK and Global models completely untouched (UK is the reference, US adapts to match its structure)
+- All calculation logic in modelLogic.ts unchanged
+- Formula engine, custom parameters all work as before
+- Provider data in providerProfiles.ts unchanged
 
