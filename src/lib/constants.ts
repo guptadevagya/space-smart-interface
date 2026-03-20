@@ -44,6 +44,8 @@ export const DEFAULT_US_INPUTS: SimulationInputs = {
   combinedTestRate: 0.755,
   fetalDeathPayout: 492000,
   litigationSuccessRate: 0.50,
+  implementationCost: 500000,
+  perScanScreeningCost: 10,
   bibliography: [
     'NCHS Data Brief No. 535 (July 2025) - Births in the United States, 2024',
     'NCHS Data Brief No. 550 - Changes in Timing of Prenatal Care Initiation, 2021-2024',
