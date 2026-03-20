@@ -612,9 +612,6 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                 return (
                   <div className="rounded-lg bg-muted/50 p-3 space-y-1">
                     <p className="text-xs font-semibold text-foreground">{provider.name}</p>
-                    <p className="text-[10px] text-muted-foreground">
-                      {provider.type.toUpperCase()} · {provider.states.join(', ')}
-                    </p>
                     <p className="text-[10px] text-muted-foreground italic">
                       {provider.source}
                     </p>
