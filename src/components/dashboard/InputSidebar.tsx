@@ -409,6 +409,8 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
   setProviderView,
   selectedProviderId,
   setSelectedProviderId,
+  providerBirthOverrides,
+  setProviderBirthOverrides,
 }) => {
   const defaults = getDefaults(inputs.region);
   const currPrefix = inputs.region === 'US' ? '$' : '£';
