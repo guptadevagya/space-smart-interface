@@ -174,10 +174,11 @@
 }
 
 /* Remove default glow/shadow from USA map state labels */
-svg text {
+.usa-map svg text,
+svg text[paint-order] {
   text-shadow: none !important;
   filter: none !important;
   -webkit-text-stroke: 0 !important;
   paint-order: normal !important;
-  stroke: none !important;
+  stroke: transparent !important;
 }
