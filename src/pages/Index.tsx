@@ -283,6 +283,9 @@ const Index: React.FC = () => {
               timestamp,
             }))
           }
+          providerView={providerView}
+          selectedProviderId={selectedProviderId}
+          annualBirths={inputs.annualBirths}
         />
 
         <main className="flex-1 overflow-y-auto">
