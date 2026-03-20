@@ -350,7 +350,7 @@ const AddFormulaForm: React.FC<{
               key={vid}
               type="button"
               onClick={() => insertVar(vid)}
-              className="inline-flex rounded-full border border-border px-1.5 py-0 text-[10px] font-mono hover:bg-accent transition-colors cursor-pointer"
+              className="inline-flex rounded-full border border-border px-1.5 py-0 text-xs font-mono hover:bg-accent transition-colors cursor-pointer"
             >
               {vid}
             </button>
