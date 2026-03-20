@@ -38,6 +38,10 @@ export interface SimulationInputs {
   fetalDeathPayout: number;
   litigationSuccessRate: number;
 
+  // US Deployment Costs
+  implementationCost: number;
+  perScanScreeningCost: number;
+
   // Documentation
   bibliography: string[];
   inputReferences: Record<string, string>;
