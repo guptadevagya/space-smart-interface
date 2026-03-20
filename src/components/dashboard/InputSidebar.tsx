@@ -578,7 +578,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
               {providerView === 'all' ? (
                 <div className="rounded-lg border border-dashed border-border bg-muted/20 p-3">
                   <p className="text-xs font-medium text-foreground">
-                    Select IDN or IPP to compare provider-level cohorts against the national total.
+                    Select IDN or IPP to view provider-level comparison cards.
                   </p>
                 </div>
               ) : (
