@@ -597,7 +597,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                       </SelectItem>
                       {getProvidersByType(providerView).map((p) => (
                         <SelectItem key={p.id} value={p.id}>
-                          {p.name} - {p.annualBirths.toLocaleString()} births
+                          {p.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
