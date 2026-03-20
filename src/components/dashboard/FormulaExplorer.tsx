@@ -150,7 +150,7 @@ const FormulaCard: React.FC<{
                 <AlertCircle className="h-3.5 w-3.5 text-destructive" />
               )}
               {def.isCustom && (
-                <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+              <Badge variant="secondary" className="text-xs px-1.5 py-0">
                   Custom
                 </Badge>
               )}
