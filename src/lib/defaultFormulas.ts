@@ -322,6 +322,8 @@ export function getInputVariableMap(
     combinedTestRate: inputs.combinedTestRate,
     fetalDeathPayout: inputs.fetalDeathPayout,
     litigationSuccessRate: inputs.litigationSuccessRate,
+    implementationCost: inputs.implementationCost,
+    perScanScreeningCost: inputs.perScanScreeningCost,
   };
 }
 
