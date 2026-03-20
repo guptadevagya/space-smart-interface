@@ -1,5 +1,12 @@
 import React from 'react';
-import { SimulationInputs, Region, CustomParameter } from '@/lib/types';
+import { SimulationInputs, Region, CustomParameter, USProviderView } from '@/lib/types';
+import {
+  US_PROVIDERS,
+  US_TOTAL_BIRTHS,
+  getProvidersByType,
+  getProviderById,
+  getAggregateBirths,
+} from '@/lib/providerProfiles';
 import {
   DEFAULT_US_INPUTS,
   DEFAULT_UK_INPUTS,
