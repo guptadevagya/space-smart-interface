@@ -60,6 +60,10 @@ interface InputSidebarProps {
   onSave: () => void;
   customParameters: CustomParameter[];
   setCustomParameters: React.Dispatch<React.SetStateAction<CustomParameter[]>>;
+  providerView: USProviderView;
+  setProviderView: (view: USProviderView) => void;
+  selectedProviderId: string | null;
+  setSelectedProviderId: (id: string | null) => void;
 }
 
 const getDefaults = (region: Region): SimulationInputs => {
