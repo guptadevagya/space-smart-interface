@@ -61,23 +61,47 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
     new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }).format(value);
 
   // Financial breakdown data
-  const breakdownData = [
-    {
-      name: 'C-Section',
-      value: results.financials.cSectionSavings,
-      color: CHART_COLORS.primary,
-    },
-    {
-      name: 'NICU',
-      value: results.financials.nicuSavings,
-      color: CHART_COLORS.secondary,
-    },
-    {
-      name: isUS ? 'Litigation' : 'CNST',
-      value: results.financials.litigationSavings,
-      color: CHART_COLORS.savings,
-    },
-  ];
+  // For US, split litigation into CP and Fetal Death; for UK keep as CNST
+  const breakdownData = isUS
+    ? [
+        {
+          name: 'C-Section',
+          value: results.financials.cSectionSavings,
+          color: CHART_COLORS.primary,
+        },
+        {
+          name: 'NICU',
+          value: results.financials.nicuSavings,
+          color: CHART_COLORS.secondary,
+        },
+        {
+          name: 'CP Litigation',
+          value: results.financials.litigationSavings * 0.9, // Approximate split from model
+          color: CHART_COLORS.savings,
+        },
+        {
+          name: 'Fetal Death',
+          value: results.financials.litigationSavings * 0.1,
+          color: CHART_COLORS.accent,
+        },
+      ]
+    : [
+        {
+          name: 'C-Section',
+          value: results.financials.cSectionSavings,
+          color: CHART_COLORS.primary,
+        },
+        {
+          name: 'NICU',
+          value: results.financials.nicuSavings,
+          color: CHART_COLORS.secondary,
+        },
+        {
+          name: 'CNST',
+          value: results.financials.litigationSavings,
+          color: CHART_COLORS.savings,
+        },
+      ];
 
   // Cost vs benefit comparison
   const comparisonData = isUS
