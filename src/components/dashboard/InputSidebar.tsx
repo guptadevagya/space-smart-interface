@@ -183,7 +183,7 @@ const SliderField: React.FC<SliderFieldProps> = ({
               </button>
             </PopoverTrigger>
             <PopoverContent side="right" className="max-w-[280px] text-xs p-3">
-              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">
                 Reference
               </p>
               <input
