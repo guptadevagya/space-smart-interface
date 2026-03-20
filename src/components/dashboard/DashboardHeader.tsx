@@ -9,7 +9,7 @@ import {
   PopoverContent,
 } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { getProviderById } from '@/lib/providerProfiles';
+import { getProviderById, US_TOTAL_BIRTHS } from '@/lib/providerProfiles';
 
 interface SavedConfigMeta {
   id: string;

@@ -143,6 +143,7 @@ interface SliderFieldProps {
   formatDisplay?: (val: number) => string;
   onDelete?: () => void;
   onEditReference?: (ref: string) => void;
+  disabled?: boolean;
 }
 
 const SliderField: React.FC<SliderFieldProps> = ({
@@ -159,13 +160,14 @@ const SliderField: React.FC<SliderFieldProps> = ({
   formatDisplay,
   onDelete,
   onEditReference,
+  disabled = false,
 }) => {
   const displayVal = formatDisplay ? formatDisplay(value) : value.toString();
   const [editingRef, setEditingRef] = React.useState(false);
   const [refValue, setRefValue] = React.useState(tooltip || '');
 
   return (
-    <div className="space-y-2 group/field">
+    <div className={cn('space-y-2 group/field', disabled && 'opacity-75')}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           <label className="text-xs font-medium text-muted-foreground">
@@ -219,13 +221,14 @@ const SliderField: React.FC<SliderFieldProps> = ({
           <Input
             type="number"
             value={displayVal}
+            disabled={disabled}
             onChange={(e) => {
               const raw = parseFloat(e.target.value);
-              if (!isNaN(raw)) {
+              if (!disabled && !isNaN(raw)) {
                 onChange(suffix === '%' ? raw / 100 : raw);
               }
             }}
-            className="h-7 w-24 text-xs text-right font-mono bg-muted/30 border-border"
+            className="h-7 w-24 text-xs text-right font-mono bg-muted/30 border-border disabled:cursor-not-allowed disabled:opacity-100"
           />
           {suffix && (
             <span className="text-xs text-muted-foreground">{suffix}</span>
@@ -233,12 +236,15 @@ const SliderField: React.FC<SliderFieldProps> = ({
         </div>
       </div>
       <Slider
+        disabled={disabled}
         value={[suffix === '%' ? value * 100 : value]}
-        onValueChange={([v]) => onChange(suffix === '%' ? v / 100 : v)}
+        onValueChange={([v]) => {
+          if (!disabled) onChange(suffix === '%' ? v / 100 : v);
+        }}
         min={suffix === '%' ? min * 100 : min}
         max={suffix === '%' ? max * 100 : max}
         step={suffix === '%' ? step * 100 : step}
-        className="w-full"
+        className={cn('w-full', disabled && 'pointer-events-none')}
       />
     </div>
   );
