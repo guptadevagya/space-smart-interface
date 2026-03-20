@@ -619,8 +619,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                     const currentBirths = providerBirthOverrides[selectedProviderId] ?? provider.annualBirths;
                     const isDefault = currentBirths === provider.annualBirths;
                     return (
-                      <div className="space-y-2">
-                        <SliderField
+                      <SliderField
                           label={`${provider.name} Births`}
                           value={currentBirths}
                           onChange={(v) => setProviderBirthOverrides(prev => ({ ...prev, [selectedProviderId]: v }))}
@@ -631,10 +630,6 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                           tooltip={provider.source}
                           onEditReference={() => {}}
                         />
-                        <p className="text-xs text-muted-foreground italic">
-                          {provider.source}
-                        </p>
-                      </div>
                     );
                   })()}
 
