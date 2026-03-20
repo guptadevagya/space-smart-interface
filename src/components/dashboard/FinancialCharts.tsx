@@ -271,7 +271,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
                   axisLine={false}
                 />
                 <Tooltip
-                  formatter={(value: number) => fmtFull(value)}
+                  formatter={(value: number) => [fmtFull(value), 'Value']}
                   cursor={{ fill: 'hsl(var(--muted) / 0.3)' }}
                 />
                 <Bar
