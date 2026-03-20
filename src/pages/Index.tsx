@@ -7,7 +7,7 @@ import ResultsTable from '@/components/dashboard/ResultsTable';
 import ReferencesPanel from '@/components/dashboard/ReferencesPanel';
 import FormulaExplorer from '@/components/dashboard/FormulaExplorer';
 import USHeatmap from '@/components/dashboard/USHeatmap';
-import ProviderComparison from '@/components/dashboard/ProviderComparison';
+
 import StateMarketTable from '@/components/dashboard/StateMarketTable';
 import {
   DEFAULT_US_INPUTS,
@@ -393,26 +393,6 @@ const Index: React.FC = () => {
               />
             </section>
 
-            {/* Section 1.5: Provider comparison — only when scoped */}
-            {isUS && providerResults && providerLabel && (
-              <section>
-                <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
-                  Provider Scope — {providerLabel}
-                  <span className="ml-2 text-[10px] font-normal normal-case text-muted-foreground/70">
-                    {(providerBirths || 0).toLocaleString()} births
-                  </span>
-                </h2>
-                <ProviderComparison
-                  providerResults={providerResults}
-                  nationalResults={results}
-                  providerLabel={providerLabel}
-                  providerBirths={providerBirths || 0}
-                  nationalBirths={inputs.annualBirths}
-                  formatCurrency={formatCurrency}
-                  formatNumber={formatNumber}
-                />
-              </section>
-            )}
 
             {/* Section 2: Charts — always national */}
             <section>
