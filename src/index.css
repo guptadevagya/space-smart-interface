@@ -172,3 +172,11 @@
     page-break-inside: avoid;
   }
 }
+
+/* Remove default glow/shadow from USA map state labels */
+.usa-map .state-label {
+  text-shadow: none !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  fill: hsl(220, 20%, 35%) !important;
+}
