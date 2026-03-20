@@ -379,10 +379,10 @@ const Index: React.FC = () => {
         />
 
         <main className="flex-1 overflow-y-auto">
-          <div className="max-w-7xl mx-auto p-6 lg:p-10 space-y-8">
+            <div className="max-w-7xl mx-auto p-6 lg:p-10 space-y-10">
             {/* Section 1: KPIs — always national */}
             <section>
-              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
+              <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4">
                 {isUS ? 'U.S. National Summary' : 'Executive Summary'}
               </h2>
               <KPICards
@@ -393,10 +393,9 @@ const Index: React.FC = () => {
               />
             </section>
 
-
             {/* Section 2: Charts — always national */}
             <section>
-              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
+              <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4">
                 Financial Projections
               </h2>
               <FinancialCharts
@@ -409,7 +408,7 @@ const Index: React.FC = () => {
             {/* Section 2.5: US Heatmap + State Market Table */}
             {isUS && (
               <section className="space-y-6">
-                <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
+                <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4">
                   Geographic Distribution
                 </h2>
                 <USHeatmap
@@ -422,7 +421,7 @@ const Index: React.FC = () => {
 
             {/* Section 3: Detailed Table — always national */}
             <section>
-              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
+              <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4">
                 Detailed Analysis
               </h2>
               <ResultsTable
@@ -451,7 +450,7 @@ const Index: React.FC = () => {
 
             {/* Section 4: References */}
             <section>
-              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
+              <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4">
                 Evidence Base
               </h2>
               <ReferencesPanel

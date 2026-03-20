@@ -150,7 +150,7 @@ const FormulaCard: React.FC<{
                 <AlertCircle className="h-3.5 w-3.5 text-destructive" />
               )}
               {def.isCustom && (
-                <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+              <Badge variant="secondary" className="text-xs px-1.5 py-0">
                   Custom
                 </Badge>
               )}
@@ -185,14 +185,14 @@ const FormulaCard: React.FC<{
                     onFocus={() => setShowVars(true)}
                   />
                   {validationError && (
-                    <p className="text-[11px] text-destructive mt-1">
+                    <p className="text-xs text-destructive mt-1">
                       {validationError}
                     </p>
                   )}
                 </div>
                 {showVars && (
                   <div className="bg-muted/50 rounded-md p-2 max-h-32 overflow-y-auto">
-                    <p className="text-[10px] text-muted-foreground mb-1.5 font-semibold uppercase tracking-wider">
+                    <p className="text-xs text-muted-foreground mb-1.5 font-medium uppercase tracking-wider">
                       Click to insert variable
                     </p>
                     <div className="flex flex-wrap gap-1">
@@ -201,10 +201,10 @@ const FormulaCard: React.FC<{
                           key={vid}
                           type="button"
                           onClick={() => insertVariable(vid)}
-                          className="inline-flex items-center rounded-full border border-border bg-background px-2 py-0.5 text-[11px] font-mono hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer"
+                          className="inline-flex items-center rounded-full border border-border bg-background px-2 py-0.5 text-xs font-mono hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer"
                         >
                           {vid}
-                          <span className="text-muted-foreground ml-1 text-[10px]">
+                          <span className="text-muted-foreground ml-1 text-xs">
                             {labelMap[vid] || ''}
                           </span>
                         </button>
@@ -261,14 +261,14 @@ const FormulaCard: React.FC<{
                   )}
                 </div>
                 {error && (
-                  <p className="text-[11px] text-destructive">{error}</p>
+                  <p className="text-xs text-destructive">{error}</p>
                 )}
                 <div className="flex flex-wrap gap-1">
                   {usedVars.map((vid) => (
                     <Badge
                       key={vid}
                       variant="outline"
-                      className="text-[11px] font-normal gap-1"
+                      className="text-xs font-normal gap-1"
                     >
                       {labelMap[vid] || vid}
                       <span className="text-muted-foreground font-mono">
@@ -343,20 +343,20 @@ const AddFormulaForm: React.FC<{
           placeholder="Formula expression"
           className="text-xs h-7 font-mono"
         />
-        {error && <p className="text-[10px] text-destructive">{error}</p>}
+        {error && <p className="text-xs text-destructive">{error}</p>}
         <div className="flex flex-wrap gap-1 max-h-20 overflow-y-auto">
           {allVarIds.slice(0, 20).map((vid) => (
             <button
               key={vid}
               type="button"
               onClick={() => insertVar(vid)}
-              className="inline-flex rounded-full border border-border px-1.5 py-0 text-[10px] font-mono hover:bg-accent transition-colors cursor-pointer"
+              className="inline-flex rounded-full border border-border px-1.5 py-0 text-xs font-mono hover:bg-accent transition-colors cursor-pointer"
             >
               {vid}
             </button>
           ))}
           {allVarIds.length > 20 && (
-            <span className="text-[10px] text-muted-foreground">
+            <span className="text-xs text-muted-foreground">
               +{allVarIds.length - 20} more
             </span>
           )}

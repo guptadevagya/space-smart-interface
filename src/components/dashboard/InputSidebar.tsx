@@ -183,7 +183,7 @@ const SliderField: React.FC<SliderFieldProps> = ({
               </button>
             </PopoverTrigger>
             <PopoverContent side="right" className="max-w-[280px] text-xs p-3">
-              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">
                 Reference
               </p>
               <input
@@ -228,7 +228,7 @@ const SliderField: React.FC<SliderFieldProps> = ({
                 onChange(suffix === '%' ? raw / 100 : raw);
               }
             }}
-            className="h-7 w-24 text-xs text-right font-mono bg-muted/30 border-border disabled:cursor-not-allowed disabled:opacity-100"
+            className="h-7 w-28 text-xs text-right font-mono bg-muted/30 border-border disabled:cursor-not-allowed disabled:opacity-100"
           />
           {suffix && (
             <span className="text-xs text-muted-foreground">{suffix}</span>
@@ -501,7 +501,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
             <h2 className="text-sm font-bold text-foreground">
               Model Configuration
             </h2>
-            <p className="text-[10px] text-muted-foreground mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               Adjust parameters to update projections
             </p>
           </div>
@@ -543,7 +543,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   handleReferenceChange('annualBirths', ref)
                 }
               />
-              <p className="text-[10px] text-muted-foreground leading-relaxed">
+              <p className="text-xs text-muted-foreground leading-relaxed">
                 All dashboard sections use this national figure. Provider scope adds a comparison panel below.
               </p>
             </InputGroup>

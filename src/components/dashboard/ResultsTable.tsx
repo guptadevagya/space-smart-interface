@@ -270,7 +270,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                 >
                   {row.impact}
                 </TableCell>
-                <TableCell className="text-right text-[10px] text-muted-foreground">
+                <TableCell className="text-right text-xs text-muted-foreground">
                   {row.reference}
                 </TableCell>
               </TableRow>
@@ -293,10 +293,11 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               <TableCell className="font-bold text-xs uppercase tracking-wider">
                 {isUS ? 'Net Annual Benefit' : 'Total saving by the NHS'}
               </TableCell>
-              <TableCell colSpan={3} />
+              <TableCell colSpan={2} />
               <TableCell className="text-right font-bold text-lg">
                 {formatCurrency(results.financials.totalEconomicImpact)}
               </TableCell>
+              <TableCell />
             </TableRow>
           </TableBody>
         </Table>
