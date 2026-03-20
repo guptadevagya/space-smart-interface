@@ -544,30 +544,26 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
 
           {inputs.region === 'US' ? (
             <InputGroup title="Provider Profile" onAddParameter={() => {}}>
-              {/* Provider type toggle */}
+              {/* Provider type toggle: IDN / IPP only */}
               <div className="space-y-2">
-                <label className="text-xs font-medium text-muted-foreground">View</label>
+                <label className="text-xs font-medium text-muted-foreground">Provider Type</label>
                 <div className="flex items-center bg-muted rounded-lg p-0.5">
-                  {(['all', 'idn', 'ipp'] as USProviderView[]).map((view) => (
+                  {(['idn', 'ipp'] as USProviderView[]).map((view) => (
                     <button
                       key={view}
                       onClick={() => {
                         setProviderView(view);
                         setSelectedProviderId(null);
-                        if (view === 'all') {
-                          update('annualBirths', US_TOTAL_BIRTHS);
-                        } else {
-                          update('annualBirths', getAggregateBirths(view));
-                        }
+                        update('annualBirths', getAggregateBirths(view));
                       }}
                       className={cn(
                         'flex-1 px-3 py-1.5 text-xs font-bold rounded-md transition-all text-center',
-                        providerView === view
+                        providerView === view || (providerView === 'all' && view === 'idn')
                           ? 'bg-card text-foreground shadow-sm'
                           : 'text-muted-foreground hover:text-foreground',
                       )}
                     >
-                      {view === 'all' ? 'All U.S.' : view.toUpperCase()}
+                      {view.toUpperCase()}
                     </button>
                   ))}
                 </div>
