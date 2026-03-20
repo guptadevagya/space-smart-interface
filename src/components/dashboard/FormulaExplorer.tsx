@@ -268,7 +268,7 @@ const FormulaCard: React.FC<{
                     <Badge
                       key={vid}
                       variant="outline"
-                      className="text-[11px] font-normal gap-1"
+                      className="text-xs font-normal gap-1"
                     >
                       {labelMap[vid] || vid}
                       <span className="text-muted-foreground font-mono">
