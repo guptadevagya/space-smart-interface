@@ -172,3 +172,12 @@
     page-break-inside: avoid;
   }
 }
+
+/* Remove default glow/shadow from USA map state labels */
+svg text {
+  text-shadow: none !important;
+  filter: none !important;
+  -webkit-text-stroke: 0 !important;
+  paint-order: normal !important;
+  stroke: none !important;
+}
