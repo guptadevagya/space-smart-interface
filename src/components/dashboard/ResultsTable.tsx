@@ -228,11 +228,9 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               <TableHead className="text-right text-xs font-bold uppercase tracking-wider">
                 Financial Impact
               </TableHead>
-              {!isUS && (
-                <TableHead className="text-right text-xs font-bold uppercase tracking-wider">
-                  Ref
-                </TableHead>
-              )}
+              <TableHead className="text-right text-xs font-bold uppercase tracking-wider">
+                Ref
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
