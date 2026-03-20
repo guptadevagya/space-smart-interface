@@ -359,6 +359,8 @@ const Index: React.FC = () => {
         setProviderView={setProviderView}
         selectedProviderId={selectedProviderId}
         setSelectedProviderId={setSelectedProviderId}
+        providerBirthOverrides={providerBirthOverrides}
+        setProviderBirthOverrides={setProviderBirthOverrides}
       />
 
       <div className="flex-1 flex flex-col h-full overflow-hidden">
