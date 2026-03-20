@@ -7,6 +7,7 @@ import ResultsTable from '@/components/dashboard/ResultsTable';
 import ReferencesPanel from '@/components/dashboard/ReferencesPanel';
 import FormulaExplorer from '@/components/dashboard/FormulaExplorer';
 import USHeatmap from '@/components/dashboard/USHeatmap';
+import ProviderComparison from '@/components/dashboard/ProviderComparison';
 
 import StateMarketTable from '@/components/dashboard/StateMarketTable';
 import {
@@ -399,7 +400,24 @@ const Index: React.FC = () => {
               />
             </section>
 
-            {/* Section 2: Charts — always national */}
+            {/* Provider Comparison — shown when a provider scope is active */}
+            {isUS && providerResults && providerLabel && (
+              <section>
+                <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4">
+                  Provider Comparison
+                </h2>
+                <ProviderComparison
+                  providerResults={providerResults}
+                  nationalResults={results}
+                  providerLabel={providerLabel}
+                  providerBirths={providerBirths!}
+                  nationalBirths={inputs.annualBirths}
+                  formatCurrency={formatCurrency}
+                  formatNumber={formatNumber}
+                />
+              </section>
+            )}
+
             <section>
               <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4">
                 Financial Projections
