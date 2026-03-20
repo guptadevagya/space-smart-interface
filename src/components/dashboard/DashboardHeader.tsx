@@ -142,7 +142,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 <p className="text-sm font-bold text-foreground">
                   Saved Configurations
                 </p>
-                <p className="text-[10px] text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   Select a version to restore
                 </p>
               </div>
@@ -151,7 +151,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                   <p className="text-xs text-muted-foreground">
                     No saved configurations yet.
                   </p>
-                  <p className="text-[10px] text-muted-foreground mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Click "Save" to store your current setup.
                   </p>
                 </div>
@@ -173,7 +173,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                           <p className="text-xs font-medium text-foreground">
                             {cfg.name}
                           </p>
-                          <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                          <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
                             <Clock className="h-2.5 w-2.5" />
                             {formatTime(cfg.timestamp)}
                           </p>

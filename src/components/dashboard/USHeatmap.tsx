@@ -4,6 +4,7 @@ import { US_PROVIDERS, getProvidersByType, getProviderById, ProviderType } from 
 import { getStateMarketByAbbr } from '@/lib/stateMarketData';
 import { USProviderView } from '@/lib/types';
 import { USAMap, USAStateAbbreviation } from '@mirawision/usa-map-react';
+import { X } from 'lucide-react';
 
 interface USHeatmapProps {
   providerView: USProviderView;
@@ -26,6 +27,7 @@ const STATE_NAMES: Record<string, string> = {
 
 const USHeatmap: React.FC<USHeatmapProps> = ({ providerView, selectedProviderId }) => {
   const [hoveredState, setHoveredState] = useState<string | null>(null);
+  const [selectedState, setSelectedState] = useState<string | null>(null);
 
   // Build state → provider data
   const { stateData, maxCount } = useMemo(() => {
@@ -54,40 +56,57 @@ const USHeatmap: React.FC<USHeatmapProps> = ({ providerView, selectedProviderId 
 
   const getStateFill = useCallback((stateCode: string): string => {
     const data = stateData[stateCode];
-    if (!data || data.count === 0) return 'hsl(215, 15%, 90%)';
+    if (!data || data.count === 0) return 'hsl(220, 14%, 96%)';
     const intensity = maxCount > 0 ? data.count / maxCount : 0;
-    const lightness = 82 - intensity * 42;
-    const saturation = 20 + intensity * 30;
-    return `hsl(222, ${saturation}%, ${lightness}%)`;
+    // Soft pastel blue scale
+    const lightness = 88 - intensity * 30;
+    const saturation = 50 + intensity * 15;
+    return `hsl(210, ${saturation}%, ${lightness}%)`;
   }, [stateData, maxCount]);
 
-  // Build customStates for USAMap with per-state tooltip
+  const handleStateClick = useCallback((stateCode: string) => {
+    setSelectedState((prev) => (prev === stateCode ? null : stateCode));
+  }, []);
+
+  // Build customStates for USAMap
   const customStates = useMemo(() => {
     const allCodes = Object.keys(STATE_NAMES) as USAStateAbbreviation[];
     const result: Partial<Record<USAStateAbbreviation, {
       fill: string;
       stroke: string;
+      strokeWidth: number;
       onHover: (state: USAStateAbbreviation) => void;
       onLeave: () => void;
+      onClick: (state: USAStateAbbreviation) => void;
       tooltip: { enabled: boolean; render: (state: USAStateAbbreviation) => React.ReactNode };
       label: { enabled: boolean };
     }>> = {};
 
     allCodes.forEach((code) => {
       const data = stateData[code];
+      const isSelected = selectedState === code;
+      const hasData = data && data.count > 0;
       result[code] = {
-        fill: getStateFill(code),
-        stroke: data && data.count > 0 ? 'hsl(222, 30%, 55%)' : 'hsl(215, 15%, 75%)',
+        fill: isSelected ? 'hsl(210, 55%, 65%)' : getStateFill(code),
+        stroke: isSelected
+          ? 'hsl(210, 60%, 40%)'
+          : hasData
+            ? 'hsl(210, 25%, 78%)'
+            : 'hsl(220, 14%, 88%)',
+        strokeWidth: isSelected ? 2 : 1,
         onHover: (state) => setHoveredState(state),
         onLeave: () => setHoveredState(null),
+        onClick: (state) => handleStateClick(state),
         tooltip: { enabled: false, render: () => null },
         label: { enabled: true },
       };
     });
     return result;
-  }, [getStateFill, stateData]);
+  }, [getStateFill, stateData, selectedState, handleStateClick]);
 
-  const hoveredData = hoveredState ? stateData[hoveredState] : null;
+  // Determine which state info to show: selected takes priority, then hovered
+  const activeState = selectedState || hoveredState;
+  const activeData = activeState ? stateData[activeState] : null;
 
   const label = selectedProviderId
     ? getProviderById(selectedProviderId)?.name || 'Provider'
@@ -98,9 +117,9 @@ const USHeatmap: React.FC<USHeatmapProps> = ({ providerView, selectedProviderId 
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-bold">Provider Geographic Presence</CardTitle>
+        <CardTitle className="text-sm font-semibold">Provider Geographic Presence</CardTitle>
         <CardDescription className="text-xs">
-          {label} — States colored by number of systems present
+          {label} — Click a state for details
         </CardDescription>
       </CardHeader>
       <CardContent className="relative">
@@ -108,46 +127,58 @@ const USHeatmap: React.FC<USHeatmapProps> = ({ providerView, selectedProviderId 
           <USAMap
             customStates={customStates}
             defaultState={{
-              fill: 'hsl(215, 15%, 90%)',
-              stroke: 'hsl(215, 15%, 75%)',
+              fill: 'hsl(220, 14%, 96%)',
+              stroke: 'hsl(220, 14%, 88%)',
               label: { enabled: true },
             }}
             mapSettings={{ width: '100%', height: 'fit-content' }}
           />
         </div>
 
-        {/* Custom hover tooltip (positioned top-right) */}
-        {hoveredState && (() => {
-          const market = getStateMarketByAbbr(hoveredState);
+        {/* State info panel (persistent for selected, transient for hover) */}
+        {activeState && (() => {
+          const market = getStateMarketByAbbr(activeState);
           return (
-            <div className="absolute top-4 right-4 bg-card border border-border rounded-lg shadow-lg p-3 max-w-[240px] pointer-events-none z-10">
-              <p className="font-bold text-xs">{STATE_NAMES[hoveredState] || hoveredState}</p>
+            <div className="absolute top-4 right-4 bg-card border border-border rounded-xl shadow-lg p-4 max-w-[260px] z-10">
+              <div className="flex items-start justify-between gap-2">
+                <p className="font-semibold text-sm text-foreground">
+                  {STATE_NAMES[activeState] || activeState}
+                </p>
+                {selectedState && (
+                  <button
+                    onClick={() => setSelectedState(null)}
+                    className="p-0.5 rounded-md hover:bg-muted transition-colors text-muted-foreground"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
+              </div>
               {market && (
-              <p className="text-xs text-muted-foreground mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {market.totalBirths.toLocaleString()} births/yr
                 </p>
               )}
-              {hoveredData ? (
-                <div className="mt-1.5 space-y-1">
+              {activeData ? (
+                <div className="mt-2 space-y-1.5">
                   <p className="text-xs text-muted-foreground font-medium">
-                    {hoveredData.count} tracked system{hoveredData.count !== 1 ? 's' : ''}
+                    {activeData.count} tracked system{activeData.count !== 1 ? 's' : ''}
                   </p>
                   <div className="space-y-0.5">
-                    {hoveredData.names.slice(0, 6).map((n, i) => (
+                    {activeData.names.slice(0, 6).map((n, i) => (
                       <p key={i} className="text-xs text-foreground">• {n}</p>
                     ))}
-                    {hoveredData.names.length > 6 && (
+                    {activeData.names.length > 6 && (
                       <p className="text-xs text-muted-foreground">
-                        +{hoveredData.names.length - 6} more
+                        +{activeData.names.length - 6} more
                       </p>
                     )}
                   </div>
                 </div>
               ) : (
-                <p className="text-xs text-muted-foreground mt-1">No tracked providers</p>
+                <p className="text-xs text-muted-foreground mt-2">No tracked providers</p>
               )}
               {market && (
-                <div className="mt-1.5 pt-1.5 border-t border-border space-y-0.5">
+                <div className="mt-2 pt-2 border-t border-border space-y-0.5">
                   <p className="text-xs text-muted-foreground">
                     Largest: <span className="text-foreground font-medium">{market.largestSystem}</span> ({market.systemType.toUpperCase()})
                   </p>
@@ -163,15 +194,15 @@ const USHeatmap: React.FC<USHeatmapProps> = ({ providerView, selectedProviderId 
         {/* Legend */}
         <div className="flex items-center justify-center gap-4 mt-3">
           <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-sm" style={{ background: 'hsl(215, 15%, 90%)' }} />
+            <div className="w-3 h-3 rounded-sm" style={{ background: 'hsl(220, 14%, 96%)' }} />
             <span className="text-xs text-muted-foreground">No providers</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-sm" style={{ background: 'hsl(222, 35%, 71%)' }} />
+            <div className="w-3 h-3 rounded-sm" style={{ background: 'hsl(210, 55%, 82%)' }} />
             <span className="text-xs text-muted-foreground">Few</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-sm" style={{ background: 'hsl(222, 50%, 40%)' }} />
+            <div className="w-3 h-3 rounded-sm" style={{ background: 'hsl(210, 65%, 58%)' }} />
             <span className="text-xs text-muted-foreground">Many</span>
           </div>
         </div>
