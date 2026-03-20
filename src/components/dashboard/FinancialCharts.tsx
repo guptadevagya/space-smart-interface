@@ -141,11 +141,11 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-bold">
-            {isUS ? 'Revenue vs. Cost Savings' : 'Savings vs. Screening Costs'}
+            {isUS ? 'Revenue & Savings vs. Deployment Cost' : 'Savings vs. Screening Costs'}
           </CardTitle>
           <CardDescription className="text-xs">
             {isUS
-              ? 'Scan revenue and avoided clinical costs'
+              ? 'Revenue and avoided costs offset by deployment expenses'
               : 'Clinical savings offset by additional screening'}
           </CardDescription>
         </CardHeader>
