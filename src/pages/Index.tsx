@@ -7,6 +7,7 @@ import ResultsTable from '@/components/dashboard/ResultsTable';
 import ReferencesPanel from '@/components/dashboard/ReferencesPanel';
 import FormulaExplorer from '@/components/dashboard/FormulaExplorer';
 import USHeatmap from '@/components/dashboard/USHeatmap';
+import ProviderComparison from '@/components/dashboard/ProviderComparison';
 import {
   DEFAULT_US_INPUTS,
   DEFAULT_UK_INPUTS,
@@ -26,7 +27,11 @@ import {
   CustomParameter,
   USProviderView,
 } from '@/lib/types';
-import { getProviderById } from '@/lib/providerProfiles';
+import {
+  getProviderById,
+  getAggregateBirths,
+  US_TOTAL_BIRTHS,
+} from '@/lib/providerProfiles';
 import { toast } from 'sonner';
 
 const STORAGE_KEY = 'oxnnet-simulator-configs';
@@ -46,12 +51,11 @@ const mergeWithDefaultFormulas = (
   savedFormulas?: FormulaDefinition[],
 ): FormulaDefinition[] => {
   const defaultFormulas = getDefaultFormulas(region);
+  if (!savedFormulas?.length) return defaultFormulas;
 
-  if (!savedFormulas?.length) {
-    return defaultFormulas;
-  }
-
-  const savedById = new Map(savedFormulas.map((formula) => [formula.id, formula]));
+  const savedById = new Map(
+    savedFormulas.map((formula) => [formula.id, formula]),
+  );
   const defaultIds = new Set(defaultFormulas.map((formula) => formula.id));
 
   const mergedDefaults = defaultFormulas.map((formula) => {
@@ -80,10 +84,16 @@ const Index: React.FC = () => {
         if (configs.length > 0) {
           const latest = configs[configs.length - 1];
           if (latest.inputs?.region && latest.inputs?.annualBirths) {
-            const defaults = defaultsByRegion[latest.inputs.region] || DEFAULT_UK_INPUTS;
+            const defaults =
+              defaultsByRegion[latest.inputs.region] || DEFAULT_UK_INPUTS;
             return {
               ...defaults,
               ...latest.inputs,
+              // Always restore national births for US
+              annualBirths:
+                latest.inputs.region === 'US'
+                  ? US_TOTAL_BIRTHS
+                  : latest.inputs.annualBirths,
               inputReferences: {
                 ...defaults.inputReferences,
                 ...(latest.inputs.inputReferences || {}),
@@ -150,11 +160,15 @@ const Index: React.FC = () => {
   );
 
   const [providerView, setProviderView] = useState<USProviderView>('all');
-  const [selectedProviderId, setSelectedProviderId] = useState<string | null>(null);
+  const [selectedProviderId, setSelectedProviderId] = useState<string | null>(
+    null,
+  );
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Build input variable map including custom variables
+  const isUS = inputs.region === 'US';
+
+  // ── National-level results (always full U.S. for US region) ──
   const inputVarMap = useMemo(() => {
     const base = getInputVariableMap(inputs);
     customVariables.forEach((v) => {
@@ -166,18 +180,48 @@ const Index: React.FC = () => {
     return base;
   }, [inputs, customVariables, customParameters]);
 
-  // Evaluate all formulas
   const { values: formulaValues, errors: formulaErrors } = useMemo(
     () => evaluateFormulas(formulas, inputVarMap),
     [formulas, inputVarMap],
   );
 
-  // Convert to SimulationResults for existing dashboard components
   const results = useMemo(
     () => formulaResultsToSimulation(formulaValues, inputs.region),
     [formulaValues, inputs.region],
   );
 
+  // ── Provider-level results (only when a provider scope is active) ──
+  const providerBirths = useMemo(() => {
+    if (!isUS || providerView === 'all') return null;
+    if (selectedProviderId) {
+      const provider = getProviderById(selectedProviderId);
+      return provider?.annualBirths ?? null;
+    }
+    return getAggregateBirths(providerView);
+  }, [isUS, providerView, selectedProviderId]);
+
+  const providerResults = useMemo(() => {
+    if (providerBirths === null) return null;
+    const providerVarMap = {
+      ...inputVarMap,
+      annualBirths: providerBirths,
+    };
+    const { values } = evaluateFormulas(formulas, providerVarMap);
+    return formulaResultsToSimulation(values, 'US');
+  }, [providerBirths, inputVarMap, formulas]);
+
+  const selectedProvider = selectedProviderId
+    ? getProviderById(selectedProviderId)
+    : null;
+  const providerLabel = isUS
+    ? selectedProvider
+      ? `${selectedProvider.name} (${selectedProvider.type.toUpperCase()})`
+      : providerView === 'all'
+        ? null
+        : `All ${providerView.toUpperCase()}s`
+    : null;
+
+  // ── Helpers ──
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   const switchRegion = (region: Region) => {
@@ -243,7 +287,8 @@ const Index: React.FC = () => {
       );
       if (config.customVariables) setCustomVariables(config.customVariables);
       else setCustomVariables([]);
-      if (config.customParameters) setCustomParameters(config.customParameters);
+      if (config.customParameters)
+        setCustomParameters(config.customParameters);
       else setCustomParameters([]);
       toast.success(`Loaded: ${config.name}`);
     }
@@ -255,15 +300,6 @@ const Index: React.FC = () => {
     toast.success('Configuration deleted');
   };
 
-  const isUS = inputs.region === 'US';
-  const selectedProvider = selectedProviderId ? getProviderById(selectedProviderId) : null;
-  const providerLabel = isUS
-    ? selectedProvider
-      ? `${selectedProvider.name} (${selectedProvider.type.toUpperCase()})`
-      : providerView === 'all'
-        ? 'All U.S.'
-        : `All ${providerView.toUpperCase()}s`
-    : undefined;
   const locale = isUS ? 'en-US' : 'en-GB';
   const currency = isUS ? 'USD' : 'GBP';
 
@@ -343,10 +379,10 @@ const Index: React.FC = () => {
 
         <main className="flex-1 overflow-y-auto">
           <div className="max-w-7xl mx-auto p-6 lg:p-10 space-y-8">
-            {/* Section 1: KPIs */}
+            {/* Section 1: KPIs — always national */}
             <section>
               <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
-                Executive Summary
+                {isUS ? 'U.S. National Summary' : 'Executive Summary'}
               </h2>
               <KPICards
                 results={results}
@@ -356,12 +392,37 @@ const Index: React.FC = () => {
               />
             </section>
 
-            {/* Section 2: Charts */}
+            {/* Section 1.5: Provider comparison — only when scoped */}
+            {isUS && providerResults && providerLabel && (
+              <section>
+                <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
+                  Provider Scope — {providerLabel}
+                  <span className="ml-2 text-[10px] font-normal normal-case text-muted-foreground/70">
+                    {(providerBirths || 0).toLocaleString()} births
+                  </span>
+                </h2>
+                <ProviderComparison
+                  providerResults={providerResults}
+                  nationalResults={results}
+                  providerLabel={providerLabel}
+                  providerBirths={providerBirths || 0}
+                  nationalBirths={inputs.annualBirths}
+                  formatCurrency={formatCurrency}
+                  formatNumber={formatNumber}
+                />
+              </section>
+            )}
+
+            {/* Section 2: Charts — always national */}
             <section>
               <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
                 Financial Projections
               </h2>
-              <FinancialCharts results={results} region={inputs.region} providerLabel={providerLabel} />
+              <FinancialCharts
+                results={results}
+                region={inputs.region}
+                providerLabel={undefined}
+              />
             </section>
 
             {/* Section 2.5: US Heatmap */}
@@ -377,7 +438,7 @@ const Index: React.FC = () => {
               </section>
             )}
 
-            {/* Section 3: Detailed Table */}
+            {/* Section 3: Detailed Table — always national */}
             <section>
               <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
                 Detailed Analysis
