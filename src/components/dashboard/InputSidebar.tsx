@@ -616,13 +616,22 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   {selectedProviderId && (() => {
                     const provider = getProviderById(selectedProviderId);
                     if (!provider) return null;
+                    const currentBirths = providerBirthOverrides[selectedProviderId] ?? provider.annualBirths;
+                    const isDefault = currentBirths === provider.annualBirths;
                     return (
-                      <div className="rounded-lg bg-muted/50 p-3 space-y-1">
-                        <p className="text-xs font-semibold text-foreground">{provider.name}</p>
-                        <p className="text-[10px] text-muted-foreground">
-                          {provider.annualBirths.toLocaleString()} births/year
-                        </p>
-                        <p className="text-[10px] text-muted-foreground italic">
+                      <div className="space-y-2">
+                        <SliderField
+                          label={`${provider.name} Births`}
+                          value={currentBirths}
+                          onChange={(v) => setProviderBirthOverrides(prev => ({ ...prev, [selectedProviderId]: v }))}
+                          min={1000}
+                          max={Math.max(provider.annualBirths * 3, 500000)}
+                          step={1000}
+                          isDefault={isDefault}
+                          tooltip={provider.source}
+                          onEditReference={() => {}}
+                        />
+                        <p className="text-xs text-muted-foreground italic">
                           {provider.source}
                         </p>
                       </div>
@@ -631,7 +640,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
 
                   {!selectedProviderId && (
                     <div className="rounded-lg bg-muted/30 px-3 py-2">
-                      <p className="text-[10px] text-muted-foreground">
+                      <p className="text-xs text-muted-foreground">
                         Aggregate: {getAggregateBirths(providerView).toLocaleString()} births across {getProvidersByType(providerView).length} systems
                       </p>
                     </div>
