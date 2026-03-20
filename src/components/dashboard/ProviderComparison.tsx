@@ -23,20 +23,14 @@ interface ProviderComparisonProps {
 interface MetricCardProps {
   title: string;
   providerValue: string;
-  nationalValue: string;
-  sharePercent: string;
   icon: React.ReactNode;
-  accent: string;
   delay: number;
 }
 
 const MetricCard: React.FC<MetricCardProps> = ({
   title,
   providerValue,
-  nationalValue,
-  sharePercent,
   icon,
-  accent,
   delay,
 }) => (
   <motion.div
@@ -44,15 +38,17 @@ const MetricCard: React.FC<MetricCardProps> = ({
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.35, delay }}
   >
-    <Card className={`border-l-4 ${accent} h-full`}>
-      <CardContent className="p-5 space-y-2">
+    <Card className="h-full hover:shadow-md transition-shadow">
+      <CardContent className="p-6 space-y-3">
         <div className="flex items-center justify-between">
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
             {title}
           </p>
-          <div className="p-1 bg-muted rounded-md">{icon}</div>
+          <div className="p-1.5 bg-muted/50 rounded-lg">
+            {icon}
+          </div>
         </div>
-        <p className="text-2xl font-bold text-foreground leading-none">
+        <p className="text-2xl font-semibold text-foreground leading-none">
           {providerValue}
         </p>
       </CardContent>
@@ -69,98 +65,48 @@ const ProviderComparison: React.FC<ProviderComparisonProps> = ({
   formatCurrency,
   formatNumber,
 }) => {
-  const pct = (provider: number, national: number) =>
-    national > 0 ? `${((provider / national) * 100).toFixed(1)}%` : '—';
-
-  const iconClass = 'h-3 w-3 text-muted-foreground';
+  const iconClass = 'h-3.5 w-3.5 text-muted-foreground';
 
   const metrics: MetricCardProps[] = [
     {
       title: 'Net Economic Benefit',
-      providerValue: formatCurrency(
-        providerResults.financials.totalEconomicImpact,
-      ),
-      nationalValue: formatCurrency(
-        nationalResults.financials.totalEconomicImpact,
-      ),
-      sharePercent: pct(
-        providerResults.financials.totalEconomicImpact,
-        nationalResults.financials.totalEconomicImpact,
-      ),
+      providerValue: formatCurrency(providerResults.financials.totalEconomicImpact),
       icon: <TrendingUp className={iconClass} />,
-      accent: 'border-l-emerald-500',
       delay: 0,
     },
     {
       title: 'Revenue Opportunity',
-      providerValue: formatCurrency(
-        providerResults.financials.revenueGenerated,
-      ),
-      nationalValue: formatCurrency(
-        nationalResults.financials.revenueGenerated,
-      ),
-      sharePercent: pct(
-        providerResults.financials.revenueGenerated,
-        nationalResults.financials.revenueGenerated,
-      ),
+      providerValue: formatCurrency(providerResults.financials.revenueGenerated),
       icon: <DollarSign className={iconClass} />,
-      accent: 'border-l-blue-500',
       delay: 0.04,
     },
     {
       title: 'Litigation Avoidance',
-      providerValue: formatCurrency(
-        providerResults.financials.litigationSavings,
-      ),
-      nationalValue: formatCurrency(
-        nationalResults.financials.litigationSavings,
-      ),
-      sharePercent: pct(
-        providerResults.financials.litigationSavings,
-        nationalResults.financials.litigationSavings,
-      ),
+      providerValue: formatCurrency(providerResults.financials.litigationSavings),
       icon: <Shield className={iconClass} />,
-      accent: 'border-l-indigo-500',
       delay: 0.08,
     },
     {
       title: 'Cases Identified',
-      providerValue: formatNumber(
-        providerResults.demographics.avoidedUndiagnosed,
-      ),
-      nationalValue: formatNumber(
-        nationalResults.demographics.avoidedUndiagnosed,
-      ),
-      sharePercent: pct(
-        providerResults.demographics.avoidedUndiagnosed,
-        nationalResults.demographics.avoidedUndiagnosed,
-      ),
+      providerValue: formatNumber(Math.round(providerResults.demographics.avoidedUndiagnosed)),
       icon: <Heart className={iconClass} />,
-      accent: 'border-l-amber-500',
       delay: 0.12,
     },
     {
       title: 'Lives Impacted',
       providerValue: formatNumber(
-        providerResults.clinicalOutcomes.avoidedStillbirths +
-          (providerResults.clinicalOutcomes.avoidedNeonatalDeaths || 0),
-      ),
-      nationalValue: formatNumber(
-        nationalResults.clinicalOutcomes.avoidedStillbirths +
-          (nationalResults.clinicalOutcomes.avoidedNeonatalDeaths || 0),
-      ),
-      sharePercent: pct(
-        providerResults.clinicalOutcomes.avoidedStillbirths,
-        nationalResults.clinicalOutcomes.avoidedStillbirths,
+        Math.round(
+          providerResults.clinicalOutcomes.avoidedStillbirths +
+            (providerResults.clinicalOutcomes.avoidedNeonatalDeaths || 0)
+        ),
       ),
       icon: <Activity className={iconClass} />,
-      accent: 'border-l-rose-500',
       delay: 0.16,
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
       {metrics.map((m) => (
         <MetricCard key={m.title} {...m} />
       ))}

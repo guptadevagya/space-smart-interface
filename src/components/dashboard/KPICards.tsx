@@ -68,7 +68,7 @@ const KPIItem: React.FC<KPIItemProps> = ({
             </div>
           </div>
           <div>
-            <p className="text-2xl font-bold text-foreground leading-none truncate">
+            <p className="text-2xl font-semibold text-foreground leading-none truncate">
               {value}
             </p>
             <p className="text-xs text-muted-foreground mt-1.5 leading-tight">

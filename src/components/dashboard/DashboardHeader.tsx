@@ -173,7 +173,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                           <p className="text-xs font-medium text-foreground">
                             {cfg.name}
                           </p>
-                          <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                          <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
                             <Clock className="h-2.5 w-2.5" />
                             {formatTime(cfg.timestamp)}
                           </p>
