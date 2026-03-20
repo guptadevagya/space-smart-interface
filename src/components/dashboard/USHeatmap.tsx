@@ -79,7 +79,7 @@ const USHeatmap: React.FC<USHeatmapProps> = ({ providerView, selectedProviderId 
       onLeave: () => void;
       onClick: (state: USAStateAbbreviation) => void;
       tooltip: { enabled: boolean; render: (state: USAStateAbbreviation) => React.ReactNode };
-      label: { enabled: boolean };
+      label: { enabled: boolean; render: (state: USAStateAbbreviation) => React.ReactNode };
     }>> = {};
 
     allCodes.forEach((code) => {
