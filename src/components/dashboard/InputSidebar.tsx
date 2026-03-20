@@ -501,7 +501,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
             <h2 className="text-sm font-bold text-foreground">
               Model Configuration
             </h2>
-            <p className="text-[10px] text-muted-foreground mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               Adjust parameters to update projections
             </p>
           </div>
