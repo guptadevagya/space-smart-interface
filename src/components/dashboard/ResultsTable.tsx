@@ -270,11 +270,9 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                 >
                   {row.impact}
                 </TableCell>
-                {!isUS && (
-                  <TableCell className="text-right text-[10px] text-muted-foreground">
-                    {row.reference}
-                  </TableCell>
-                )}
+                <TableCell className="text-right text-[10px] text-muted-foreground">
+                  {row.reference}
+                </TableCell>
               </TableRow>
             ))}
             {/* Gross savings total (UK) */}

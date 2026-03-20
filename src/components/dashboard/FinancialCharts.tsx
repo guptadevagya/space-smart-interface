@@ -76,12 +76,12 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
         },
         {
           name: 'CP Litigation',
-          value: results.financials.litigationSavings * 0.9, // Approximate split from model
+          value: results.financials.cpLitigationSavings ?? 0,
           color: CHART_COLORS.savings,
         },
         {
           name: 'Fetal Death',
-          value: results.financials.litigationSavings * 0.1,
+          value: results.financials.fetalDeathSavings ?? 0,
           color: CHART_COLORS.accent,
         },
       ]
