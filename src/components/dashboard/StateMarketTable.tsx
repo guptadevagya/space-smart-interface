@@ -140,9 +140,6 @@ const StateMarketTable: React.FC = () => {
               {filtered.map((row) => (
                 <TableRow key={row.abbr} className="group">
                   <TableCell className="font-medium text-sm">
-                    <span className="text-muted-foreground text-[10px] font-mono mr-1.5">
-                      {row.abbr}
-                    </span>
                     {row.state}
                   </TableCell>
                   <TableCell className="text-right font-mono text-sm tabular-nums">
