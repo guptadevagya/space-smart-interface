@@ -343,7 +343,7 @@ const AddFormulaForm: React.FC<{
           placeholder="Formula expression"
           className="text-xs h-7 font-mono"
         />
-        {error && <p className="text-[10px] text-destructive">{error}</p>}
+        {error && <p className="text-xs text-destructive">{error}</p>}
         <div className="flex flex-wrap gap-1 max-h-20 overflow-y-auto">
           {allVarIds.slice(0, 20).map((vid) => (
             <button
