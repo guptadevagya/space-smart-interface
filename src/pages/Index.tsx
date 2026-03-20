@@ -42,14 +42,21 @@ interface SavedConfig {
 
 const Index: React.FC = () => {
   const [inputs, setInputs] = useState<SimulationInputs>(() => {
+    const defaultsByRegion: Record<Region, SimulationInputs> = {
+      US: DEFAULT_US_INPUTS,
+      UK: DEFAULT_UK_INPUTS,
+      Global: DEFAULT_GLOBAL_INPUTS,
+    };
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const configs = JSON.parse(saved) as SavedConfig[];
         if (configs.length > 0) {
           const latest = configs[configs.length - 1];
-          if (latest.inputs?.region && latest.inputs?.annualBirths)
-            return latest.inputs;
+          if (latest.inputs?.region && latest.inputs?.annualBirths) {
+            const defaults = defaultsByRegion[latest.inputs.region] || DEFAULT_UK_INPUTS;
+            return { ...defaults, ...latest.inputs, inputReferences: { ...defaults.inputReferences, ...(latest.inputs.inputReferences || {}) } };
+          }
         }
       }
     } catch {}
