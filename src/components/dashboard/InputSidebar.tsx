@@ -143,6 +143,7 @@ interface SliderFieldProps {
   formatDisplay?: (val: number) => string;
   onDelete?: () => void;
   onEditReference?: (ref: string) => void;
+  disabled?: boolean;
 }
 
 const SliderField: React.FC<SliderFieldProps> = ({
@@ -159,13 +160,14 @@ const SliderField: React.FC<SliderFieldProps> = ({
   formatDisplay,
   onDelete,
   onEditReference,
+  disabled = false,
 }) => {
   const displayVal = formatDisplay ? formatDisplay(value) : value.toString();
   const [editingRef, setEditingRef] = React.useState(false);
   const [refValue, setRefValue] = React.useState(tooltip || '');
 
   return (
-    <div className="space-y-2 group/field">
+    <div className={cn('space-y-2 group/field', disabled && 'opacity-75')}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           <label className="text-xs font-medium text-muted-foreground">
@@ -219,13 +221,14 @@ const SliderField: React.FC<SliderFieldProps> = ({
           <Input
             type="number"
             value={displayVal}
+            disabled={disabled}
             onChange={(e) => {
               const raw = parseFloat(e.target.value);
-              if (!isNaN(raw)) {
+              if (!disabled && !isNaN(raw)) {
                 onChange(suffix === '%' ? raw / 100 : raw);
               }
             }}
-            className="h-7 w-24 text-xs text-right font-mono bg-muted/30 border-border"
+            className="h-7 w-24 text-xs text-right font-mono bg-muted/30 border-border disabled:cursor-not-allowed disabled:opacity-100"
           />
           {suffix && (
             <span className="text-xs text-muted-foreground">{suffix}</span>
@@ -233,12 +236,15 @@ const SliderField: React.FC<SliderFieldProps> = ({
         </div>
       </div>
       <Slider
+        disabled={disabled}
         value={[suffix === '%' ? value * 100 : value]}
-        onValueChange={([v]) => onChange(suffix === '%' ? v / 100 : v)}
+        onValueChange={([v]) => {
+          if (!disabled) onChange(suffix === '%' ? v / 100 : v);
+        }}
         min={suffix === '%' ? min * 100 : min}
         max={suffix === '%' ? max * 100 : max}
         step={suffix === '%' ? step * 100 : step}
-        className="w-full"
+        className={cn('w-full', disabled && 'pointer-events-none')}
       />
     </div>
   );
@@ -526,28 +532,33 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
             <InputGroup title="Country Profile" defaultOpen={true}>
               <SliderField
                 label="Annual Live Births"
-                value={inputs.annualBirths}
+                value={providerView === 'all' ? inputs.annualBirths : US_TOTAL_BIRTHS}
                 onChange={(v) => {
-                  if (!selectedProviderId) update('annualBirths', v);
+                  if (providerView === 'all') update('annualBirths', v);
                 }}
                 min={1000}
                 max={5000000}
                 step={1000}
-                isDefault={!isChanged('annualBirths')}
+                disabled={providerView !== 'all'}
+                isDefault={providerView === 'all' ? !isChanged('annualBirths') : true}
                 tooltip={inputs.inputReferences.annualBirths}
                 onEditReference={(ref) =>
                   handleReferenceChange('annualBirths', ref)
                 }
               />
+              {providerView !== 'all' && (
+                <p className="text-[10px] text-muted-foreground leading-relaxed">
+                  U.S. national births stay visible here while provider-level modeling runs below.
+                </p>
+              )}
             </InputGroup>
           )}
 
           {inputs.region === 'US' ? (
-            <InputGroup title="Provider Profile" onAddParameter={() => {}}>
-              {/* Provider type toggle: IDN / IPP only */}
+            <InputGroup title="Provider Profile">
               <div className="space-y-2">
                 <label className="text-xs font-medium text-muted-foreground">Provider Type</label>
-                <div className="flex items-center bg-muted rounded-lg p-0.5">
+                <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-0.5">
                   {(['idn', 'ipp'] as const).map((view) => (
                     <button
                       key={view}
@@ -557,8 +568,8 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                         update('annualBirths', getAggregateBirths(view));
                       }}
                       className={cn(
-                        'flex-1 px-3 py-1.5 text-xs font-bold rounded-md transition-all text-center',
-                        providerView === view || (providerView === 'all' && view === 'idn')
+                        'px-3 py-1.5 text-xs font-bold rounded-md transition-all text-center',
+                        providerView === view
                           ? 'bg-card text-foreground shadow-sm'
                           : 'text-muted-foreground hover:text-foreground',
                       )}
@@ -569,71 +580,80 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                 </div>
               </div>
 
-              {/* Provider dropdown — always shown */}
-              {(providerView === 'idn' || providerView === 'ipp') && (
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-muted-foreground">
-                    Select {providerView.toUpperCase()}
-                  </label>
-                  <Select
-                    value={selectedProviderId || '__aggregate__'}
-                    onValueChange={(val) => {
-                      if (val === '__aggregate__') {
-                        setSelectedProviderId(null);
-                        update('annualBirths', getAggregateBirths(providerView));
-                      } else {
-                        setSelectedProviderId(val);
-                        const provider = getProviderById(val);
-                        if (provider) update('annualBirths', provider.annualBirths);
-                      }
-                    }}
-                  >
-                    <SelectTrigger className="h-9 text-xs">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="__aggregate__">
-                        All {providerView.toUpperCase()}s ({getProvidersByType(providerView).length} systems)
-                      </SelectItem>
-                      {getProvidersByType(providerView).map((p) => (
-                        <SelectItem key={p.id} value={p.id}>
-                          {p.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+              {providerView === 'all' ? (
+                <div className="rounded-lg border border-dashed border-border bg-muted/20 p-3">
+                  <p className="text-xs font-medium text-foreground">
+                    Select IDN or IPP to drill into provider-level cohorts.
+                  </p>
+                  <p className="mt-1 text-[10px] leading-relaxed text-muted-foreground">
+                    Executive summary and charts are currently showing the full U.S. market.
+                  </p>
                 </div>
-              )}
-
-              {/* Show selected provider info */}
-              {selectedProviderId && (() => {
-                const provider = getProviderById(selectedProviderId);
-                if (!provider) return null;
-                return (
-                  <div className="rounded-lg bg-muted/50 p-3 space-y-1">
-                    <p className="text-xs font-semibold text-foreground">{provider.name}</p>
-                    <p className="text-[10px] text-muted-foreground italic">
-                      {provider.source}
-                    </p>
+              ) : (
+                <>
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-muted-foreground">
+                      Select {providerView.toUpperCase()}
+                    </label>
+                    <Select
+                      value={selectedProviderId || '__aggregate__'}
+                      onValueChange={(val) => {
+                        if (val === '__aggregate__') {
+                          setSelectedProviderId(null);
+                          update('annualBirths', getAggregateBirths(providerView));
+                        } else {
+                          setSelectedProviderId(val);
+                          const provider = getProviderById(val);
+                          if (provider) update('annualBirths', provider.annualBirths);
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="h-9 text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="__aggregate__">
+                          All {providerView.toUpperCase()}s ({getProvidersByType(providerView).length} systems)
+                        </SelectItem>
+                        {getProvidersByType(providerView).map((p) => (
+                          <SelectItem key={p.id} value={p.id}>
+                            {p.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
-                );
-              })()}
 
-              <SliderField
-                label={selectedProviderId ? 'Provider Births' : 'Annual Births'}
-                value={inputs.annualBirths}
-                onChange={(v) => {
-                  if (!selectedProviderId) update('annualBirths', v);
-                }}
-                min={1000}
-                max={5000000}
-                step={1000}
-                isDefault={!isChanged('annualBirths')}
-                tooltip={inputs.inputReferences.annualBirths}
-                onEditReference={(ref) =>
-                  handleReferenceChange('annualBirths', ref)
-                }
-              />
+                  {selectedProviderId && (() => {
+                    const provider = getProviderById(selectedProviderId);
+                    if (!provider) return null;
+                    return (
+                      <div className="rounded-lg bg-muted/50 p-3 space-y-1">
+                        <p className="text-xs font-semibold text-foreground">{provider.name}</p>
+                        <p className="text-[10px] text-muted-foreground italic">
+                          {provider.source}
+                        </p>
+                      </div>
+                    );
+                  })()}
+
+                  <SliderField
+                    label={selectedProviderId ? 'Provider Births' : 'Annual Births'}
+                    value={inputs.annualBirths}
+                    onChange={(v) => {
+                      if (!selectedProviderId) update('annualBirths', v);
+                    }}
+                    min={1000}
+                    max={5000000}
+                    step={1000}
+                    isDefault={!isChanged('annualBirths')}
+                    tooltip={inputs.inputReferences.annualBirths}
+                    onEditReference={(ref) =>
+                      handleReferenceChange('annualBirths', ref)
+                    }
+                  />
+                </>
+              )}
               {renderCustomParams('Provider Profile')}
               <AddParameterDialog
                 group="Provider Profile"
@@ -642,7 +662,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
               />
             </InputGroup>
           ) : (
-            <InputGroup title="Hospital Profile" onAddParameter={() => {}}>
+            <InputGroup title="Hospital Profile">
               <SliderField
                 label="Annual Births"
                 value={inputs.annualBirths}
@@ -665,7 +685,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
             </InputGroup>
           )}
 
-          <InputGroup title="Clinical Assumptions" onAddParameter={() => {}}>
+          <InputGroup title="Clinical Assumptions">
             <SliderField
               label="FGR Prevalence"
               value={inputs.fgrPrevalence}
@@ -749,7 +769,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
             />
           </InputGroup>
 
-          <InputGroup title="Cost Parameters" onAddParameter={() => {}}>
+          <InputGroup title="Cost Parameters">
             {inputs.region === 'US' ? (
               <>
                 <SliderField

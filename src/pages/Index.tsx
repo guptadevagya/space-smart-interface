@@ -41,6 +41,31 @@ interface SavedConfig {
   customParameters?: CustomParameter[];
 }
 
+const mergeWithDefaultFormulas = (
+  region: Region,
+  savedFormulas?: FormulaDefinition[],
+): FormulaDefinition[] => {
+  const defaultFormulas = getDefaultFormulas(region);
+
+  if (!savedFormulas?.length) {
+    return defaultFormulas;
+  }
+
+  const savedById = new Map(savedFormulas.map((formula) => [formula.id, formula]));
+  const defaultIds = new Set(defaultFormulas.map((formula) => formula.id));
+
+  const mergedDefaults = defaultFormulas.map((formula) => {
+    const savedFormula = savedById.get(formula.id);
+    return savedFormula ? { ...formula, ...savedFormula } : formula;
+  });
+
+  const extraCustomFormulas = savedFormulas.filter(
+    (formula) => !defaultIds.has(formula.id),
+  );
+
+  return [...mergedDefaults, ...extraCustomFormulas];
+};
+
 const Index: React.FC = () => {
   const [inputs, setInputs] = useState<SimulationInputs>(() => {
     const defaultsByRegion: Record<Region, SimulationInputs> = {
@@ -56,7 +81,14 @@ const Index: React.FC = () => {
           const latest = configs[configs.length - 1];
           if (latest.inputs?.region && latest.inputs?.annualBirths) {
             const defaults = defaultsByRegion[latest.inputs.region] || DEFAULT_UK_INPUTS;
-            return { ...defaults, ...latest.inputs, inputReferences: { ...defaults.inputReferences, ...(latest.inputs.inputReferences || {}) } };
+            return {
+              ...defaults,
+              ...latest.inputs,
+              inputReferences: {
+                ...defaults.inputReferences,
+                ...(latest.inputs.inputReferences || {}),
+              },
+            };
           }
         }
       }
@@ -69,8 +101,12 @@ const Index: React.FC = () => {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const configs = JSON.parse(saved) as SavedConfig[];
-        if (configs.length > 0 && configs[configs.length - 1].formulas) {
-          return configs[configs.length - 1].formulas!;
+        if (configs.length > 0) {
+          const latest = configs[configs.length - 1];
+          return mergeWithDefaultFormulas(
+            latest.inputs?.region || 'UK',
+            latest.formulas,
+          );
         }
       }
     } catch {}
@@ -202,8 +238,9 @@ const Index: React.FC = () => {
     const config = configs.find((c) => c.id === id);
     if (config) {
       setInputs(config.inputs);
-      if (config.formulas) setFormulas(config.formulas);
-      else setFormulas(getDefaultFormulas(config.inputs.region));
+      setFormulas(
+        mergeWithDefaultFormulas(config.inputs.region, config.formulas),
+      );
       if (config.customVariables) setCustomVariables(config.customVariables);
       else setCustomVariables([]);
       if (config.customParameters) setCustomParameters(config.customParameters);
