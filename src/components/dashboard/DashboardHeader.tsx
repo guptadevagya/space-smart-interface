@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Region } from '@/lib/types';
+import { Region, USProviderView } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Menu, Printer, Save, FolderOpen, Trash2, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -9,6 +9,7 @@ import {
   PopoverContent,
 } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { getProviderById } from '@/lib/providerProfiles';
 
 interface SavedConfigMeta {
   id: string;
@@ -25,6 +26,9 @@ interface DashboardHeaderProps {
   onLoad: (id: string) => void;
   onDelete: (id: string) => void;
   getSavedConfigs: () => SavedConfigMeta[];
+  providerView?: USProviderView;
+  selectedProviderId?: string | null;
+  annualBirths?: number;
 }
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({
@@ -36,9 +40,14 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   onLoad,
   onDelete,
   getSavedConfigs,
+  providerView,
+  selectedProviderId,
+  annualBirths,
 }) => {
   const regions: Region[] = ['US', 'UK', 'Global'];
   const [loadOpen, setLoadOpen] = useState(false);
+
+  const selectedProvider = selectedProviderId ? getProviderById(selectedProviderId) : null;
 
   const configs = loadOpen ? getSavedConfigs() : [];
 
@@ -78,6 +87,15 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                   : 'Global'}{' '}
               Impact Analysis
             </p>
+            {region === 'US' && (
+              <p className="text-[10px] text-muted-foreground/70 leading-tight mt-0.5">
+                {selectedProvider
+                  ? `${selectedProvider.name} (${selectedProvider.type.toUpperCase()}) - ${selectedProvider.annualBirths.toLocaleString()} births`
+                  : providerView === 'all'
+                    ? `All U.S. - ${(annualBirths || 0).toLocaleString()} births`
+                    : `All ${providerView?.toUpperCase()}s - ${(annualBirths || 0).toLocaleString()} births`}
+              </p>
+            )}
           </div>
         </div>
       </div>

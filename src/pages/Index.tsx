@@ -23,7 +23,9 @@ import {
   FormulaDefinition,
   CustomVariable,
   CustomParameter,
+  USProviderView,
 } from '@/lib/types';
+import { getProviderById } from '@/lib/providerProfiles';
 import { toast } from 'sonner';
 
 const STORAGE_KEY = 'oxnnet-simulator-configs';
@@ -103,6 +105,9 @@ const Index: React.FC = () => {
     },
   );
 
+  const [providerView, setProviderView] = useState<USProviderView>('all');
+  const [selectedProviderId, setSelectedProviderId] = useState<string | null>(null);
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Build input variable map including custom variables
@@ -146,6 +151,8 @@ const Index: React.FC = () => {
     setFormulas(getDefaultFormulas(region));
     setCustomVariables([]);
     setCustomParameters([]);
+    setProviderView('all');
+    setSelectedProviderId(null);
   };
 
   const resetFormulas = () => {
@@ -254,6 +261,10 @@ const Index: React.FC = () => {
         onSave={saveConfiguration}
         customParameters={customParameters}
         setCustomParameters={setCustomParameters}
+        providerView={providerView}
+        setProviderView={setProviderView}
+        selectedProviderId={selectedProviderId}
+        setSelectedProviderId={setSelectedProviderId}
       />
 
       <div className="flex-1 flex flex-col h-full overflow-hidden">
@@ -272,6 +283,9 @@ const Index: React.FC = () => {
               timestamp,
             }))
           }
+          providerView={providerView}
+          selectedProviderId={selectedProviderId}
+          annualBirths={inputs.annualBirths}
         />
 
         <main className="flex-1 overflow-y-auto">

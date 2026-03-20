@@ -1,5 +1,12 @@
 import React from 'react';
-import { SimulationInputs, Region, CustomParameter } from '@/lib/types';
+import { SimulationInputs, Region, CustomParameter, USProviderView } from '@/lib/types';
+import {
+  US_PROVIDERS,
+  US_TOTAL_BIRTHS,
+  getProvidersByType,
+  getProviderById,
+  getAggregateBirths,
+} from '@/lib/providerProfiles';
 import {
   DEFAULT_US_INPUTS,
   DEFAULT_UK_INPUTS,
@@ -53,6 +60,10 @@ interface InputSidebarProps {
   onSave: () => void;
   customParameters: CustomParameter[];
   setCustomParameters: React.Dispatch<React.SetStateAction<CustomParameter[]>>;
+  providerView: USProviderView;
+  setProviderView: (view: USProviderView) => void;
+  selectedProviderId: string | null;
+  setSelectedProviderId: (id: string | null) => void;
 }
 
 const getDefaults = (region: Region): SimulationInputs => {
@@ -386,6 +397,10 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
   onSave,
   customParameters,
   setCustomParameters,
+  providerView,
+  setProviderView,
+  selectedProviderId,
+  setSelectedProviderId,
 }) => {
   const defaults = getDefaults(inputs.region);
   const currPrefix = inputs.region === 'US' ? '$' : '£';
@@ -507,27 +522,135 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
 
         {/* Scrollable inputs */}
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
-          <InputGroup title="Hospital Profile" onAddParameter={() => {}}>
-            <SliderField
-              label="Annual Births"
-              value={inputs.annualBirths}
-              onChange={(v) => update('annualBirths', v)}
-              min={1000}
-              max={5000000}
-              step={1000}
-              isDefault={!isChanged('annualBirths')}
-              tooltip={inputs.inputReferences.annualBirths}
-              onEditReference={(ref) =>
-                handleReferenceChange('annualBirths', ref)
-              }
-            />
-            {renderCustomParams('Hospital Profile')}
-            <AddParameterDialog
-              group="Hospital Profile"
-              currPrefix={currPrefix}
-              onAdd={addCustomParam}
-            />
-          </InputGroup>
+          {inputs.region === 'US' ? (
+            <InputGroup title="Provider Profile" onAddParameter={() => {}}>
+              {/* Provider type toggle */}
+              <div className="space-y-2">
+                <label className="text-xs font-medium text-muted-foreground">View</label>
+                <div className="flex items-center bg-muted rounded-lg p-0.5">
+                  {(['all', 'idn', 'ipp'] as USProviderView[]).map((view) => (
+                    <button
+                      key={view}
+                      onClick={() => {
+                        setProviderView(view);
+                        setSelectedProviderId(null);
+                        if (view === 'all') {
+                          update('annualBirths', US_TOTAL_BIRTHS);
+                        } else {
+                          update('annualBirths', getAggregateBirths(view));
+                        }
+                      }}
+                      className={cn(
+                        'flex-1 px-3 py-1.5 text-xs font-bold rounded-md transition-all text-center',
+                        providerView === view
+                          ? 'bg-card text-foreground shadow-sm'
+                          : 'text-muted-foreground hover:text-foreground',
+                      )}
+                    >
+                      {view === 'all' ? 'All U.S.' : view.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Provider dropdown (only for IDN/IPP views) */}
+              {providerView !== 'all' && (
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-muted-foreground">
+                    Select {providerView.toUpperCase()}
+                  </label>
+                  <Select
+                    value={selectedProviderId || '__aggregate__'}
+                    onValueChange={(val) => {
+                      if (val === '__aggregate__') {
+                        setSelectedProviderId(null);
+                        update('annualBirths', getAggregateBirths(providerView));
+                      } else {
+                        setSelectedProviderId(val);
+                        const provider = getProviderById(val);
+                        if (provider) update('annualBirths', provider.annualBirths);
+                      }
+                    }}
+                  >
+                    <SelectTrigger className="h-9 text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="__aggregate__">
+                        All {providerView.toUpperCase()}s ({getProvidersByType(providerView).length} systems)
+                      </SelectItem>
+                      {getProvidersByType(providerView).map((p) => (
+                        <SelectItem key={p.id} value={p.id}>
+                          {p.name} - {p.annualBirths.toLocaleString()} births
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {/* Show selected provider info */}
+              {selectedProviderId && (() => {
+                const provider = getProviderById(selectedProviderId);
+                if (!provider) return null;
+                return (
+                  <div className="rounded-lg bg-muted/50 p-3 space-y-1">
+                    <p className="text-xs font-semibold text-foreground">{provider.name}</p>
+                    <p className="text-[10px] text-muted-foreground">
+                      {provider.type.toUpperCase()} - {provider.states.join(', ')}
+                    </p>
+                    <p className="text-[10px] text-muted-foreground italic">
+                      {provider.source}
+                    </p>
+                  </div>
+                );
+              })()}
+
+              <SliderField
+                label="Annual Births"
+                value={inputs.annualBirths}
+                onChange={(v) => {
+                  if (!selectedProviderId) update('annualBirths', v);
+                }}
+                min={1000}
+                max={5000000}
+                step={1000}
+                isDefault={!isChanged('annualBirths')}
+                tooltip={inputs.inputReferences.annualBirths}
+                onEditReference={(ref) =>
+                  handleReferenceChange('annualBirths', ref)
+                }
+              />
+              {renderCustomParams('Provider Profile')}
+              <AddParameterDialog
+                group="Provider Profile"
+                currPrefix={currPrefix}
+                onAdd={addCustomParam}
+              />
+            </InputGroup>
+          ) : (
+            <InputGroup title="Hospital Profile" onAddParameter={() => {}}>
+              <SliderField
+                label="Annual Births"
+                value={inputs.annualBirths}
+                onChange={(v) => update('annualBirths', v)}
+                min={1000}
+                max={5000000}
+                step={1000}
+                isDefault={!isChanged('annualBirths')}
+                tooltip={inputs.inputReferences.annualBirths}
+                onEditReference={(ref) =>
+                  handleReferenceChange('annualBirths', ref)
+                }
+              />
+              {renderCustomParams('Hospital Profile')}
+              <AddParameterDialog
+                group="Hospital Profile"
+                currPrefix={currPrefix}
+                onAdd={addCustomParam}
+              />
+            </InputGroup>
+          )}
 
           <InputGroup title="Clinical Assumptions" onAddParameter={() => {}}>
             <SliderField

@@ -1,4 +1,5 @@
 export type Region = 'US' | 'UK' | 'Global';
+export type USProviderView = 'all' | 'idn' | 'ipp';
 
 export interface SimulationInputs {
   region: Region;
