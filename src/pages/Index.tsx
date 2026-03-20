@@ -8,6 +8,7 @@ import ReferencesPanel from '@/components/dashboard/ReferencesPanel';
 import FormulaExplorer from '@/components/dashboard/FormulaExplorer';
 import USHeatmap from '@/components/dashboard/USHeatmap';
 import ProviderComparison from '@/components/dashboard/ProviderComparison';
+import StateMarketTable from '@/components/dashboard/StateMarketTable';
 import {
   DEFAULT_US_INPUTS,
   DEFAULT_UK_INPUTS,
