@@ -21,6 +21,7 @@ import { SimulationResults, Region } from '@/lib/types';
 interface FinancialChartsProps {
   results: SimulationResults;
   region: Region;
+  providerLabel?: string;
 }
 
 const CHART_COLORS = {
