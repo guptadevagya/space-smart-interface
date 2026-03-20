@@ -98,7 +98,22 @@ const USHeatmap: React.FC<USHeatmapProps> = ({ providerView, selectedProviderId 
         onLeave: () => setHoveredState(null),
         onClick: (state) => handleStateClick(state),
         tooltip: { enabled: false, render: () => null },
-        label: { enabled: true },
+        label: {
+          enabled: true,
+          render: (state: USAStateAbbreviation) => (
+            <text
+              fontSize="10"
+              fill="hsl(220, 20%, 35%)"
+              fontWeight="500"
+              textAnchor="middle"
+              dominantBaseline="central"
+              style={{ textShadow: 'none', filter: 'none' }}
+              pointerEvents="none"
+            >
+              {state}
+            </text>
+          ),
+        },
       };
     });
     return result;
