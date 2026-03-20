@@ -569,8 +569,8 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                 </div>
               </div>
 
-              {/* Provider dropdown (only for IDN/IPP views) */}
-              {providerView !== 'all' && (
+              {/* Provider dropdown — always shown */}
+              {(providerView === 'idn' || providerView === 'ipp') && (
                 <div className="space-y-2">
                   <label className="text-xs font-medium text-muted-foreground">
                     Select {providerView.toUpperCase()}
