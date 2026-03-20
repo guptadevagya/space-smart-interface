@@ -161,6 +161,8 @@ export const DEFAULT_GLOBAL_INPUTS: SimulationInputs = {
   combinedTestRate: 0.85,
   fetalDeathPayout: 0,
   litigationSuccessRate: 1.0,
+  implementationCost: 0,
+  perScanScreeningCost: 0,
   bibliography: DEFAULT_BIBLIOGRAPHY,
   inputReferences: {
     annualBirths: 'Ref 18: Countries doing 1st trimester screening',
