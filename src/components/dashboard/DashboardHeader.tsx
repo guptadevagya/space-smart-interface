@@ -142,7 +142,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 <p className="text-sm font-bold text-foreground">
                   Saved Configurations
                 </p>
-                <p className="text-[10px] text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   Select a version to restore
                 </p>
               </div>
