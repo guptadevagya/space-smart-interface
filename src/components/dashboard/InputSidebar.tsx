@@ -543,9 +543,6 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   handleReferenceChange('annualBirths', ref)
                 }
               />
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                All dashboard sections use this national figure. Provider scope adds a comparison panel below.
-              </p>
             </InputGroup>
           )}
 
