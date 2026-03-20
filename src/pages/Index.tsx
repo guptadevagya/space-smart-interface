@@ -8,6 +8,7 @@ import ReferencesPanel from '@/components/dashboard/ReferencesPanel';
 import FormulaExplorer from '@/components/dashboard/FormulaExplorer';
 import USHeatmap from '@/components/dashboard/USHeatmap';
 import ProviderComparison from '@/components/dashboard/ProviderComparison';
+import StateMarketTable from '@/components/dashboard/StateMarketTable';
 import {
   DEFAULT_US_INPUTS,
   DEFAULT_UK_INPUTS,
@@ -425,9 +426,9 @@ const Index: React.FC = () => {
               />
             </section>
 
-            {/* Section 2.5: US Heatmap */}
+            {/* Section 2.5: US Heatmap + State Market Table */}
             {isUS && (
-              <section>
+              <section className="space-y-6">
                 <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
                   Geographic Distribution
                 </h2>
@@ -435,6 +436,7 @@ const Index: React.FC = () => {
                   providerView={providerView}
                   selectedProviderId={selectedProviderId}
                 />
+                <StateMarketTable />
               </section>
             )}
 
