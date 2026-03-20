@@ -524,19 +524,25 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {inputs.region === 'US' && (
             <InputGroup title="Country Profile" defaultOpen={true}>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-muted-foreground">Country</span>
-                  <span className="text-xs font-bold text-foreground">United States</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-muted-foreground">Annual Live Births</span>
-                  <span className="text-sm font-bold font-mono text-foreground">{US_TOTAL_BIRTHS.toLocaleString()}</span>
-                </div>
-                <p className="text-[10px] text-muted-foreground italic">
-                  NCHS Data Brief No. 535 — Final 2024
-                </p>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-medium text-muted-foreground">Country</span>
+                <span className="text-xs font-bold text-foreground">United States</span>
               </div>
+              <SliderField
+                label="Annual Live Births"
+                value={inputs.annualBirths}
+                onChange={(v) => {
+                  if (!selectedProviderId) update('annualBirths', v);
+                }}
+                min={1000}
+                max={5000000}
+                step={1000}
+                isDefault={!isChanged('annualBirths')}
+                tooltip={inputs.inputReferences.annualBirths}
+                onEditReference={(ref) =>
+                  handleReferenceChange('annualBirths', ref)
+                }
+              />
             </InputGroup>
           )}
 
