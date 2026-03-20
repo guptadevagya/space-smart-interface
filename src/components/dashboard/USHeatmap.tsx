@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { US_PROVIDERS, getProvidersByType, getProviderById, ProviderType } from '@/lib/providerProfiles';
+import { getStateMarketByAbbr } from '@/lib/stateMarketData';
 import { USProviderView } from '@/lib/types';
 import { USAMap, USAStateAbbreviation } from '@mirawision/usa-map-react';
 
