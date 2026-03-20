@@ -207,7 +207,7 @@ const ReferencesPanel: React.FC<ReferencesPanelProps> = ({
                       key={i}
                       className="px-5 py-2.5 flex items-start gap-3 hover:bg-muted/20 transition-colors group"
                     >
-                      <span className="text-[10px] font-bold text-muted-foreground mt-1 shrink-0">
+                      <span className="text-xs font-bold text-muted-foreground mt-1 shrink-0">
                         [{i + 1}]
                       </span>
                       <input

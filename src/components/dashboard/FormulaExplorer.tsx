@@ -356,7 +356,7 @@ const AddFormulaForm: React.FC<{
             </button>
           ))}
           {allVarIds.length > 20 && (
-            <span className="text-[10px] text-muted-foreground">
+            <span className="text-xs text-muted-foreground">
               +{allVarIds.length - 20} more
             </span>
           )}

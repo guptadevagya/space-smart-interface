@@ -149,7 +149,7 @@ const StateMarketTable: React.FC = () => {
                   <TableCell className="text-center">
                     <span
                       className={cn(
-                        'inline-block text-[10px] font-bold px-1.5 py-0.5 rounded',
+                        'inline-block text-xs font-bold px-1.5 py-0.5 rounded',
                         row.systemType === 'idn'
                           ? 'bg-primary/10 text-primary'
                           : 'bg-amber-500/10 text-amber-700',

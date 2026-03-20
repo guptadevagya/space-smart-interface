@@ -79,7 +79,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             <h1 className="text-sm font-bold text-foreground leading-tight">
               OxNNet Economics
             </h1>
-            <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest">
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">
               {region === 'US'
                 ? 'US Market'
                 : region === 'UK'

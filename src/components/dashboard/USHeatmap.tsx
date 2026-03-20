@@ -164,15 +164,15 @@ const USHeatmap: React.FC<USHeatmapProps> = ({ providerView, selectedProviderId 
         <div className="flex items-center justify-center gap-4 mt-3">
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-sm" style={{ background: 'hsl(215, 15%, 90%)' }} />
-            <span className="text-[10px] text-muted-foreground">No providers</span>
+            <span className="text-xs text-muted-foreground">No providers</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-sm" style={{ background: 'hsl(222, 35%, 71%)' }} />
-            <span className="text-[10px] text-muted-foreground">Few</span>
+            <span className="text-xs text-muted-foreground">Few</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-sm" style={{ background: 'hsl(222, 50%, 40%)' }} />
-            <span className="text-[10px] text-muted-foreground">Many</span>
+            <span className="text-xs text-muted-foreground">Many</span>
           </div>
         </div>
       </CardContent>

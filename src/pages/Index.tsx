@@ -450,7 +450,7 @@ const Index: React.FC = () => {
 
             {/* Section 4: References */}
             <section>
-              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
+              <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4">
                 Evidence Base
               </h2>
               <ReferencesPanel

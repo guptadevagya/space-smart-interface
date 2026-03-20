@@ -148,10 +148,10 @@ const KPICards: React.FC<KPICardsProps> = ({
     {
       title: 'Lives Impacted',
       value: formatNumber(
-        results.clinicalOutcomes.avoidedStillbirths +
-          (results.clinicalOutcomes.avoidedNeonatalDeaths || 0),
+        Math.round(results.clinicalOutcomes.avoidedStillbirths +
+          (results.clinicalOutcomes.avoidedNeonatalDeaths || 0)),
       ),
-      subtitle: 'Avoided stillbirths & neonatal deaths',
+      subtitle: isUS ? 'Avoided stillbirths' : 'Avoided stillbirths & neonatal deaths',
       icon: 'lives',
       accent: 'border-l-rose-500',
       delay: 0.25,
