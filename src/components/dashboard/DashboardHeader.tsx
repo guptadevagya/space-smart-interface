@@ -40,9 +40,14 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   onLoad,
   onDelete,
   getSavedConfigs,
+  providerView,
+  selectedProviderId,
+  annualBirths,
 }) => {
   const regions: Region[] = ['US', 'UK', 'Global'];
   const [loadOpen, setLoadOpen] = useState(false);
+
+  const selectedProvider = selectedProviderId ? getProviderById(selectedProviderId) : null;
 
   const configs = loadOpen ? getSavedConfigs() : [];
 
