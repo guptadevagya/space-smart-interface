@@ -196,11 +196,14 @@ const Index: React.FC = () => {
   const providerBirths = useMemo(() => {
     if (!isUS || providerView === 'all') return null;
     if (selectedProviderId) {
+      if (providerBirthOverrides[selectedProviderId] !== undefined) {
+        return providerBirthOverrides[selectedProviderId];
+      }
       const provider = getProviderById(selectedProviderId);
       return provider?.annualBirths ?? null;
     }
     return getAggregateBirths(providerView);
-  }, [isUS, providerView, selectedProviderId]);
+  }, [isUS, providerView, selectedProviderId, providerBirthOverrides]);
 
   const providerResults = useMemo(() => {
     if (providerBirths === null) return null;
