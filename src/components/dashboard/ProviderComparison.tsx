@@ -45,24 +45,16 @@ const MetricCard: React.FC<MetricCardProps> = ({
     transition={{ duration: 0.35, delay }}
   >
     <Card className={`border-l-4 ${accent} h-full`}>
-      <CardContent className="p-4 space-y-2">
+      <CardContent className="p-5 space-y-2">
         <div className="flex items-center justify-between">
-          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
             {title}
           </p>
           <div className="p-1 bg-muted rounded-md">{icon}</div>
         </div>
-        <p className="text-lg font-bold text-foreground leading-none">
+        <p className="text-2xl font-bold text-foreground leading-none">
           {providerValue}
         </p>
-        <div className="flex items-center justify-between pt-1 border-t border-border">
-          <span className="text-[10px] text-muted-foreground">
-            U.S. total: {nationalValue}
-          </span>
-          <span className="text-[10px] font-semibold text-primary tabular-nums">
-            {sharePercent} of national
-          </span>
-        </div>
       </CardContent>
     </Card>
   </motion.div>
