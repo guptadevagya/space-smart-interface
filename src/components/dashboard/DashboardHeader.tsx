@@ -112,7 +112,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
         {/* Total impact badge */}
         <div className="hidden md:block text-right">
-          <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
             Total Impact
           </p>
           <p className="text-xl font-bold text-emerald-600 leading-none">
