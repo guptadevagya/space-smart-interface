@@ -757,8 +757,8 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   label="C-Section Cost"
                   value={inputs.cSectionCost}
                   onChange={(v) => update('cSectionCost', v)}
-                  min={5000}
-                  max={30000}
+                  min={10000}
+                  max={50000}
                   step={500}
                   prefix="$"
                   isDefault={!isChanged('cSectionCost')}
@@ -772,7 +772,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   value={inputs.nicuDailyCost}
                   onChange={(v) => update('nicuDailyCost', v)}
                   min={1000}
-                  max={8000}
+                  max={15000}
                   step={100}
                   prefix="$"
                   isDefault={!isChanged('nicuDailyCost')}
@@ -782,17 +782,61 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   }
                 />
                 <SliderField
-                  label="Malpractice Settlement"
+                  label="CP Verdict (Median)"
                   value={inputs.malpracticeClaimCost}
                   onChange={(v) => update('malpracticeClaimCost', v)}
-                  min={500000}
-                  max={10000000}
+                  min={1000000}
+                  max={20000000}
                   step={100000}
                   prefix="$"
                   isDefault={!isChanged('malpracticeClaimCost')}
                   tooltip={inputs.inputReferences.malpracticeClaimCost}
                   onEditReference={(ref) =>
                     handleReferenceChange('malpracticeClaimCost', ref)
+                  }
+                />
+                <SliderField
+                  label="Fetal Death Payout"
+                  value={inputs.fetalDeathPayout}
+                  onChange={(v) => update('fetalDeathPayout', v)}
+                  min={100000}
+                  max={2000000}
+                  step={10000}
+                  prefix="$"
+                  isDefault={!isChanged('fetalDeathPayout')}
+                  tooltip={inputs.inputReferences.fetalDeathPayout}
+                  onEditReference={(ref) =>
+                    handleReferenceChange('fetalDeathPayout', ref)
+                  }
+                />
+                <SliderField
+                  label="Litigation Success Rate"
+                  value={inputs.litigationSuccessRate}
+                  onChange={(v) => update('litigationSuccessRate', v)}
+                  min={0.05}
+                  max={1.0}
+                  step={0.01}
+                  suffix="%"
+                  isDefault={!isChanged('litigationSuccessRate')}
+                  formatDisplay={(v) => (v * 100).toFixed(0)}
+                  tooltip={inputs.inputReferences.litigationSuccessRate}
+                  onEditReference={(ref) =>
+                    handleReferenceChange('litigationSuccessRate', ref)
+                  }
+                />
+                <SliderField
+                  label="Screening Uptake"
+                  value={inputs.combinedTestRate}
+                  onChange={(v) => update('combinedTestRate', v)}
+                  min={0.3}
+                  max={1.0}
+                  step={0.005}
+                  suffix="%"
+                  isDefault={!isChanged('combinedTestRate')}
+                  formatDisplay={(v) => (v * 100).toFixed(1)}
+                  tooltip={inputs.inputReferences.combinedTestRate}
+                  onEditReference={(ref) =>
+                    handleReferenceChange('combinedTestRate', ref)
                   }
                 />
               </>
