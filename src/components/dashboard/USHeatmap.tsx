@@ -123,35 +123,35 @@ const USHeatmap: React.FC<USHeatmapProps> = ({ providerView, selectedProviderId 
             <div className="absolute top-4 right-4 bg-card border border-border rounded-lg shadow-lg p-3 max-w-[240px] pointer-events-none z-10">
               <p className="font-bold text-xs">{STATE_NAMES[hoveredState] || hoveredState}</p>
               {market && (
-                <p className="text-[10px] text-muted-foreground mt-0.5">
+              <p className="text-xs text-muted-foreground mt-0.5">
                   {market.totalBirths.toLocaleString()} births/yr
                 </p>
               )}
               {hoveredData ? (
                 <div className="mt-1.5 space-y-1">
-                  <p className="text-[10px] text-muted-foreground font-medium">
+                  <p className="text-xs text-muted-foreground font-medium">
                     {hoveredData.count} tracked system{hoveredData.count !== 1 ? 's' : ''}
                   </p>
                   <div className="space-y-0.5">
                     {hoveredData.names.slice(0, 6).map((n, i) => (
-                      <p key={i} className="text-[10px] text-foreground">• {n}</p>
+                      <p key={i} className="text-xs text-foreground">• {n}</p>
                     ))}
                     {hoveredData.names.length > 6 && (
-                      <p className="text-[10px] text-muted-foreground">
+                      <p className="text-xs text-muted-foreground">
                         +{hoveredData.names.length - 6} more
                       </p>
                     )}
                   </div>
                 </div>
               ) : (
-                <p className="text-[10px] text-muted-foreground mt-1">No tracked providers</p>
+                <p className="text-xs text-muted-foreground mt-1">No tracked providers</p>
               )}
               {market && (
                 <div className="mt-1.5 pt-1.5 border-t border-border space-y-0.5">
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     Largest: <span className="text-foreground font-medium">{market.largestSystem}</span> ({market.systemType.toUpperCase()})
                   </p>
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     Controls ~{(market.estPctControlled * 100).toFixed(0)}% · Top 3: {(market.top3PctCombined * 100).toFixed(0)}%
                   </p>
                 </div>
