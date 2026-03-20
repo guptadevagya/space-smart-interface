@@ -379,10 +379,10 @@ const Index: React.FC = () => {
         />
 
         <main className="flex-1 overflow-y-auto">
-          <div className="max-w-7xl mx-auto p-6 lg:p-10 space-y-8">
+            <div className="max-w-7xl mx-auto p-6 lg:p-10 space-y-10">
             {/* Section 1: KPIs — always national */}
             <section>
-              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
+              <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4">
                 {isUS ? 'U.S. National Summary' : 'Executive Summary'}
               </h2>
               <KPICards
@@ -392,7 +392,6 @@ const Index: React.FC = () => {
                 formatNumber={formatNumber}
               />
             </section>
-
 
             {/* Section 2: Charts — always national */}
             <section>
