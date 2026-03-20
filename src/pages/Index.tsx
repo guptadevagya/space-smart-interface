@@ -408,7 +408,7 @@ const Index: React.FC = () => {
             {/* Section 2.5: US Heatmap + State Market Table */}
             {isUS && (
               <section className="space-y-6">
-                <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
+                <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4">
                   Geographic Distribution
                 </h2>
                 <USHeatmap
