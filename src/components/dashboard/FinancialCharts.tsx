@@ -178,17 +178,17 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
                   cursor={{ fill: 'hsl(var(--muted) / 0.3)' }}
                 />
                 <Bar
-                  dataKey="Benefit"
-                  fill={CHART_COLORS.savings}
+                  dataKey="value"
                   radius={[4, 4, 0, 0]}
                   maxBarSize={80}
-                />
-                <Bar
-                  dataKey="Cost"
-                  fill={CHART_COLORS.cost}
-                  radius={[4, 4, 0, 0]}
-                  maxBarSize={80}
-                />
+                >
+                  {comparisonData.map((entry, i) => (
+                    <Cell
+                      key={i}
+                      fill={entry.type === 'cost' ? CHART_COLORS.cost : CHART_COLORS.savings}
+                    />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
