@@ -164,6 +164,7 @@ const Index: React.FC = () => {
   const [selectedProviderId, setSelectedProviderId] = useState<string | null>(
     null,
   );
+  const [providerBirthOverrides, setProviderBirthOverrides] = useState<Record<string, number>>({});
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -195,11 +196,14 @@ const Index: React.FC = () => {
   const providerBirths = useMemo(() => {
     if (!isUS || providerView === 'all') return null;
     if (selectedProviderId) {
+      if (providerBirthOverrides[selectedProviderId] !== undefined) {
+        return providerBirthOverrides[selectedProviderId];
+      }
       const provider = getProviderById(selectedProviderId);
       return provider?.annualBirths ?? null;
     }
     return getAggregateBirths(providerView);
-  }, [isUS, providerView, selectedProviderId]);
+  }, [isUS, providerView, selectedProviderId, providerBirthOverrides]);
 
   const providerResults = useMemo(() => {
     if (providerBirths === null) return null;
@@ -355,6 +359,8 @@ const Index: React.FC = () => {
         setProviderView={setProviderView}
         selectedProviderId={selectedProviderId}
         setSelectedProviderId={setSelectedProviderId}
+        providerBirthOverrides={providerBirthOverrides}
+        setProviderBirthOverrides={setProviderBirthOverrides}
       />
 
       <div className="flex-1 flex flex-col h-full overflow-hidden">
