@@ -170,7 +170,7 @@ const Index: React.FC = () => {
   );
   const [providerBirthOverrides, setProviderBirthOverrides] = useState<Record<string, number>>({});
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => window.innerWidth >= 1024);
 
   const isUS = inputs.region === 'US';
 
