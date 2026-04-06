@@ -265,13 +265,17 @@ const Index: React.FC = () => {
     }
   };
 
-  const saveConfiguration = () => {
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+
+  const saveConfiguration = (name: string, comment: string) => {
     try {
       const configs = getSavedConfigs();
       const newConfig: SavedConfig = {
         id: Date.now().toString(),
-        name: `${inputs.region} – ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
+        name,
+        comment: comment || undefined,
         timestamp: Date.now(),
+        region: inputs.region,
         inputs: { ...inputs },
         formulas: [...formulas],
         customVariables: [...customVariables],
