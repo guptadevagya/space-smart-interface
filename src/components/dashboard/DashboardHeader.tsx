@@ -46,7 +46,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   onResetDefaults,
   getSavedConfigs,
 }) => {
-  const regions: Region[] = ['US', 'UK', 'Global'];
+  const regions: Region[] = ['UK', 'US', 'Global'];
   const [loadOpen, setLoadOpen] = useState(false);
 
   const configs = loadOpen ? getSavedConfigs() : [];
