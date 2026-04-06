@@ -118,7 +118,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             variant="outline"
             size="sm"
             onClick={onSave}
-            className="hidden sm:flex h-7 text-xs px-2"
+            className="hidden sm:flex text-xs px-2.5"
           >
             <Save className="h-3 w-3 mr-1" />
             Save
