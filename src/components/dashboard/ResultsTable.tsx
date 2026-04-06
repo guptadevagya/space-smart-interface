@@ -205,13 +205,6 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
 
   return (
     <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-bold">
-          {isUS
-            ? 'Detailed Impact Analysis'
-            : 'Cost of Undiagnosed FGR — Detailed Breakdown'}
-        </CardTitle>
-      </CardHeader>
       <CardContent className="p-0">
         <Table>
           <TableHeader>
