@@ -500,7 +500,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
         )}
       >
         {/* Header */}
-        <div className="px-5 py-4 border-b border-border flex items-center justify-between shrink-0">
+        <div className="px-5 py-3 border-b border-border flex items-center justify-between shrink-0">
           <div>
             <h2 className="text-sm font-bold text-foreground">
               Model Configuration
@@ -513,7 +513,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 lg:hidden"
+              className="h-8 w-8"
               onClick={toggleSidebar}
             >
               <X className="h-4 w-4" />
