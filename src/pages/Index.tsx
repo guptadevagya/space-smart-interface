@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import InputSidebar from '@/components/dashboard/InputSidebar';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import KPICards from '@/components/dashboard/KPICards';
@@ -170,7 +170,17 @@ const Index: React.FC = () => {
   );
   const [providerBirthOverrides, setProviderBirthOverrides] = useState<Record<string, number>>({});
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(() => window.innerWidth >= 1024);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => window.innerWidth >= 1280);
+
+  useEffect(() => {
+    const syncSidebarState = () => {
+      setIsSidebarOpen(window.innerWidth >= 1280);
+    };
+
+    syncSidebarState();
+    window.addEventListener('resize', syncSidebarState);
+    return () => window.removeEventListener('resize', syncSidebarState);
+  }, []);
 
   const isUS = inputs.region === 'US';
 
@@ -231,7 +241,7 @@ const Index: React.FC = () => {
     : null;
 
   // ── Helpers ──
-  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   const switchRegion = (region: Region) => {
     switch (region) {
