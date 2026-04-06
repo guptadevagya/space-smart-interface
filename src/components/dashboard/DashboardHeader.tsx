@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Region, USProviderView } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import { Menu, Printer, Save, FolderOpen, Trash2, Clock } from 'lucide-react';
+import { Menu, Printer, Save, FolderOpen, Trash2, Clock, RotateCcw, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Popover,
@@ -9,12 +9,15 @@ import {
   PopoverContent,
 } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@/components/ui/badge';
 import { getProviderById, US_TOTAL_BIRTHS } from '@/lib/providerProfiles';
 
 interface SavedConfigMeta {
   id: string;
   name: string;
   timestamp: number;
+  comment?: string;
+  region?: Region;
 }
 
 interface DashboardHeaderProps {
@@ -25,6 +28,7 @@ interface DashboardHeaderProps {
   onSave: () => void;
   onLoad: (id: string) => void;
   onDelete: (id: string) => void;
+  onResetDefaults: () => void;
   getSavedConfigs: () => SavedConfigMeta[];
   providerView?: USProviderView;
   selectedProviderId?: string | null;
@@ -39,15 +43,11 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   onSave,
   onLoad,
   onDelete,
+  onResetDefaults,
   getSavedConfigs,
-  providerView,
-  selectedProviderId,
-  annualBirths,
 }) => {
   const regions: Region[] = ['US', 'UK', 'Global'];
   const [loadOpen, setLoadOpen] = useState(false);
-
-  const selectedProvider = selectedProviderId ? getProviderById(selectedProviderId) : null;
 
   const configs = loadOpen ? getSavedConfigs() : [];
 
@@ -137,13 +137,13 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 Load
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="end" className="w-80 p-0">
+            <PopoverContent align="end" className="w-96 p-0">
               <div className="px-4 py-3 border-b border-border">
                 <p className="text-sm font-bold text-foreground">
                   Saved Configurations
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  Select a version to restore
+                  Select a configuration to restore
                 </p>
               </div>
               {configs.length === 0 ? (
@@ -156,37 +156,52 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                   </p>
                 </div>
               ) : (
-                <ScrollArea className="max-h-64">
+                <ScrollArea className="max-h-72">
                   <div className="divide-y divide-border">
                     {[...configs].reverse().map((cfg) => (
                       <div
                         key={cfg.id}
-                        className="px-4 py-2.5 flex items-center justify-between hover:bg-muted/40 transition-colors group"
+                        className="px-4 py-3 hover:bg-muted/40 transition-colors group"
                       >
-                        <button
-                          className="flex-1 text-left"
-                          onClick={() => {
-                            onLoad(cfg.id);
-                            setLoadOpen(false);
-                          }}
-                        >
-                          <p className="text-xs font-medium text-foreground">
-                            {cfg.name}
-                          </p>
-                          <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                            <Clock className="h-2.5 w-2.5" />
-                            {formatTime(cfg.timestamp)}
-                          </p>
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onDelete(cfg.id);
-                          }}
-                          className="text-destructive/50 hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity p-1"
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </button>
+                        <div className="flex items-start justify-between gap-2">
+                          <button
+                            className="flex-1 text-left"
+                            onClick={() => {
+                              onLoad(cfg.id);
+                              setLoadOpen(false);
+                            }}
+                          >
+                            <div className="flex items-center gap-2 mb-1">
+                              <p className="text-sm font-medium text-foreground leading-tight">
+                                {cfg.name}
+                              </p>
+                              {cfg.region && (
+                                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-medium">
+                                  {cfg.region}
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-xs text-muted-foreground flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {formatTime(cfg.timestamp)}
+                            </p>
+                            {cfg.comment && (
+                              <p className="text-xs text-muted-foreground mt-1.5 flex items-start gap-1.5">
+                                <MessageSquare className="h-3 w-3 mt-0.5 shrink-0" />
+                                <span className="line-clamp-2">{cfg.comment}</span>
+                              </p>
+                            )}
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDelete(cfg.id);
+                            }}
+                            className="text-destructive/50 hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity p-1 mt-0.5"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -194,6 +209,15 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               )}
             </PopoverContent>
           </Popover>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onResetDefaults}
+            className="hidden sm:flex"
+          >
+            <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
+            Defaults
+          </Button>
           <Button
             variant="outline"
             size="sm"

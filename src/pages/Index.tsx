@@ -252,6 +252,11 @@ const Index: React.FC = () => {
     setSelectedProviderId(null);
   };
 
+  const resetToDefaults = () => {
+    switchRegion(inputs.region);
+    toast.success('Reset to defaults');
+  };
+
   const resetFormulas = () => {
     setFormulas(getDefaultFormulas(inputs.region));
     toast.success('Formulas reset to defaults');
