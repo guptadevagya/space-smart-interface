@@ -439,7 +439,7 @@ const FormulaExplorer: React.FC<FormulaExplorerProps> = ({
                     />
                   </div>
                   <Button size="sm" variant="outline" className="h-9 text-xs" onClick={() => { setShowAddVar(!showAddVar); setShowAddFormula(null); }}>
-                    <Beaker className="h-3.5 w-3.5 mr-1.5" /> Variable
+                    <Plus className="h-3.5 w-3.5 mr-1.5" /> Variable
                   </Button>
                   <Button size="sm" variant="outline" className="h-9 text-xs" onClick={() => { setShowAddFormula(showAddFormula ? null : activeTab as FormulaDefinition['group']); setShowAddVar(false); }}>
                     <Plus className="h-3.5 w-3.5 mr-1.5" /> Formula
