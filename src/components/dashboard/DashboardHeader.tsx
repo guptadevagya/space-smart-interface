@@ -33,7 +33,6 @@ interface DashboardHeaderProps {
   onResetDefaults: () => void;
   getSavedConfigs: () => SavedConfigMeta[];
 }
-}
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   region,
