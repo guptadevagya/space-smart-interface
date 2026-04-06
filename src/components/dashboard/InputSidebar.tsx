@@ -502,7 +502,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
         )}
       >
         {/* Header */}
-        <div className="px-5 py-3 border-b border-border flex items-center justify-between shrink-0">
+        <div className="px-5 py-3 border-b border-border flex items-center justify-between shrink-0 h-[57px]">
           <h2 className="text-sm font-bold text-foreground">
             Model Configuration
           </h2>
