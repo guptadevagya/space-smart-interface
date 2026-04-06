@@ -409,6 +409,15 @@ const Index: React.FC = () => {
 
         <main className="flex-1 overflow-y-auto">
             <div className="max-w-7xl mx-auto p-6 lg:p-10 space-y-10">
+            {inputs.region === 'Global' && (
+              <div className="flex items-center gap-3 rounded-lg border border-amber-300/50 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-500/30 px-4 py-3">
+                <span className="text-amber-600 dark:text-amber-400 text-lg">⚠️</span>
+                <div>
+                  <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">Draft — Work in Progress</p>
+                  <p className="text-xs text-amber-700/80 dark:text-amber-400/70">Global model values are preliminary estimates and have not yet been validated against published sources. Treat all outputs as indicative only.</p>
+                </div>
+              </div>
+            )}
             {/* Section 1: KPIs — always national */}
             <section>
               <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4">
