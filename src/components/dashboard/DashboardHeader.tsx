@@ -39,6 +39,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   region,
   switchRegion,
   toggleSidebar,
+  isSidebarOpen,
   totalImpact,
   onSave,
   onLoad,
