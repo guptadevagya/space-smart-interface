@@ -360,7 +360,7 @@ const Index: React.FC = () => {
         setInputs={setInputs}
         isOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
-        onSave={saveConfiguration}
+        onSave={() => setSaveDialogOpen(true)}
         customParameters={customParameters}
         setCustomParameters={setCustomParameters}
         providerView={providerView}
@@ -377,20 +377,30 @@ const Index: React.FC = () => {
           switchRegion={switchRegion}
           toggleSidebar={toggleSidebar}
           totalImpact={formatCurrency(results.financials.totalEconomicImpact)}
-          onSave={saveConfiguration}
+          onSave={() => setSaveDialogOpen(true)}
           onLoad={loadConfiguration}
           onDelete={deleteConfiguration}
+          onResetDefaults={resetToDefaults}
           getSavedConfigs={() =>
-            getSavedConfigs().map(({ id, name, timestamp }) => ({
+            getSavedConfigs().map(({ id, name, timestamp, comment, region: r }) => ({
               id,
               name,
               timestamp,
+              comment,
+              region: r,
             }))
           }
           providerView={providerView}
           selectedProviderId={selectedProviderId}
           annualBirths={inputs.annualBirths}
         />
+
+      <SaveConfigDialog
+        open={saveDialogOpen}
+        onOpenChange={setSaveDialogOpen}
+        onSave={saveConfiguration}
+        defaultName={`${inputs.region} – ${new Date().toLocaleDateString()}`}
+      />
 
         <main className="flex-1 overflow-y-auto">
             <div className="max-w-7xl mx-auto p-6 lg:p-10 space-y-10">
