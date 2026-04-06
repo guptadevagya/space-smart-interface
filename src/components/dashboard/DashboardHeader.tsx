@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Region, USProviderView } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import oxnnetLogo from '@/assets/oxnnet-logo.png';
-import { Menu, Printer, Save, FolderOpen, Trash2, Clock, RotateCcw, MessageSquare } from 'lucide-react';
+import { Menu, Printer, Save, FolderOpen, Trash2, Clock, RotateCcw, MessageSquare, PanelLeftOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Popover,
