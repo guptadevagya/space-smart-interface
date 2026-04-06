@@ -61,8 +61,8 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   };
 
   return (
-    <header className="bg-card border-b border-border px-6 py-3 flex items-center sticky top-0 z-20 shadow-sm h-[57px]">
-      <div className="flex items-center gap-3">
+    <header className="bg-card border-b border-border px-6 flex items-center justify-between sticky top-0 z-20 shadow-sm h-[57px]">
+      <div className="flex items-center gap-3 shrink-0">
         {!isSidebarOpen && (
           <Button
             variant="ghost"
@@ -76,11 +76,9 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         )}
         <div className="flex items-center gap-2.5">
           <img src={oxnnetLogo} alt="OxNNet" className="h-8 w-8 object-contain" />
-          <div>
-            <h1 className="text-sm font-bold text-foreground leading-tight">
-              OxNNet Economics
-            </h1>
-          </div>
+          <h1 className="text-sm font-bold text-foreground leading-tight">
+            OxNNet Economics
+          </h1>
         </div>
       </div>
 
