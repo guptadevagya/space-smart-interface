@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Region, USProviderView } from '@/lib/types';
 import { Button } from '@/components/ui/button';
+import oxnnetLogo from '@/assets/oxnnet-logo.png';
 import { Menu, Printer, Save, FolderOpen, Trash2, Clock, RotateCcw, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -72,9 +73,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           <Menu className="h-5 w-5" />
         </Button>
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-serif font-bold text-base">
-            Ox
-          </div>
+          <img src={oxnnetLogo} alt="OxNNet" className="h-8 w-8 object-contain" />
           <div>
             <h1 className="text-sm font-bold text-foreground leading-tight">
               OxNNet Economics
