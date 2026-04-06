@@ -418,11 +418,16 @@ const Index: React.FC = () => {
                 </div>
               </div>
             )}
-            {/* Section 1: KPIs — always national */}
+            {/* Page title + KPIs */}
             <section>
-              <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4">
-                {isUS ? 'U.S. National Summary' : 'Executive Summary'}
-              </h2>
+              <div className="mb-4">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-1">
+                  {isUS ? 'US Market' : inputs.region === 'UK' ? 'UK NHS' : 'Global'} Impact Analysis
+                </p>
+                <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
+                  {isUS ? 'U.S. National Summary' : 'Executive Summary'}
+                </h2>
+              </div>
               <KPICards
                 results={results}
                 region={inputs.region}
