@@ -41,7 +41,9 @@ const STORAGE_KEY = 'oxnnet-simulator-configs';
 interface SavedConfig {
   id: string;
   name: string;
+  comment?: string;
   timestamp: number;
+  region: Region;
   inputs: SimulationInputs;
   formulas?: FormulaDefinition[];
   customVariables?: CustomVariable[];
