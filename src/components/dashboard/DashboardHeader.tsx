@@ -216,7 +216,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             variant="outline"
             size="sm"
             onClick={() => window.print()}
-            className="hidden sm:flex print:hidden h-7 text-xs px-2"
+            className="hidden sm:flex print:hidden text-xs px-2.5"
           >
             <Printer className="h-3 w-3 mr-1" />
             Print
