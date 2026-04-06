@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Region, USProviderView } from '@/lib/types';
+import { Region } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import oxnnetLogo from '@/assets/oxnnet-logo.png';
-import { Menu, Printer, Save, FolderOpen, Trash2, Clock, RotateCcw, MessageSquare, PanelLeftOpen } from 'lucide-react';
+import { Printer, Save, FolderOpen, Trash2, Clock, RotateCcw, MessageSquare, PanelLeftOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Popover,
@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { getProviderById, US_TOTAL_BIRTHS } from '@/lib/providerProfiles';
 
 interface SavedConfigMeta {
   id: string;

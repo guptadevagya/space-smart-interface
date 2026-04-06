@@ -15,7 +15,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
-import { STATE_MARKET_DATA, StateMarketData } from '@/lib/stateMarketData';
+import { STATE_MARKET_DATA } from '@/lib/stateMarketData';
 import { cn } from '@/lib/utils';
 import { Search, ArrowUpDown } from 'lucide-react';
 

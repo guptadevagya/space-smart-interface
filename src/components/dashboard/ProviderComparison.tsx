@@ -58,10 +58,6 @@ const MetricCard: React.FC<MetricCardProps> = ({
 
 const ProviderComparison: React.FC<ProviderComparisonProps> = ({
   providerResults,
-  nationalResults,
-  providerLabel,
-  providerBirths,
-  nationalBirths,
   formatCurrency,
   formatNumber,
 }) => {

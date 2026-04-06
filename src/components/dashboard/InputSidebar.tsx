@@ -1,8 +1,6 @@
 import React from 'react';
 import { SimulationInputs, Region, CustomParameter, USProviderView } from '@/lib/types';
 import {
-  US_PROVIDERS,
-  US_TOTAL_BIRTHS,
   getProvidersByType,
   getProviderById,
   getAggregateBirths,
@@ -21,13 +19,11 @@ import {
 } from '@/components/ui/popover';
 import {
   BookOpen,
-  RotateCcw,
   PanelLeftClose,
   ChevronDown,
   Save,
   Plus,
   Trash2,
-  Pencil,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -322,7 +318,7 @@ const AddParameterDialog: React.FC<{
           <div className="grid grid-cols-2 gap-2">
             <div>
               <Label className="text-xs">Format</Label>
-              <Select value={format} onValueChange={(v: any) => setFormat(v)}>
+              <Select value={format} onValueChange={(v: string) => setFormat(v as 'number' | 'percent' | 'currency')}>
                 <SelectTrigger className="h-8 text-xs">
                   <SelectValue />
                 </SelectTrigger>
@@ -424,11 +420,6 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
       ...prev,
       inputReferences: { ...prev.inputReferences, [key]: value },
     }));
-  };
-
-  const resetToDefaults = () => {
-    setInputs(getDefaults(inputs.region));
-    setCustomParameters([]);
   };
 
   const isChanged = (key: keyof SimulationInputs) =>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -42,7 +42,6 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
     2 * inputs.consultantAppointmentCost +
     midwifeToConsultantDiff;
   const totalScansOxailis = highRiskOxailis * 3;
-  const avoidedUndiagnosed = results.demographics.avoidedUndiagnosed;
 
   // UK-specific intermediates
   const avoidedHypoxic = results.clinicalOutcomes.avoidedHypoxicEvents;
@@ -67,7 +66,6 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   const extraHighRiskPathwayCost = additionalHighRisk * costPerHighRisk;
   const oxailisScreeningCost =
     inputs.annualBirths * inputs.combinedTestRate * inputs.oxailisScanCost;
-  const totalScreeningCost = extraHighRiskPathwayCost + oxailisScreeningCost;
 
   type RowType = {
     label: string;

@@ -36,7 +36,6 @@ const CHART_COLORS = {
 const FinancialCharts: React.FC<FinancialChartsProps> = ({
   results,
   region,
-  providerLabel,
 }) => {
   const isUS = region === 'US';
   const locale = isUS ? 'en-US' : 'en-GB';
@@ -56,9 +55,6 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
       currency,
       maximumFractionDigits: 0,
     }).format(value);
-
-  const fmtNum = (value: number) =>
-    new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }).format(value);
 
   // Financial breakdown data — filter out zero values
   const breakdownData = (isUS
@@ -145,7 +141,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
   );
 
   const renderColoredTick = (colorMap: Record<string, string>) =>
-    ({ x, y, payload }: any) => (
+    ({ x, y, payload }: { x: number; y: number; payload: { value: string } }) => (
       <text
         x={x}
         y={y + 12}
@@ -251,7 +247,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
                   dataKey="name"
                   type="category"
                   width={80}
-                  tick={({ x, y, payload }: any) => {
+                  tick={({ x, y, payload }: { x: number; y: number; payload: { value: string } }) => {
                     const entry = breakdownData.find((d) => d.name === payload.value);
                     return (
                       <text

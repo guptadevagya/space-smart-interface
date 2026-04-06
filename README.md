@@ -1,189 +1,108 @@
 # OxNNet Health Economics Dashboard
 
-A simulation dashboard that models the health and economic impact of using OxNNet screening for fetal growth restriction (FGR) compared to current methods.
+An interactive simulation tool that models the clinical and economic impact of deploying OxNNet AI screening for Fetal Growth Restriction (FGR) across the US, UK, and global maternity care markets.
+
+## The Problem
+
+Fetal Growth Restriction affects roughly 8% of pregnancies and is a leading cause of stillbirth, neonatal brain injury, and cerebral palsy. Current screening methods (fundal height measurement) detect only about 33% of cases. OxNNet, an AI model developed at Oxford, analyzes first-trimester placental ultrasound images and detects approximately 66% of FGR cases -- doubling the detection rate.
+
+## What This Tool Does
+
+This dashboard quantifies what that detection gap means in practice:
+
+- **Clinical outcomes**: How many emergency C-sections, NICU admissions, hypoxic brain injuries, cerebral palsy cases, and stillbirths could be avoided
+- **Financial impact**: Cost savings from avoided procedures, litigation avoidance, and (in the US) scan reimbursement revenue
+- **Provider-level analysis**: Drill down into 54 named US healthcare providers (19 IPPs, 35 IDNs) to see projected impact per system
+- **Geographic view**: Interactive US state heatmap showing provider distribution and market concentration
+- **Transparency**: Every input parameter is editable and cited to peer-reviewed literature. All formulas are visible and adjustable.
+
+Three market models are supported:
+
+- **US** (3.6M births/year) -- Revenue + cost avoidance perspective, with provider drill-down
+- **UK** (600K births/year) -- NHS net savings perspective
+- **Global** (13.6M births/year) -- Preliminary estimates using UK model assumptions
 
 ---
 
-## What This Does
+## Getting Started
 
-- Compare current FGR screening with OxNNet (Oxailis) screening
-- See projected cost savings across C-sections, NICU stays, litigation, and stillbirths
-- Adjust clinical assumptions and cost parameters in real time
-- View financial breakdowns, charts, and clinical outcome projections
-- Print full reports with references and assumptions
+No coding experience required. You just need to install one thing, then run two commands.
 
----
+### 1. Install Node.js
 
-## Setup Guide
+Go to [https://nodejs.org](https://nodejs.org) and download the **LTS** version. Run the installer with default settings, then restart your computer.
 
-No coding experience is needed.
-
-### What You Need
-
-- A computer running Windows 10+, macOS, or Linux
-- An internet connection (only needed for the first setup)
-- About 500 MB of free disk space
-
-### Step 1: Install Node.js
-
-1. Go to [https://nodejs.org](https://nodejs.org)
-2. Download the **LTS** version
-3. Run the installer with default settings
-4. Restart your computer
-
-To check it worked, open a terminal and run:
+To verify it installed, open a terminal and type:
 
 ```
 node --version
 ```
 
-You should see a version number like `v20.11.0`.
+You should see a version number (e.g. `v22.x.x`).
 
 **How to open a terminal:**
 
-- Windows: Press `Win + R`, type `cmd`, press Enter
-- macOS: Press `Cmd + Space`, type `Terminal`, press Enter
+- **Windows**: Press `Win + R`, type `cmd`, press Enter
+- **Mac**: Press `Cmd + Space`, type `Terminal`, press Enter
 
-### Step 2: Download the Project
+### 2. Download This Project
 
-**Option A: Download as ZIP**
+Click the green **Code** button on this GitHub page, then **Download ZIP**. Extract the ZIP to a folder on your computer.
 
-1. Click the green **Code** button on this page, then select **Download ZIP**
-2. Extract the ZIP file somewhere on your computer
-
-**Option B: Clone with Git** (if Git is installed)
+Or if you have Git installed:
 
 ```
 git clone <REPOSITORY_URL>
 ```
 
-### Step 3: Open a Terminal in the Project Folder
+### 3. Open a Terminal in the Project Folder
 
-**Windows:**
+**Windows:** Open File Explorer, navigate to the project folder, click the address bar, type `cmd`, press Enter.
 
-1. Open File Explorer and go to the project folder
-2. Click the address bar at the top
-3. Type `cmd` and press Enter
+**Mac:** Open Terminal, type `cd ` (with a space), then drag the project folder from Finder into the terminal and press Enter.
 
-**macOS:**
-
-1. Open Terminal
-2. Type `cd ` (with a space after it)
-3. Drag the project folder from Finder into the Terminal window
-4. Press Enter
-
-To check you are in the right place, run:
-
-```
-ls
-```
-
-You should see files like `package.json`, `src`, and `README.md`.
-
-### Step 4: Install Dependencies
+### 4. Install and Run
 
 ```
 npm install
-```
-
-This takes 1 to 3 minutes. Warning messages are normal. Errors show up in red and start with `ERR!`.
-
-### Step 5: Start the Dashboard
-
-```
 npm run dev
 ```
 
-When it is ready, you will see something like:
+The first command downloads dependencies (takes 1-3 minutes, only needed once). The second starts the dashboard. When you see output like this:
 
 ```
-VITE v5.x.x  ready in 500ms
+VITE v8.x.x  ready in 500ms
   Local:   http://localhost:8080/
 ```
 
-Open your browser and go to **http://localhost:8080**.
+Open **http://localhost:8080** in your browser. That's it.
 
 ---
 
-## Daily Usage
+## Daily Use
 
-| Action                | Command                    |
-| --------------------- | -------------------------- |
-| Start the dashboard   | `npm run dev`              |
-| Stop the dashboard    | `Ctrl + C` in the terminal |
-| Restart the dashboard | Stop, then start again     |
+| Action              | What to do                                       |
+| ------------------- | ------------------------------------------------ |
+| Start the dashboard | Open a terminal in the folder, run `npm run dev` |
+| Stop the dashboard  | Press `Ctrl + C` in the terminal                 |
+| Switch regions      | Use the US / UK / Global tabs at the top         |
+| Save a scenario     | Click the save icon in the header                |
+| Print a report      | Click the print icon in the header               |
 
-Your settings are saved in the browser automatically. No internet connection is needed after the first setup. Clearing your browser data will reset saved settings.
-
----
-
-## Project Structure
-
-```
-src/
-├── components/
-│   ├── dashboard/          # Main dashboard components
-│   │   ├── DashboardHeader.tsx
-│   │   ├── FinancialCharts.tsx
-│   │   ├── FormulaExplorer.tsx
-│   │   ├── InputSidebar.tsx
-│   │   ├── KPICards.tsx
-│   │   ├── ReferencesPanel.tsx
-│   │   └── ResultsTable.tsx
-│   └── ui/                 # Reusable UI components
-├── lib/                    # Core logic and configuration
-│   ├── constants.ts        # Default inputs, references, bibliography
-│   ├── defaultFormulas.ts  # Formula definitions per region
-│   ├── formulaEngine.ts    # Math expression evaluator
-│   ├── modelLogic.ts       # Calculation functions
-│   ├── types.ts            # TypeScript interfaces
-│   └── utils.ts            # Utility functions
-├── pages/
-│   └── Index.tsx           # Main dashboard page
-└── test/                   # Test configuration
-```
-
----
-
-## Technology Stack
-
-- **React** + **TypeScript** for the UI
-- **Vite** for building and running the app
-- **Tailwind CSS** for styling
-- **Recharts** for charts
-- **mathjs** for formula evaluation
-- **shadcn/ui** for UI components
+Your configurations save automatically in the browser. No internet needed after initial setup. Clearing browser data will reset saved scenarios.
 
 ---
 
 ## Troubleshooting
 
 **"node is not recognized" or "command not found: node"**
-Node.js is not installed or the system PATH was not updated. Reinstall Node.js and restart your computer.
+Node.js isn't installed or needs a restart. Reinstall from [nodejs.org](https://nodejs.org) and restart your computer.
 
 **"npm ERR! code ENOENT"**
-Your terminal is not in the right folder. Go back to Step 3 and make sure you are inside the project folder.
+Your terminal isn't in the project folder. Make sure you see files like `package.json` when you run `ls` (Mac) or `dir` (Windows).
 
-**Blank page or error**
-Run `npm install` then `npm run dev`. If it still does not work, check the terminal for error messages.
+**Blank page or errors in the browser**
+Run `npm install` again, then `npm run dev`. Check the terminal for red error messages.
 
 **"Port 8080 is already in use"**
-Another app is using that port. Close it, or check the terminal output as the dashboard may have started on a different port.
-
----
-
-## Quick Reference
-
-```bash
-# First time setup (once):
-npm install
-
-# Start the dashboard:
-npm run dev
-
-# Open in browser:
-http://localhost:8080
-
-# Stop the dashboard:
-Ctrl + C
-```
+Close whatever else is using that port, or check the terminal -- Vite may have automatically picked a different port.

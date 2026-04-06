@@ -11,6 +11,13 @@ node_modules
 dist
 dist-ssr
 *.local
+.omc
+.claude
+.lovable
+CLAUDE.md
+AGENTS.md
+bun.lock
+bun.lockb
 
 # Editor directories and files
 .vscode/*

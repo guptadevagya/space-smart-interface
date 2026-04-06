@@ -5,6 +5,7 @@ export function extractVariables(formula: string): string[] {
   try {
     const node = parse(formula);
     const vars: string[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     node.traverse((n: any) => {
       if (n.type === 'SymbolNode') {
         vars.push(n.name);

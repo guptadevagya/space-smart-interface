@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/collapsible';
 import {
   ChevronDown,
-  ChevronRight,
   Calculator,
   Pencil,
   Check,
@@ -21,7 +20,6 @@ import {
   AlertCircle,
   RotateCcw,
   Search,
-  Beaker,
   DollarSign,
   Users,
   Activity,
@@ -234,10 +232,9 @@ const FormulaCard: React.FC<{
 const AddFormulaForm: React.FC<{
   group: FormulaDefinition['group'];
   allVarIds: string[];
-  labelMap: Record<string, string>;
   onAdd: (formula: FormulaDefinition) => void;
   onCancel: () => void;
-}> = ({ group, allVarIds, labelMap, onAdd, onCancel }) => {
+}> = ({ group, allVarIds, onAdd, onCancel }) => {
   const [name, setName] = useState('');
   const [id, setId] = useState('');
   const [formula, setFormula] = useState('');
@@ -328,7 +325,7 @@ const AddVariableForm: React.FC<{
         </div>
         <div className="flex gap-2">
           <Input type="number" value={value} onChange={(e) => setValue(e.target.value)} placeholder="Value" className="text-sm h-9 flex-1" />
-          <select value={format} onChange={(e) => setFormat(e.target.value as any)}
+          <select value={format} onChange={(e) => setFormat(e.target.value as 'number' | 'percent' | 'currency')}
             className="text-sm h-9 border rounded-md px-3 bg-background text-foreground">
             <option value="number">Number</option>
             <option value="percent">Percent (0–1)</option>
@@ -345,7 +342,6 @@ const AddVariableForm: React.FC<{
 
 // ── Main Component ──
 const FormulaExplorer: React.FC<FormulaExplorerProps> = ({
-  inputs,
   formulas,
   setFormulas,
   customVariables,
@@ -455,7 +451,6 @@ const FormulaExplorer: React.FC<FormulaExplorerProps> = ({
                   <AddFormulaForm
                     group={showAddFormula}
                     allVarIds={allVarIds}
-                    labelMap={labelMap}
                     onAdd={handleAddFormula}
                     onCancel={() => setShowAddFormula(null)}
                   />

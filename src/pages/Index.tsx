@@ -107,7 +107,7 @@ const Index: React.FC = () => {
           }
         }
       }
-    } catch {}
+    } catch { /* localStorage unavailable */ }
     return DEFAULT_UK_INPUTS;
   });
 
@@ -124,7 +124,7 @@ const Index: React.FC = () => {
           );
         }
       }
-    } catch {}
+    } catch { /* localStorage unavailable */ }
     return getDefaultFormulas('UK');
   });
 
@@ -141,7 +141,7 @@ const Index: React.FC = () => {
             return configs[configs.length - 1].customVariables!;
           }
         }
-      } catch {}
+      } catch { /* localStorage unavailable */ }
       return [];
     },
   );
@@ -159,7 +159,7 @@ const Index: React.FC = () => {
             return configs[configs.length - 1].customParameters!;
           }
         }
-      } catch {}
+      } catch { /* localStorage unavailable */ }
       return [];
     },
   );
