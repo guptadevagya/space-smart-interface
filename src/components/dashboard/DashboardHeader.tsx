@@ -64,14 +64,6 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   return (
     <header className="bg-card border-b border-border px-6 py-3 flex justify-between items-center sticky top-0 z-20 shadow-sm">
       <div className="flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-9 w-9"
-          onClick={toggleSidebar}
-        >
-          <Menu className="h-5 w-5" />
-        </Button>
         <div className="flex items-center gap-2.5">
           <img src={oxnnetLogo} alt="OxNNet" className="h-8 w-8 object-contain" />
           <div>
