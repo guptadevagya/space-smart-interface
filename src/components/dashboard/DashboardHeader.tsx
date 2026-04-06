@@ -207,7 +207,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             variant="outline"
             size="sm"
             onClick={onResetDefaults}
-            className="hidden sm:flex h-7 text-xs px-2"
+            className="hidden sm:flex text-xs px-2.5"
           >
             <RotateCcw className="h-3 w-3 mr-1" />
             Defaults
