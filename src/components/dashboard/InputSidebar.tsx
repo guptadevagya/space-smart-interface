@@ -487,7 +487,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
       {/* Overlay */}
       <div
         className={cn(
-          'fixed inset-0 bg-foreground/40 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300',
+          'fixed inset-0 bg-foreground/40 backdrop-blur-sm z-40 xl:hidden transition-opacity duration-300',
           isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none',
         )}
         onClick={toggleSidebar}
@@ -495,8 +495,10 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
 
       <aside
         className={cn(
-          'fixed lg:static inset-y-0 left-0 z-50 w-[360px] bg-card border-r border-border flex flex-col h-full transition-transform duration-300 ease-in-out',
-          isOpen ? 'translate-x-0' : '-translate-x-full',
+          'fixed xl:static inset-y-0 left-0 z-50 bg-card border-r border-border flex flex-col h-full transition-all duration-300 ease-in-out overflow-hidden',
+          isOpen
+            ? 'translate-x-0 w-[360px]'
+            : 'w-0 -translate-x-full xl:w-0 xl:-translate-x-0 border-r-0',
         )}
       >
         {/* Header */}

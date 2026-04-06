@@ -231,7 +231,7 @@ const Index: React.FC = () => {
     : null;
 
   // ── Helpers ──
-  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   const switchRegion = (region: Region) => {
     switch (region) {
