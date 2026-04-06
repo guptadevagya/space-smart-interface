@@ -501,25 +501,18 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
       >
         {/* Header */}
         <div className="px-5 py-3 border-b border-border flex items-center justify-between shrink-0">
-          <div>
-            <h2 className="text-sm font-bold text-foreground">
-              Model Configuration
-            </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Adjust parameters to update projections
-            </p>
-          </div>
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
-              onClick={toggleSidebar}
-              title="Collapse sidebar"
-            >
-              <PanelLeftClose className="h-4 w-4" />
-            </Button>
-          </div>
+          <h2 className="text-sm font-bold text-foreground">
+            Model Configuration
+          </h2>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={toggleSidebar}
+            title="Collapse sidebar"
+          >
+            <PanelLeftClose className="h-4 w-4" />
+          </Button>
         </div>
 
         {/* Scrollable inputs */}
