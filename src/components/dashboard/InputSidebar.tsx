@@ -484,7 +484,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
 
   return (
     <>
-      {/* Mobile overlay */}
+      {/* Overlay */}
       <div
         className={cn(
           'fixed inset-0 bg-foreground/40 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300',
@@ -496,11 +496,11 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
       <aside
         className={cn(
           'fixed lg:static inset-y-0 left-0 z-50 w-[360px] bg-card border-r border-border flex flex-col h-full transition-transform duration-300 ease-in-out',
-          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+          isOpen ? 'translate-x-0' : '-translate-x-full',
         )}
       >
         {/* Header */}
-        <div className="px-5 py-4 border-b border-border flex items-center justify-between shrink-0">
+        <div className="px-5 py-3 border-b border-border flex items-center justify-between shrink-0">
           <div>
             <h2 className="text-sm font-bold text-foreground">
               Model Configuration
@@ -513,7 +513,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 lg:hidden"
+              className="h-8 w-8"
               onClick={toggleSidebar}
             >
               <X className="h-4 w-4" />
