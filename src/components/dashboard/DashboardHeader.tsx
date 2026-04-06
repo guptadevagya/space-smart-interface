@@ -118,14 +118,14 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             variant="outline"
             size="sm"
             onClick={onSave}
-            className="hidden sm:flex h-7 text-xs px-2"
+            className="hidden sm:flex text-xs px-2.5"
           >
             <Save className="h-3 w-3 mr-1" />
             Save
           </Button>
           <Popover open={loadOpen} onOpenChange={setLoadOpen}>
             <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" className="hidden sm:flex h-7 text-xs px-2">
+              <Button variant="outline" size="sm" className="hidden sm:flex text-xs px-2.5">
                 <FolderOpen className="h-3 w-3 mr-1" />
                 Load
               </Button>
@@ -207,7 +207,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             variant="outline"
             size="sm"
             onClick={onResetDefaults}
-            className="hidden sm:flex h-7 text-xs px-2"
+            className="hidden sm:flex text-xs px-2.5"
           >
             <RotateCcw className="h-3 w-3 mr-1" />
             Defaults
@@ -216,7 +216,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             variant="outline"
             size="sm"
             onClick={() => window.print()}
-            className="hidden sm:flex print:hidden h-7 text-xs px-2"
+            className="hidden sm:flex print:hidden text-xs px-2.5"
           >
             <Printer className="h-3 w-3 mr-1" />
             Print
