@@ -495,10 +495,10 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
 
       <aside
         className={cn(
-          'fixed md:static inset-y-0 left-0 z-50 bg-card border-r border-border flex flex-col h-full transition-all duration-300 ease-in-out overflow-hidden',
+          'fixed lg:static inset-y-0 left-0 z-50 bg-card border-r border-border flex flex-col h-full transition-all duration-300 ease-in-out overflow-hidden',
           isOpen
             ? 'translate-x-0 w-[360px]'
-            : 'w-0 -translate-x-full md:w-0 md:translate-x-0 border-r-0',
+            : 'w-0 -translate-x-full lg:w-0 lg:translate-x-0 border-r-0',
         )}
       >
         {/* Header */}
