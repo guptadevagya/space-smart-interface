@@ -1,6 +1,11 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { US_PROVIDERS, getProvidersByType, getProviderById, ProviderType } from '@/lib/providerProfiles';
+import {
+  US_PROVIDERS,
+  getProvidersByType,
+  getProviderById,
+  ProviderType,
+} from '@/lib/providerProfiles';
 import { getStateMarketByAbbr } from '@/lib/stateMarketData';
 import { USProviderView } from '@/lib/types';
 import { USAMap, USAStateAbbreviation } from '@mirawision/usa-map-react';
@@ -12,16 +17,56 @@ interface USHeatmapProps {
 }
 
 const STATE_NAMES: Record<string, string> = {
-  AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California',
-  CO: 'Colorado', CT: 'Connecticut', DE: 'Delaware', FL: 'Florida', GA: 'Georgia',
-  HI: 'Hawaii', ID: 'Idaho', IL: 'Illinois', IN: 'Indiana', IA: 'Iowa',
-  KS: 'Kansas', KY: 'Kentucky', LA: 'Louisiana', ME: 'Maine', MD: 'Maryland',
-  MA: 'Massachusetts', MI: 'Michigan', MN: 'Minnesota', MS: 'Mississippi', MO: 'Missouri',
-  MT: 'Montana', NE: 'Nebraska', NV: 'Nevada', NH: 'New Hampshire', NJ: 'New Jersey',
-  NM: 'New Mexico', NY: 'New York', NC: 'North Carolina', ND: 'North Dakota', OH: 'Ohio',
-  OK: 'Oklahoma', OR: 'Oregon', PA: 'Pennsylvania', RI: 'Rhode Island', SC: 'South Carolina',
-  SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah', VT: 'Vermont',
-  VA: 'Virginia', WA: 'Washington', WV: 'West Virginia', WI: 'Wisconsin', WY: 'Wyoming',
+  AL: 'Alabama',
+  AK: 'Alaska',
+  AZ: 'Arizona',
+  AR: 'Arkansas',
+  CA: 'California',
+  CO: 'Colorado',
+  CT: 'Connecticut',
+  DE: 'Delaware',
+  FL: 'Florida',
+  GA: 'Georgia',
+  HI: 'Hawaii',
+  ID: 'Idaho',
+  IL: 'Illinois',
+  IN: 'Indiana',
+  IA: 'Iowa',
+  KS: 'Kansas',
+  KY: 'Kentucky',
+  LA: 'Louisiana',
+  ME: 'Maine',
+  MD: 'Maryland',
+  MA: 'Massachusetts',
+  MI: 'Michigan',
+  MN: 'Minnesota',
+  MS: 'Mississippi',
+  MO: 'Missouri',
+  MT: 'Montana',
+  NE: 'Nebraska',
+  NV: 'Nevada',
+  NH: 'New Hampshire',
+  NJ: 'New Jersey',
+  NM: 'New Mexico',
+  NY: 'New York',
+  NC: 'North Carolina',
+  ND: 'North Dakota',
+  OH: 'Ohio',
+  OK: 'Oklahoma',
+  OR: 'Oregon',
+  PA: 'Pennsylvania',
+  RI: 'Rhode Island',
+  SC: 'South Carolina',
+  SD: 'South Dakota',
+  TN: 'Tennessee',
+  TX: 'Texas',
+  UT: 'Utah',
+  VT: 'Vermont',
+  VA: 'Virginia',
+  WA: 'Washington',
+  WV: 'West Virginia',
+  WI: 'Wisconsin',
+  WY: 'Wyoming',
   DC: 'District of Columbia',
 };
 
@@ -50,19 +95,24 @@ const USHeatmap: React.FC<USHeatmapProps> = ({ providerView, selectedProviderId 
     });
 
     let max = 0;
-    Object.values(stateMap).forEach((v) => { if (v.count > max) max = v.count; });
+    Object.values(stateMap).forEach((v) => {
+      if (v.count > max) max = v.count;
+    });
     return { stateData: stateMap, maxCount: max };
   }, [providerView, selectedProviderId]);
 
-  const getStateFill = useCallback((stateCode: string): string => {
-    const data = stateData[stateCode];
-    if (!data || data.count === 0) return 'hsl(220, 14%, 96%)';
-    const intensity = maxCount > 0 ? data.count / maxCount : 0;
-    // Soft pastel blue scale
-    const lightness = 88 - intensity * 30;
-    const saturation = 50 + intensity * 15;
-    return `hsl(210, ${saturation}%, ${lightness}%)`;
-  }, [stateData, maxCount]);
+  const getStateFill = useCallback(
+    (stateCode: string): string => {
+      const data = stateData[stateCode];
+      if (!data || data.count === 0) return 'hsl(220, 14%, 96%)';
+      const intensity = maxCount > 0 ? data.count / maxCount : 0;
+      // Soft pastel blue scale
+      const lightness = 88 - intensity * 30;
+      const saturation = 50 + intensity * 15;
+      return `hsl(210, ${saturation}%, ${lightness}%)`;
+    },
+    [stateData, maxCount],
+  );
 
   const handleStateClick = useCallback((stateCode: string) => {
     setSelectedState((prev) => (prev === stateCode ? null : stateCode));
@@ -71,16 +121,21 @@ const USHeatmap: React.FC<USHeatmapProps> = ({ providerView, selectedProviderId 
   // Build customStates for USAMap
   const customStates = useMemo(() => {
     const allCodes = Object.keys(STATE_NAMES) as USAStateAbbreviation[];
-    const result: Partial<Record<USAStateAbbreviation, {
-      fill: string;
-      stroke: string;
-      strokeWidth: number;
-      onHover: (state: USAStateAbbreviation) => void;
-      onLeave: () => void;
-      onClick: (state: USAStateAbbreviation) => void;
-      tooltip: { enabled: boolean; render: (state: USAStateAbbreviation) => React.ReactNode };
-      label: { enabled: boolean; render?: (state: USAStateAbbreviation) => React.ReactNode };
-    }>> = {};
+    const result: Partial<
+      Record<
+        USAStateAbbreviation,
+        {
+          fill: string;
+          stroke: string;
+          strokeWidth: number;
+          onHover: (state: USAStateAbbreviation) => void;
+          onLeave: () => void;
+          onClick: (state: USAStateAbbreviation) => void;
+          tooltip: { enabled: boolean; render: (state: USAStateAbbreviation) => React.ReactNode };
+          label: { enabled: boolean; render?: (state: USAStateAbbreviation) => React.ReactNode };
+        }
+      >
+    > = {};
 
     allCodes.forEach((code) => {
       const data = stateData[code];
@@ -118,9 +173,7 @@ const USHeatmap: React.FC<USHeatmapProps> = ({ providerView, selectedProviderId 
     <Card>
       <CardHeader className="pb-2">
         <CardTitle className="text-sm font-semibold">Provider Geographic Presence</CardTitle>
-        <CardDescription className="text-xs">
-          {label} — Click a state for details
-        </CardDescription>
+        <CardDescription className="text-xs">{label} — Click a state for details</CardDescription>
       </CardHeader>
       <CardContent className="relative">
         <div className="w-full">
@@ -136,60 +189,66 @@ const USHeatmap: React.FC<USHeatmapProps> = ({ providerView, selectedProviderId 
         </div>
 
         {/* State info panel (persistent for selected, transient for hover) */}
-        {activeState && (() => {
-          const market = getStateMarketByAbbr(activeState);
-          return (
-            <div className="absolute top-4 right-4 bg-card border border-border rounded-xl shadow-lg p-4 max-w-[260px] z-10">
-              <div className="flex items-start justify-between gap-2">
-                <p className="font-semibold text-sm text-foreground">
-                  {STATE_NAMES[activeState] || activeState}
-                </p>
-                {selectedState && (
-                  <button
-                    onClick={() => setSelectedState(null)}
-                    className="p-0.5 rounded-md hover:bg-muted transition-colors text-muted-foreground"
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </button>
+        {activeState &&
+          (() => {
+            const market = getStateMarketByAbbr(activeState);
+            return (
+              <div className="absolute top-4 right-4 bg-card border border-border rounded-xl shadow-lg p-4 max-w-[260px] z-10">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="font-semibold text-sm text-foreground">
+                    {STATE_NAMES[activeState] || activeState}
+                  </p>
+                  {selectedState && (
+                    <button
+                      onClick={() => setSelectedState(null)}
+                      className="p-0.5 rounded-md hover:bg-muted transition-colors text-muted-foreground"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+                </div>
+                {market && (
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {market.totalBirths.toLocaleString()} births/yr
+                  </p>
+                )}
+                {activeData ? (
+                  <div className="mt-2 space-y-1.5">
+                    <p className="text-xs text-muted-foreground font-medium">
+                      {activeData.count} tracked system{activeData.count !== 1 ? 's' : ''}
+                    </p>
+                    <div className="space-y-0.5">
+                      {activeData.names.slice(0, 6).map((n, i) => (
+                        <p key={i} className="text-xs text-foreground">
+                          • {n}
+                        </p>
+                      ))}
+                      {activeData.names.length > 6 && (
+                        <p className="text-xs text-muted-foreground">
+                          +{activeData.names.length - 6} more
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground mt-2">No tracked providers</p>
+                )}
+                {market && (
+                  <div className="mt-2 pt-2 border-t border-border space-y-0.5">
+                    <p className="text-xs text-muted-foreground">
+                      Largest:{' '}
+                      <span className="text-foreground font-medium">{market.largestSystem}</span> (
+                      {market.systemType.toUpperCase()})
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Controls ~{(market.estPctControlled * 100).toFixed(0)}% · Top 3:{' '}
+                      {(market.top3PctCombined * 100).toFixed(0)}%
+                    </p>
+                  </div>
                 )}
               </div>
-              {market && (
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {market.totalBirths.toLocaleString()} births/yr
-                </p>
-              )}
-              {activeData ? (
-                <div className="mt-2 space-y-1.5">
-                  <p className="text-xs text-muted-foreground font-medium">
-                    {activeData.count} tracked system{activeData.count !== 1 ? 's' : ''}
-                  </p>
-                  <div className="space-y-0.5">
-                    {activeData.names.slice(0, 6).map((n, i) => (
-                      <p key={i} className="text-xs text-foreground">• {n}</p>
-                    ))}
-                    {activeData.names.length > 6 && (
-                      <p className="text-xs text-muted-foreground">
-                        +{activeData.names.length - 6} more
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <p className="text-xs text-muted-foreground mt-2">No tracked providers</p>
-              )}
-              {market && (
-                <div className="mt-2 pt-2 border-t border-border space-y-0.5">
-                  <p className="text-xs text-muted-foreground">
-                    Largest: <span className="text-foreground font-medium">{market.largestSystem}</span> ({market.systemType.toUpperCase()})
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Controls ~{(market.estPctControlled * 100).toFixed(0)}% · Top 3: {(market.top3PctCombined * 100).toFixed(0)}%
-                  </p>
-                </div>
-              )}
-            </div>
-          );
-        })()}
+            );
+          })()}
 
         {/* Legend */}
         <div className="flex items-center justify-center gap-4 mt-3">

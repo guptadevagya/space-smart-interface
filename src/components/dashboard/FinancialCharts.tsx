@@ -9,13 +9,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { SimulationResults, Region } from '@/lib/types';
 
 interface FinancialChartsProps {
@@ -33,10 +27,7 @@ const CHART_COLORS = {
   muted: 'hsl(215, 16%, 47%)', // muted
 };
 
-const FinancialCharts: React.FC<FinancialChartsProps> = ({
-  results,
-  region,
-}) => {
+const FinancialCharts: React.FC<FinancialChartsProps> = ({ results, region }) => {
   const isUS = region === 'US';
   const locale = isUS ? 'en-US' : 'en-GB';
   const currency = isUS ? 'USD' : 'GBP';
@@ -57,79 +48,81 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
     }).format(value);
 
   // Financial breakdown data — filter out zero values
-  const breakdownData = (isUS
-    ? [
-        {
-          name: 'C-section',
-          value: results.financials.cSectionSavings,
-          color: CHART_COLORS.primary,
-        },
-        {
-          name: 'NICU',
-          value: results.financials.nicuSavings,
-          color: CHART_COLORS.secondary,
-        },
-        {
-          name: 'CP litigation',
-          value: results.financials.cpLitigationSavings ?? 0,
-          color: CHART_COLORS.savings,
-        },
-        {
-          name: 'Fetal death',
-          value: results.financials.fetalDeathSavings ?? 0,
-          color: CHART_COLORS.accent,
-        },
-      ]
-    : [
-        {
-          name: 'C-section',
-          value: results.financials.cSectionSavings,
-          color: CHART_COLORS.primary,
-        },
-        {
-          name: 'NICU',
-          value: results.financials.nicuSavings,
-          color: CHART_COLORS.secondary,
-        },
-        {
-          name: 'CNST',
-          value: results.financials.litigationSavings,
-          color: CHART_COLORS.savings,
-        },
-      ]
+  const breakdownData = (
+    isUS
+      ? [
+          {
+            name: 'C-section',
+            value: results.financials.cSectionSavings,
+            color: CHART_COLORS.primary,
+          },
+          {
+            name: 'NICU',
+            value: results.financials.nicuSavings,
+            color: CHART_COLORS.secondary,
+          },
+          {
+            name: 'CP litigation',
+            value: results.financials.cpLitigationSavings ?? 0,
+            color: CHART_COLORS.savings,
+          },
+          {
+            name: 'Fetal death',
+            value: results.financials.fetalDeathSavings ?? 0,
+            color: CHART_COLORS.accent,
+          },
+        ]
+      : [
+          {
+            name: 'C-section',
+            value: results.financials.cSectionSavings,
+            color: CHART_COLORS.primary,
+          },
+          {
+            name: 'NICU',
+            value: results.financials.nicuSavings,
+            color: CHART_COLORS.secondary,
+          },
+          {
+            name: 'CNST',
+            value: results.financials.litigationSavings,
+            color: CHART_COLORS.savings,
+          },
+        ]
   ).filter((d) => d.value > 0);
 
   // Cost vs benefit comparison — filter out zero values
-  const comparisonData = (isUS
-    ? [
-        {
-          name: 'Revenue',
-          value: results.financials.revenueGenerated,
-          type: 'benefit' as const,
-        },
-        {
-          name: 'Cost savings',
-          value: results.financials.totalSavings,
-          type: 'benefit' as const,
-        },
-        {
-          name: 'Deployment cost',
-          value: results.financials.deploymentCosts || 0,
-          type: 'cost' as const,
-        },
-      ]
-    : [
-        {
-          name: 'Clinical savings',
-          value: results.financials.totalSavings,
-          type: 'benefit' as const,
-        },
-        {
-          name: 'Screening costs',
-          value: results.financials.growthScanCosts || 0,
-          type: 'cost' as const,
-        },
-      ]
+  const comparisonData = (
+    isUS
+      ? [
+          {
+            name: 'Revenue',
+            value: results.financials.revenueGenerated,
+            type: 'benefit' as const,
+          },
+          {
+            name: 'Cost savings',
+            value: results.financials.totalSavings,
+            type: 'benefit' as const,
+          },
+          {
+            name: 'Deployment cost',
+            value: results.financials.deploymentCosts || 0,
+            type: 'cost' as const,
+          },
+        ]
+      : [
+          {
+            name: 'Clinical savings',
+            value: results.financials.totalSavings,
+            type: 'benefit' as const,
+          },
+          {
+            name: 'Screening costs',
+            value: results.financials.growthScanCosts || 0,
+            type: 'cost' as const,
+          },
+        ]
   ).filter((d) => d.value > 0);
 
   // Build a color map for comparison chart X-axis ticks
@@ -140,7 +133,8 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
     ]),
   );
 
-  const renderColoredTick = (colorMap: Record<string, string>) =>
+  const renderColoredTick =
+    (colorMap: Record<string, string>) =>
     ({ x, y, payload }: { x: number; y: number; payload: { value: string } }) => (
       <text
         x={x}
@@ -171,36 +165,20 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
         <CardContent>
           <div className="h-[280px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={comparisonData}
-                margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-              >
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  vertical={false}
-                  stroke="hsl(var(--border))"
-                />
+              <BarChart data={comparisonData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
                 <XAxis
                   dataKey="name"
                   tick={renderColoredTick(comparisonColorMap)}
                   tickLine={false}
                   axisLine={false}
                 />
-                <YAxis
-                  tickFormatter={fmtCompact}
-                  fontSize={11}
-                  tickLine={false}
-                  axisLine={false}
-                />
+                <YAxis tickFormatter={fmtCompact} fontSize={11} tickLine={false} axisLine={false} />
                 <Tooltip
                   formatter={(value: number) => [fmtFull(value), 'Value']}
                   cursor={{ fill: 'hsl(var(--muted) / 0.3)' }}
                 />
-                <Bar
-                  dataKey="value"
-                  radius={[4, 4, 0, 0]}
-                  maxBarSize={80}
-                >
+                <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={80}>
                   {comparisonData.map((entry, i) => (
                     <Cell
                       key={i}
@@ -218,9 +196,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-bold">Savings breakdown</CardTitle>
-          <CardDescription className="text-xs">
-            By clinical category
-          </CardDescription>
+          <CardDescription className="text-xs">By clinical category</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-[280px]">
@@ -247,7 +223,15 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
                   dataKey="name"
                   type="category"
                   width={80}
-                  tick={({ x, y, payload }: { x: number; y: number; payload: { value: string } }) => {
+                  tick={({
+                    x,
+                    y,
+                    payload,
+                  }: {
+                    x: number;
+                    y: number;
+                    payload: { value: string };
+                  }) => {
                     const entry = breakdownData.find((d) => d.name === payload.value);
                     return (
                       <text
@@ -270,12 +254,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({
                   formatter={(value: number) => [fmtFull(value), 'Value']}
                   cursor={{ fill: 'hsl(var(--muted) / 0.3)' }}
                 />
-                <Bar
-                  dataKey="value"
-                  name="Savings"
-                  radius={[0, 4, 4, 0]}
-                  barSize={32}
-                >
+                <Bar dataKey="value" name="Savings" radius={[0, 4, 4, 0]} barSize={32}>
                   {breakdownData.map((entry, i) => (
                     <Cell key={i} fill={entry.color} />
                   ))}

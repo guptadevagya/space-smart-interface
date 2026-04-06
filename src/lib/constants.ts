@@ -43,7 +43,7 @@ export const DEFAULT_US_INPUTS: SimulationInputs = {
   oxailisScanCost: 0,
   combinedTestRate: 0.755,
   fetalDeathPayout: 492000,
-  litigationSuccessRate: 0.50,
+  litigationSuccessRate: 0.5,
   implementationCost: 500000,
   perScanScreeningCost: 10,
   bibliography: [
@@ -71,22 +71,37 @@ export const DEFAULT_US_INPUTS: SimulationInputs = {
     'CDC Births: Provisional Data for 2024. https://www.cdc.gov/nchs/data/vsrr/vsrr038.pdf',
   ],
   inputReferences: {
-    annualBirths: 'CDC NCHS Data Brief No. 535 - Final 2024 (3,628,934 live births). https://www.cdc.gov/nchs/data/databriefs/db535.pdf',
+    annualBirths:
+      'CDC NCHS Data Brief No. 535 - Final 2024 (3,628,934 live births). https://www.cdc.gov/nchs/data/databriefs/db535.pdf',
     scanReimbursement: 'Average CPT Code Reimbursement (Commercial/Medicaid Blend)',
-    cSectionCost: 'Peterson-KFF Health System Tracker - Commercial average $28,998. https://www.healthsystemtracker.org/brief/health-costs-associated-with-pregnancy-childbirth-and-postpartum-care/',
-    nicuDailyCost: 'HCCI Commercial Claims Data - $71,158 avg over 14 days = $5,082/day. https://healthcostinstitute.org/all-hcci-reports/nicu-use-and-spending-1/',
-    malpracticeClaimCost: 'Cerebral Palsy Malpractice Lawsuits - Median CP Jury Verdict $6,944,500. https://www.lawsuit-information-center.com/cerebral-palsy-malpractice-lawsuits',
-    fgrPrevalence: 'SMFM Consult Series #52 / ACOG - 5-10% range, 8% median. https://publications.smfm.org/publications/289-society-for-maternal-fetal-medicine-consult-series-52/',
-    currentDetectionRate: 'Fetal growth surveillance (PMC6042298) - 19-36% range, 33% median. https://pmc.ncbi.nlm.nih.gov/articles/PMC6042298/',
-    oxailisDetectionRate: 'OxPLUS Study / Mathewlynn et al. FirstPLUS - Retained biological constant',
-    currentFalsePositiveRate: 'Morse et al. Fundal Height Screening Efficacy - ~50%. https://starlegacyfoundation.org/wp-content/uploads/Morse-2009-Fetal-growth-screening-by-fundal-height.pdf',
-    oxailisFalsePositiveRate: 'OxPLUS Study / Mathewlynn et al. FirstPLUS - Retained biological constant',
-    emergencyCSectionRateUndiagnosed: 'UK NHS Benchmark - Retained proxy (US 32.4% total C-section rate)',
-    hypoxicEventRate: 'HIE Incidence in Modern US Birth Cohort (PMC10842130) - 1.1% for undiagnosed FGR. https://pmc.ncbi.nlm.nih.gov/articles/PMC10842130/',
-    cerebralPalsyRisk: 'Birth Asphyxia & CP Meta-Analysis (PMC7381116) - 25% conversion. https://pmc.ncbi.nlm.nih.gov/articles/PMC7381116/',
-    combinedTestRate: 'CDC NCHS Data Brief No. 550 - 75.5% first-trimester care initiation. https://www.cdc.gov/nchs/data/databriefs/db550.pdf',
-    fetalDeathPayout: 'Gold KJ et al. AJOG 2025 NPDB Analysis - $492,000 avg per case. https://pure.manchester.ac.uk/ws/portalfiles/portal/359552495/AJOG_pre-proof--Stillbirth_malpractice_2025.pdf',
-    litigationSuccessRate: 'Jena et al. (PMC2628515) - 50% trial risk. https://pmc.ncbi.nlm.nih.gov/articles/PMC2628515/',
+    cSectionCost:
+      'Peterson-KFF Health System Tracker - Commercial average $28,998. https://www.healthsystemtracker.org/brief/health-costs-associated-with-pregnancy-childbirth-and-postpartum-care/',
+    nicuDailyCost:
+      'HCCI Commercial Claims Data - $71,158 avg over 14 days = $5,082/day. https://healthcostinstitute.org/all-hcci-reports/nicu-use-and-spending-1/',
+    malpracticeClaimCost:
+      'Cerebral Palsy Malpractice Lawsuits - Median CP Jury Verdict $6,944,500. https://www.lawsuit-information-center.com/cerebral-palsy-malpractice-lawsuits',
+    fgrPrevalence:
+      'SMFM Consult Series #52 / ACOG - 5-10% range, 8% median. https://publications.smfm.org/publications/289-society-for-maternal-fetal-medicine-consult-series-52/',
+    currentDetectionRate:
+      'Fetal growth surveillance (PMC6042298) - 19-36% range, 33% median. https://pmc.ncbi.nlm.nih.gov/articles/PMC6042298/',
+    oxailisDetectionRate:
+      'OxPLUS Study / Mathewlynn et al. FirstPLUS - Retained biological constant',
+    currentFalsePositiveRate:
+      'Morse et al. Fundal Height Screening Efficacy - ~50%. https://starlegacyfoundation.org/wp-content/uploads/Morse-2009-Fetal-growth-screening-by-fundal-height.pdf',
+    oxailisFalsePositiveRate:
+      'OxPLUS Study / Mathewlynn et al. FirstPLUS - Retained biological constant',
+    emergencyCSectionRateUndiagnosed:
+      'UK NHS Benchmark - Retained proxy (US 32.4% total C-section rate)',
+    hypoxicEventRate:
+      'HIE Incidence in Modern US Birth Cohort (PMC10842130) - 1.1% for undiagnosed FGR. https://pmc.ncbi.nlm.nih.gov/articles/PMC10842130/',
+    cerebralPalsyRisk:
+      'Birth Asphyxia & CP Meta-Analysis (PMC7381116) - 25% conversion. https://pmc.ncbi.nlm.nih.gov/articles/PMC7381116/',
+    combinedTestRate:
+      'CDC NCHS Data Brief No. 550 - 75.5% first-trimester care initiation. https://www.cdc.gov/nchs/data/databriefs/db550.pdf',
+    fetalDeathPayout:
+      'Gold KJ et al. AJOG 2025 NPDB Analysis - $492,000 avg per case. https://pure.manchester.ac.uk/ws/portalfiles/portal/359552495/AJOG_pre-proof--Stillbirth_malpractice_2025.pdf',
+    litigationSuccessRate:
+      'Jena et al. (PMC2628515) - 50% trial risk. https://pmc.ncbi.nlm.nih.gov/articles/PMC2628515/',
     implementationCost: 'Estimated annual platform licensing & integration cost',
     perScanScreeningCost: 'Estimated per-scan AI screening cost',
   },
@@ -121,8 +136,7 @@ export const DEFAULT_UK_INPUTS: SimulationInputs = {
   bibliography: DEFAULT_BIBLIOGRAPHY,
   inputReferences: {
     annualBirths: 'NHS Trust Annual Report',
-    cSectionCost:
-      'Ref 4: Relph S et al. Costing the impact of interventions (mid-range)',
+    cSectionCost: 'Ref 4: Relph S et al. Costing the impact of interventions (mid-range)',
     nicuDailyCost: 'Ref 6: Pillay T et al. / Bliss.org.uk',
     malpracticeClaimCost:
       'Ref 11 & 17: NHS Litigation Authority / Average pay-out per successful CP case',
@@ -134,18 +148,14 @@ export const DEFAULT_UK_INPUTS: SimulationInputs = {
     stillbirthLitigationCost: 'Ref 9: Campbell HE et al. Cost to Trust',
     fgrPrevalence: "Ref 2: Tommy's / Sovio et al.",
     currentDetectionRate: 'Ref 3: Sovio et al.',
-    oxailisDetectionRate:
-      'Ref 13: Mathewlynn et al. FirstPLUS / Oxailis Clinical Data',
+    oxailisDetectionRate: 'Ref 13: Mathewlynn et al. FirstPLUS / Oxailis Clinical Data',
     currentFalsePositiveRate: 'Ref 15: Monier I et al.',
-    oxailisFalsePositiveRate:
-      'Ref 13: Mathewlynn et al. FirstPLUS / Oxailis Clinical Data',
+    oxailisFalsePositiveRate: 'Ref 13: Mathewlynn et al. FirstPLUS / Oxailis Clinical Data',
     emergencyCSectionRateUndiagnosed: 'Ref 5: Figueras F et al.',
     hypoxicEventRate: 'Ref 1: Chauhan et al.',
-    cerebralPalsyRisk:
-      'Ref 12: Gonzalez FF, Miller SP (36% HIE × 65% moderate/severe × 25% CP)',
+    cerebralPalsyRisk: 'Ref 12: Gonzalez FF, Miller SP (36% HIE × 65% moderate/severe × 25% CP)',
     oxailisScanCost: 'Ref OxPLUS Study',
-    combinedTestRate:
-      'Official Statistics - Antenatal screening standards: data report 2020-2021',
+    combinedTestRate: 'Official Statistics - Antenatal screening standards: data report 2020-2021',
   },
 };
 
@@ -195,7 +205,6 @@ export const DEFAULT_GLOBAL_INPUTS: SimulationInputs = {
     hypoxicEventRate: 'Ref 1: Chauhan et al.',
     cerebralPalsyRisk: 'Ref 12: Gonzalez FF, Miller SP',
     oxailisScanCost: 'Ref OxPLUS Study',
-    combinedTestRate:
-      'Official Statistics - Antenatal screening standards: data report 2020-2021',
+    combinedTestRate: 'Official Statistics - Antenatal screening standards: data report 2020-2021',
   },
 };

@@ -1,9 +1,4 @@
-import {
-  FormulaDefinition,
-  Region,
-  SimulationInputs,
-  SimulationResults,
-} from './types';
+import { FormulaDefinition, Region, SimulationInputs, SimulationResults } from './types';
 
 export function getDefaultFormulas(region: Region): FormulaDefinition[] {
   const isUK = region === 'UK' || region === 'Global';
@@ -72,9 +67,7 @@ export function getDefaultFormulas(region: Region): FormulaDefinition[] {
     {
       id: 'avoidedHypoxicEvents',
       name: 'Avoided Hypoxic Events',
-      formula: isUK
-        ? 'avoidedUndiagnosed * 0.004'
-        : 'avoidedUndiagnosed * hypoxicEventRate',
+      formula: isUK ? 'avoidedUndiagnosed * 0.004' : 'avoidedUndiagnosed * hypoxicEventRate',
       group: 'clinical',
       format: 'number',
     },
@@ -317,9 +310,7 @@ export function getDefaultFormulas(region: Region): FormulaDefinition[] {
   return [...demographics, ...clinical, ...financial];
 }
 
-export function getInputVariableMap(
-  inputs: SimulationInputs,
-): Record<string, number> {
+export function getInputVariableMap(inputs: SimulationInputs): Record<string, number> {
   return {
     annualBirths: inputs.annualBirths,
     fgrPrevalence: inputs.fgrPrevalence,
@@ -400,8 +391,7 @@ export function formulaResultsToSimulation(
       ? {
           revenueGenerated: 0,
           cSectionSavings: values.cSectionSavings ?? 0,
-          nicuSavings:
-            (values.nicuSavings ?? 0) + (values.mumExtraStaySavings ?? 0),
+          nicuSavings: (values.nicuSavings ?? 0) + (values.mumExtraStaySavings ?? 0),
           litigationSavings:
             (values.cpSavings ?? 0) +
             (values.nndSavings ?? 0) +
@@ -409,9 +399,7 @@ export function formulaResultsToSimulation(
             (values.stillbirthSavings ?? 0),
           totalSavings: values.totalClinicalSavings ?? 0,
           totalEconomicImpact: values.netBenefit ?? 0,
-          growthScanCosts:
-            (values.screeningCostIncrease ?? 0) +
-            (values.oxailisScreeningCost ?? 0),
+          growthScanCosts: (values.screeningCostIncrease ?? 0) + (values.oxailisScreeningCost ?? 0),
           netBenefit: values.netBenefit ?? 0,
         }
       : {

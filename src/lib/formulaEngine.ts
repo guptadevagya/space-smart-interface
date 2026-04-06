@@ -17,10 +17,7 @@ export function extractVariables(formula: string): string[] {
   }
 }
 
-function topSort(
-  formulas: FormulaDefinition[],
-  inputVarIds: Set<string>,
-): FormulaDefinition[] {
+function topSort(formulas: FormulaDefinition[], inputVarIds: Set<string>): FormulaDefinition[] {
   const resolved = new Set(inputVarIds);
   const sorted: FormulaDefinition[] = [];
   const remaining = [...formulas];
@@ -61,10 +58,7 @@ export function evaluateFormulas(
   return { values: scope, errors };
 }
 
-export function validateFormula(
-  formula: string,
-  availableVars: Set<string>,
-): string | null {
+export function validateFormula(formula: string, availableVars: Set<string>): string | null {
   try {
     parse(formula);
     const vars = extractVariables(formula);

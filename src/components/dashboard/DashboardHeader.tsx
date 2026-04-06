@@ -2,13 +2,18 @@ import React, { useState } from 'react';
 import { Region } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import oxnnetLogo from '@/assets/oxnnet-logo.png';
-import { Printer, Save, FolderOpen, Trash2, Clock, RotateCcw, MessageSquare, PanelLeftOpen } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from '@/components/ui/popover';
+  Printer,
+  Save,
+  FolderOpen,
+  Trash2,
+  Clock,
+  RotateCcw,
+  MessageSquare,
+  PanelLeftOpen,
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 
@@ -75,28 +80,26 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         )}
         <div className="flex items-center gap-2.5">
           <img src={oxnnetLogo} alt="OxNNet" className="h-8 w-8 object-contain" />
-          <h1 className="text-sm font-bold text-foreground leading-tight">
-            OxNNet Economics
-          </h1>
+          <h1 className="text-sm font-bold text-foreground leading-tight">OxNNet Economics</h1>
         </div>
       </div>
 
       {/* Region selector */}
       <div className="flex items-center bg-muted rounded-lg p-0.5">
-          {regions.map((r) => (
-            <button
-              key={r}
-              onClick={() => switchRegion(r)}
-              className={cn(
-                'px-3 py-1.5 text-xs font-bold rounded-md transition-all',
-                region === r
-                  ? 'bg-card text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground',
-              )}
-            >
-              {r}
-            </button>
-          ))}
+        {regions.map((r) => (
+          <button
+            key={r}
+            onClick={() => switchRegion(r)}
+            className={cn(
+              'px-3 py-1.5 text-xs font-bold rounded-md transition-all',
+              region === r
+                ? 'bg-card text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground',
+            )}
+          >
+            {r}
+          </button>
+        ))}
       </div>
 
       {/* Total impact badge */}
@@ -104,9 +107,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
           Total Impact
         </p>
-        <p className="text-xl font-bold text-emerald-600 leading-none">
-          {totalImpact}
-        </p>
+        <p className="text-xl font-bold text-emerald-600 leading-none">{totalImpact}</p>
       </div>
 
       <div className="flex items-center gap-1">
@@ -128,18 +129,12 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           </PopoverTrigger>
           <PopoverContent align="end" className="w-96 p-0">
             <div className="px-4 py-3 border-b border-border">
-              <p className="text-sm font-bold text-foreground">
-                Saved Configurations
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Select a configuration to restore
-              </p>
+              <p className="text-sm font-bold text-foreground">Saved Configurations</p>
+              <p className="text-xs text-muted-foreground">Select a configuration to restore</p>
             </div>
             {configs.length === 0 ? (
               <div className="px-4 py-6 text-center">
-                <p className="text-xs text-muted-foreground">
-                  No saved configurations yet.
-                </p>
+                <p className="text-xs text-muted-foreground">No saved configurations yet.</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   Click "Save" to store your current setup.
                 </p>
@@ -160,9 +155,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                           }}
                           className="text-left flex-1 min-w-0"
                         >
-                          <p className="text-sm font-medium text-foreground truncate">
-                            {cfg.name}
-                          </p>
+                          <p className="text-sm font-medium text-foreground truncate">{cfg.name}</p>
                           <div className="flex items-center gap-2 mt-0.5">
                             <span className="text-xs text-muted-foreground flex items-center gap-1">
                               <Clock className="h-3 w-3" />

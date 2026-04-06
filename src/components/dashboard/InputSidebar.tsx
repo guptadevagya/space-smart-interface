@@ -1,37 +1,14 @@
 import React from 'react';
 import { SimulationInputs, Region, CustomParameter, USProviderView } from '@/lib/types';
-import {
-  getProvidersByType,
-  getProviderById,
-  getAggregateBirths,
-} from '@/lib/providerProfiles';
-import {
-  DEFAULT_US_INPUTS,
-  DEFAULT_UK_INPUTS,
-  DEFAULT_GLOBAL_INPUTS,
-} from '@/lib/constants';
+import { getProvidersByType, getProviderById, getAggregateBirths } from '@/lib/providerProfiles';
+import { DEFAULT_US_INPUTS, DEFAULT_UK_INPUTS, DEFAULT_GLOBAL_INPUTS } from '@/lib/constants';
 import { Slider } from '@/components/ui/slider';
 import { Input } from '@/components/ui/input';
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from '@/components/ui/popover';
-import {
-  BookOpen,
-  PanelLeftClose,
-  ChevronDown,
-  Save,
-  Plus,
-  Trash2,
-} from 'lucide-react';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { BookOpen, PanelLeftClose, ChevronDown, Save, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   Select,
   SelectContent,
@@ -168,12 +145,8 @@ const SliderField: React.FC<SliderFieldProps> = ({
     <div className={cn('space-y-2 group/field', disabled && 'opacity-75')}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
-          <label className="text-xs font-medium text-muted-foreground">
-            {label}
-          </label>
-          {!isDefault && (
-            <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-          )}
+          <label className="text-xs font-medium text-muted-foreground">{label}</label>
+          {!isDefault && <span className="w-1.5 h-1.5 rounded-full bg-primary" />}
           <Popover open={editingRef} onOpenChange={setEditingRef}>
             <PopoverTrigger asChild>
               <button className="h-4 w-4 rounded-full bg-muted hover:bg-primary/20 flex items-center justify-center transition-colors">
@@ -213,9 +186,7 @@ const SliderField: React.FC<SliderFieldProps> = ({
           )}
         </div>
         <div className="flex items-center gap-1">
-          {prefix && (
-            <span className="text-xs text-muted-foreground">{prefix}</span>
-          )}
+          {prefix && <span className="text-xs text-muted-foreground">{prefix}</span>}
           <Input
             type="number"
             value={displayVal}
@@ -228,9 +199,7 @@ const SliderField: React.FC<SliderFieldProps> = ({
             }}
             className="h-7 w-28 text-xs text-right font-mono bg-muted/30 border-border disabled:cursor-not-allowed disabled:opacity-100"
           />
-          {suffix && (
-            <span className="text-xs text-muted-foreground">{suffix}</span>
-          )}
+          {suffix && <span className="text-xs text-muted-foreground">{suffix}</span>}
         </div>
       </div>
       <Slider
@@ -260,9 +229,7 @@ const AddParameterDialog: React.FC<{
   const [min, setMin] = React.useState(0);
   const [max, setMax] = React.useState(1000);
   const [step, setStep] = React.useState(1);
-  const [format, setFormat] = React.useState<'number' | 'percent' | 'currency'>(
-    'number',
-  );
+  const [format, setFormat] = React.useState<'number' | 'percent' | 'currency'>('number');
   const [reference, setReference] = React.useState('');
 
   const handleAdd = () => {
@@ -301,9 +268,7 @@ const AddParameterDialog: React.FC<{
       </DialogTrigger>
       <DialogContent className="max-w-sm">
         <DialogHeader>
-          <DialogTitle className="text-sm">
-            Add Parameter to {group}
-          </DialogTitle>
+          <DialogTitle className="text-sm">Add Parameter to {group}</DialogTitle>
         </DialogHeader>
         <div className="space-y-3">
           <div>
@@ -318,16 +283,17 @@ const AddParameterDialog: React.FC<{
           <div className="grid grid-cols-2 gap-2">
             <div>
               <Label className="text-xs">Format</Label>
-              <Select value={format} onValueChange={(v: string) => setFormat(v as 'number' | 'percent' | 'currency')}>
+              <Select
+                value={format}
+                onValueChange={(v: string) => setFormat(v as 'number' | 'percent' | 'currency')}
+              >
                 <SelectTrigger className="h-8 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="number">Number</SelectItem>
                   <SelectItem value="percent">Percentage</SelectItem>
-                  <SelectItem value="currency">
-                    Currency ({currPrefix})
-                  </SelectItem>
+                  <SelectItem value="currency">Currency ({currPrefix})</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -379,12 +345,7 @@ const AddParameterDialog: React.FC<{
               placeholder="Enter citation..."
             />
           </div>
-          <Button
-            size="sm"
-            className="w-full"
-            onClick={handleAdd}
-            disabled={!label.trim()}
-          >
+          <Button size="sm" className="w-full" onClick={handleAdd} disabled={!label.trim()}>
             Add Parameter
           </Button>
         </div>
@@ -422,17 +383,14 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
     }));
   };
 
-  const isChanged = (key: keyof SimulationInputs) =>
-    inputs[key] !== defaults[key];
+  const isChanged = (key: keyof SimulationInputs) => inputs[key] !== defaults[key];
 
   const addCustomParam = (param: CustomParameter) => {
     setCustomParameters((prev) => [...prev, param]);
   };
 
   const updateCustomParam = (id: string, value: number) => {
-    setCustomParameters((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, value } : p)),
-    );
+    setCustomParameters((prev) => prev.map((p) => (p.id === id ? { ...p, value } : p)));
   };
 
   const deleteCustomParam = (id: string) => {
@@ -440,13 +398,10 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
   };
 
   const updateCustomParamRef = (id: string, reference: string) => {
-    setCustomParameters((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, reference } : p)),
-    );
+    setCustomParameters((prev) => prev.map((p) => (p.id === id ? { ...p, reference } : p)));
   };
 
-  const customByGroup = (group: string) =>
-    customParameters.filter((p) => p.group === group);
+  const customByGroup = (group: string) => customParameters.filter((p) => p.group === group);
 
   const renderCustomParams = (group: string) => {
     const params = customByGroup(group);
@@ -462,9 +417,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
         step={p.step}
         prefix={p.format === 'currency' ? currPrefix : undefined}
         suffix={p.format === 'percent' ? '%' : undefined}
-        formatDisplay={
-          p.format === 'percent' ? (v) => (v * 100).toFixed(1) : undefined
-        }
+        formatDisplay={p.format === 'percent' ? (v) => (v * 100).toFixed(1) : undefined}
         isDefault={false}
         tooltip={p.reference}
         onDelete={() => deleteCustomParam(p.id)}
@@ -494,9 +447,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
       >
         {/* Header */}
         <div className="px-5 py-3 border-b border-border flex items-center justify-between shrink-0 h-[57px]">
-          <h2 className="text-sm font-bold text-foreground">
-            Model Configuration
-          </h2>
+          <h2 className="text-sm font-bold text-foreground">Model Configuration</h2>
           <Button
             variant="ghost"
             size="icon"
@@ -521,9 +472,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                 step={1000}
                 isDefault={!isChanged('annualBirths')}
                 tooltip={inputs.inputReferences.annualBirths}
-                onEditReference={(ref) =>
-                  handleReferenceChange('annualBirths', ref)
-                }
+                onEditReference={(ref) => handleReferenceChange('annualBirths', ref)}
               />
             </InputGroup>
           )}
@@ -580,7 +529,8 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="__aggregate__">
-                          All {providerView.toUpperCase()}s ({getProvidersByType(providerView).length} systems)
+                          All {providerView.toUpperCase()}s (
+                          {getProvidersByType(providerView).length} systems)
                         </SelectItem>
                         {getProvidersByType(providerView).map((p) => (
                           <SelectItem key={p.id} value={p.id}>
@@ -591,16 +541,23 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                     </Select>
                   </div>
 
-                  {selectedProviderId && (() => {
-                    const provider = getProviderById(selectedProviderId);
-                    if (!provider) return null;
-                    const currentBirths = providerBirthOverrides[selectedProviderId] ?? provider.annualBirths;
-                    const isDefault = currentBirths === provider.annualBirths;
-                    return (
-                      <SliderField
+                  {selectedProviderId &&
+                    (() => {
+                      const provider = getProviderById(selectedProviderId);
+                      if (!provider) return null;
+                      const currentBirths =
+                        providerBirthOverrides[selectedProviderId] ?? provider.annualBirths;
+                      const isDefault = currentBirths === provider.annualBirths;
+                      return (
+                        <SliderField
                           label={`${provider.name} Births`}
                           value={currentBirths}
-                          onChange={(v) => setProviderBirthOverrides(prev => ({ ...prev, [selectedProviderId]: v }))}
+                          onChange={(v) =>
+                            setProviderBirthOverrides((prev) => ({
+                              ...prev,
+                              [selectedProviderId]: v,
+                            }))
+                          }
                           min={1000}
                           max={Math.max(provider.annualBirths * 3, 500000)}
                           step={1000}
@@ -608,13 +565,14 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                           tooltip={provider.source}
                           onEditReference={() => {}}
                         />
-                    );
-                  })()}
+                      );
+                    })()}
 
                   {!selectedProviderId && (
                     <div className="rounded-lg bg-muted/30 px-3 py-2">
                       <p className="text-xs text-muted-foreground">
-                        Aggregate: {getAggregateBirths(providerView).toLocaleString()} births across {getProvidersByType(providerView).length} systems
+                        Aggregate: {getAggregateBirths(providerView).toLocaleString()} births across{' '}
+                        {getProvidersByType(providerView).length} systems
                       </p>
                     </div>
                   )}
@@ -638,9 +596,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                 step={1000}
                 isDefault={!isChanged('annualBirths')}
                 tooltip={inputs.inputReferences.annualBirths}
-                onEditReference={(ref) =>
-                  handleReferenceChange('annualBirths', ref)
-                }
+                onEditReference={(ref) => handleReferenceChange('annualBirths', ref)}
               />
               {renderCustomParams('Hospital Profile')}
               <AddParameterDialog
@@ -663,9 +619,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
               isDefault={!isChanged('fgrPrevalence')}
               formatDisplay={(v) => (v * 100).toFixed(1)}
               tooltip={inputs.inputReferences.fgrPrevalence}
-              onEditReference={(ref) =>
-                handleReferenceChange('fgrPrevalence', ref)
-              }
+              onEditReference={(ref) => handleReferenceChange('fgrPrevalence', ref)}
             />
             <SliderField
               label="Current Detection Rate"
@@ -678,9 +632,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
               isDefault={!isChanged('currentDetectionRate')}
               formatDisplay={(v) => (v * 100).toFixed(0)}
               tooltip={inputs.inputReferences.currentDetectionRate}
-              onEditReference={(ref) =>
-                handleReferenceChange('currentDetectionRate', ref)
-              }
+              onEditReference={(ref) => handleReferenceChange('currentDetectionRate', ref)}
             />
             <SliderField
               label="OxNNet Detection Rate"
@@ -693,9 +645,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
               isDefault={!isChanged('oxailisDetectionRate')}
               formatDisplay={(v) => (v * 100).toFixed(0)}
               tooltip={inputs.inputReferences.oxailisDetectionRate}
-              onEditReference={(ref) =>
-                handleReferenceChange('oxailisDetectionRate', ref)
-              }
+              onEditReference={(ref) => handleReferenceChange('oxailisDetectionRate', ref)}
             />
             <SliderField
               label="Current False Positive Rate"
@@ -708,9 +658,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
               isDefault={!isChanged('currentFalsePositiveRate')}
               formatDisplay={(v) => (v * 100).toFixed(0)}
               tooltip={inputs.inputReferences.currentFalsePositiveRate}
-              onEditReference={(ref) =>
-                handleReferenceChange('currentFalsePositiveRate', ref)
-              }
+              onEditReference={(ref) => handleReferenceChange('currentFalsePositiveRate', ref)}
             />
             <SliderField
               label="OxNNet False Positive Rate"
@@ -723,9 +671,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
               isDefault={!isChanged('oxailisFalsePositiveRate')}
               formatDisplay={(v) => (v * 100).toFixed(0)}
               tooltip={inputs.inputReferences.oxailisFalsePositiveRate}
-              onEditReference={(ref) =>
-                handleReferenceChange('oxailisFalsePositiveRate', ref)
-              }
+              onEditReference={(ref) => handleReferenceChange('oxailisFalsePositiveRate', ref)}
             />
             {renderCustomParams('Clinical Assumptions')}
             <AddParameterDialog
@@ -748,9 +694,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   prefix="$"
                   isDefault={!isChanged('scanReimbursement')}
                   tooltip={inputs.inputReferences.scanReimbursement}
-                  onEditReference={(ref) =>
-                    handleReferenceChange('scanReimbursement', ref)
-                  }
+                  onEditReference={(ref) => handleReferenceChange('scanReimbursement', ref)}
                 />
                 <SliderField
                   label="C-Section Cost"
@@ -762,9 +706,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   prefix="$"
                   isDefault={!isChanged('cSectionCost')}
                   tooltip={inputs.inputReferences.cSectionCost}
-                  onEditReference={(ref) =>
-                    handleReferenceChange('cSectionCost', ref)
-                  }
+                  onEditReference={(ref) => handleReferenceChange('cSectionCost', ref)}
                 />
                 <SliderField
                   label="NICU Daily Cost"
@@ -776,9 +718,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   prefix="$"
                   isDefault={!isChanged('nicuDailyCost')}
                   tooltip={inputs.inputReferences.nicuDailyCost}
-                  onEditReference={(ref) =>
-                    handleReferenceChange('nicuDailyCost', ref)
-                  }
+                  onEditReference={(ref) => handleReferenceChange('nicuDailyCost', ref)}
                 />
                 <SliderField
                   label="CP Verdict (Median)"
@@ -790,9 +730,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   prefix="$"
                   isDefault={!isChanged('malpracticeClaimCost')}
                   tooltip={inputs.inputReferences.malpracticeClaimCost}
-                  onEditReference={(ref) =>
-                    handleReferenceChange('malpracticeClaimCost', ref)
-                  }
+                  onEditReference={(ref) => handleReferenceChange('malpracticeClaimCost', ref)}
                 />
                 <SliderField
                   label="Fetal Death Payout"
@@ -804,9 +742,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   prefix="$"
                   isDefault={!isChanged('fetalDeathPayout')}
                   tooltip={inputs.inputReferences.fetalDeathPayout}
-                  onEditReference={(ref) =>
-                    handleReferenceChange('fetalDeathPayout', ref)
-                  }
+                  onEditReference={(ref) => handleReferenceChange('fetalDeathPayout', ref)}
                 />
                 <SliderField
                   label="Litigation Success Rate"
@@ -819,9 +755,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   isDefault={!isChanged('litigationSuccessRate')}
                   formatDisplay={(v) => (v * 100).toFixed(0)}
                   tooltip={inputs.inputReferences.litigationSuccessRate}
-                  onEditReference={(ref) =>
-                    handleReferenceChange('litigationSuccessRate', ref)
-                  }
+                  onEditReference={(ref) => handleReferenceChange('litigationSuccessRate', ref)}
                 />
                 <SliderField
                   label="Implementation Cost (Annual)"
@@ -833,9 +767,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   prefix="$"
                   isDefault={!isChanged('implementationCost')}
                   tooltip={inputs.inputReferences.implementationCost}
-                  onEditReference={(ref) =>
-                    handleReferenceChange('implementationCost', ref)
-                  }
+                  onEditReference={(ref) => handleReferenceChange('implementationCost', ref)}
                 />
                 <SliderField
                   label="Per-Scan Screening Cost"
@@ -847,9 +779,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   prefix="$"
                   isDefault={!isChanged('perScanScreeningCost')}
                   tooltip={inputs.inputReferences.perScanScreeningCost}
-                  onEditReference={(ref) =>
-                    handleReferenceChange('perScanScreeningCost', ref)
-                  }
+                  onEditReference={(ref) => handleReferenceChange('perScanScreeningCost', ref)}
                 />
                 <SliderField
                   label="Screening Uptake"
@@ -862,9 +792,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   isDefault={!isChanged('combinedTestRate')}
                   formatDisplay={(v) => (v * 100).toFixed(1)}
                   tooltip={inputs.inputReferences.combinedTestRate}
-                  onEditReference={(ref) =>
-                    handleReferenceChange('combinedTestRate', ref)
-                  }
+                  onEditReference={(ref) => handleReferenceChange('combinedTestRate', ref)}
                 />
               </>
             ) : (
@@ -879,9 +807,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   prefix="£"
                   isDefault={!isChanged('growthScanCost')}
                   tooltip={inputs.inputReferences.growthScanCost}
-                  onEditReference={(ref) =>
-                    handleReferenceChange('growthScanCost', ref)
-                  }
+                  onEditReference={(ref) => handleReferenceChange('growthScanCost', ref)}
                 />
                 <SliderField
                   label="Consultant Appointment"
@@ -893,9 +819,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   prefix="£"
                   isDefault={!isChanged('consultantAppointmentCost')}
                   tooltip={inputs.inputReferences.consultantAppointmentCost}
-                  onEditReference={(ref) =>
-                    handleReferenceChange('consultantAppointmentCost', ref)
-                  }
+                  onEditReference={(ref) => handleReferenceChange('consultantAppointmentCost', ref)}
                 />
                 <SliderField
                   label="Midwife Appointment"
@@ -907,9 +831,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   prefix="£"
                   isDefault={!isChanged('midwifeAppointmentCost')}
                   tooltip={inputs.inputReferences.midwifeAppointmentCost}
-                  onEditReference={(ref) =>
-                    handleReferenceChange('midwifeAppointmentCost', ref)
-                  }
+                  onEditReference={(ref) => handleReferenceChange('midwifeAppointmentCost', ref)}
                 />
                 <SliderField
                   label="C-Section Cost"
@@ -921,9 +843,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   prefix="£"
                   isDefault={!isChanged('cSectionCost')}
                   tooltip={inputs.inputReferences.cSectionCost}
-                  onEditReference={(ref) =>
-                    handleReferenceChange('cSectionCost', ref)
-                  }
+                  onEditReference={(ref) => handleReferenceChange('cSectionCost', ref)}
                 />
                 <SliderField
                   label="NICU Daily Cost"
@@ -935,9 +855,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   prefix="£"
                   isDefault={!isChanged('nicuDailyCost')}
                   tooltip={inputs.inputReferences.nicuDailyCost}
-                  onEditReference={(ref) =>
-                    handleReferenceChange('nicuDailyCost', ref)
-                  }
+                  onEditReference={(ref) => handleReferenceChange('nicuDailyCost', ref)}
                 />
                 <SliderField
                   label="CP Litigation"
@@ -949,9 +867,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   prefix="£"
                   isDefault={!isChanged('malpracticeClaimCost')}
                   tooltip={inputs.inputReferences.malpracticeClaimCost}
-                  onEditReference={(ref) =>
-                    handleReferenceChange('malpracticeClaimCost', ref)
-                  }
+                  onEditReference={(ref) => handleReferenceChange('malpracticeClaimCost', ref)}
                 />
                 <SliderField
                   label="NND Litigation"
@@ -977,9 +893,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   prefix="£"
                   isDefault={!isChanged('stillbirthLitigationCost')}
                   tooltip={inputs.inputReferences.stillbirthLitigationCost}
-                  onEditReference={(ref) =>
-                    handleReferenceChange('stillbirthLitigationCost', ref)
-                  }
+                  onEditReference={(ref) => handleReferenceChange('stillbirthLitigationCost', ref)}
                 />
                 <SliderField
                   label="Oxailis Scan Cost"
@@ -990,13 +904,8 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   step={1}
                   prefix="£"
                   isDefault={!isChanged('oxailisScanCost')}
-                  tooltip={
-                    inputs.inputReferences.oxailisScanCost ||
-                    'Cost per Oxailis scan'
-                  }
-                  onEditReference={(ref) =>
-                    handleReferenceChange('oxailisScanCost', ref)
-                  }
+                  tooltip={inputs.inputReferences.oxailisScanCost || 'Cost per Oxailis scan'}
+                  onEditReference={(ref) => handleReferenceChange('oxailisScanCost', ref)}
                 />
                 <SliderField
                   label="Combined Test Rate"
@@ -1012,9 +921,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                     inputs.inputReferences.combinedTestRate ||
                     'Official Statistics - Antenatal screening standards'
                   }
-                  onEditReference={(ref) =>
-                    handleReferenceChange('combinedTestRate', ref)
-                  }
+                  onEditReference={(ref) => handleReferenceChange('combinedTestRate', ref)}
                 />
               </>
             )}
@@ -1032,23 +939,16 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                 <SliderField
                   label="Emergency C-Section Rate"
                   value={inputs.emergencyCSectionRateUndiagnosed}
-                  onChange={(v) =>
-                    update('emergencyCSectionRateUndiagnosed', v)
-                  }
+                  onChange={(v) => update('emergencyCSectionRateUndiagnosed', v)}
                   min={0.1}
                   max={0.7}
                   step={0.01}
                   suffix="%"
                   isDefault={!isChanged('emergencyCSectionRateUndiagnosed')}
                   formatDisplay={(v) => (v * 100).toFixed(0)}
-                  tooltip={
-                    inputs.inputReferences.emergencyCSectionRateUndiagnosed
-                  }
+                  tooltip={inputs.inputReferences.emergencyCSectionRateUndiagnosed}
                   onEditReference={(ref) =>
-                    handleReferenceChange(
-                      'emergencyCSectionRateUndiagnosed',
-                      ref,
-                    )
+                    handleReferenceChange('emergencyCSectionRateUndiagnosed', ref)
                   }
                 />
                 <SliderField
@@ -1062,9 +962,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
                   isDefault={!isChanged('hypoxicEventRate')}
                   formatDisplay={(v) => (v * 100).toFixed(2)}
                   tooltip={inputs.inputReferences.hypoxicEventRate}
-                  onEditReference={(ref) =>
-                    handleReferenceChange('hypoxicEventRate', ref)
-                  }
+                  onEditReference={(ref) => handleReferenceChange('hypoxicEventRate', ref)}
                 />
               </>
             )}
@@ -1079,9 +977,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
               isDefault={!isChanged('cerebralPalsyRisk')}
               formatDisplay={(v) => (v * 100).toFixed(1)}
               tooltip={inputs.inputReferences.cerebralPalsyRisk}
-              onEditReference={(ref) =>
-                handleReferenceChange('cerebralPalsyRisk', ref)
-              }
+              onEditReference={(ref) => handleReferenceChange('cerebralPalsyRisk', ref)}
             />
             {renderCustomParams('Risk Ratios')}
             <AddParameterDialog
@@ -1093,12 +989,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
         </div>
 
         <div className="px-4 py-3 border-t border-border shrink-0 flex flex-col items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full"
-            onClick={onSave}
-          >
+          <Button variant="outline" size="sm" className="w-full" onClick={onSave}>
             <Save className="h-3.5 w-3.5 mr-1.5" />
             Save Configuration
           </Button>

@@ -63,9 +63,9 @@ export interface SimulationResults {
     fetalDeathSavings?: number;
     totalSavings: number;
     totalEconomicImpact: number;
-      growthScanCosts?: number;
-      deploymentCosts?: number;
-      netBenefit?: number;
+    growthScanCosts?: number;
+    deploymentCosts?: number;
+    netBenefit?: number;
   };
   clinicalOutcomes: {
     avoidedCSections: number;

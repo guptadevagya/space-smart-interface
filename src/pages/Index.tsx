@@ -11,11 +11,7 @@ import ProviderComparison from '@/components/dashboard/ProviderComparison';
 import SaveConfigDialog from '@/components/dashboard/SaveConfigDialog';
 
 import StateMarketTable from '@/components/dashboard/StateMarketTable';
-import {
-  DEFAULT_US_INPUTS,
-  DEFAULT_UK_INPUTS,
-  DEFAULT_GLOBAL_INPUTS,
-} from '@/lib/constants';
+import { DEFAULT_US_INPUTS, DEFAULT_UK_INPUTS, DEFAULT_GLOBAL_INPUTS } from '@/lib/constants';
 import { evaluateFormulas } from '@/lib/formulaEngine';
 import {
   getDefaultFormulas,
@@ -30,11 +26,7 @@ import {
   CustomParameter,
   USProviderView,
 } from '@/lib/types';
-import {
-  getProviderById,
-  getAggregateBirths,
-  US_TOTAL_BIRTHS,
-} from '@/lib/providerProfiles';
+import { getProviderById, getAggregateBirths, US_TOTAL_BIRTHS } from '@/lib/providerProfiles';
 import { toast } from 'sonner';
 
 const STORAGE_KEY = 'oxnnet-simulator-configs';
@@ -58,9 +50,7 @@ const mergeWithDefaultFormulas = (
   const defaultFormulas = getDefaultFormulas(region);
   if (!savedFormulas?.length) return defaultFormulas;
 
-  const savedById = new Map(
-    savedFormulas.map((formula) => [formula.id, formula]),
-  );
+  const savedById = new Map(savedFormulas.map((formula) => [formula.id, formula]));
   const defaultIds = new Set(defaultFormulas.map((formula) => formula.id));
 
   const mergedDefaults = defaultFormulas.map((formula) => {
@@ -68,9 +58,7 @@ const mergeWithDefaultFormulas = (
     return savedFormula ? { ...formula, ...savedFormula } : formula;
   });
 
-  const extraCustomFormulas = savedFormulas.filter(
-    (formula) => !defaultIds.has(formula.id),
-  );
+  const extraCustomFormulas = savedFormulas.filter((formula) => !defaultIds.has(formula.id));
 
   return [...mergedDefaults, ...extraCustomFormulas];
 };
@@ -89,16 +77,13 @@ const Index: React.FC = () => {
         if (configs.length > 0) {
           const latest = configs[configs.length - 1];
           if (latest.inputs?.region && latest.inputs?.annualBirths) {
-            const defaults =
-              defaultsByRegion[latest.inputs.region] || DEFAULT_UK_INPUTS;
+            const defaults = defaultsByRegion[latest.inputs.region] || DEFAULT_UK_INPUTS;
             return {
               ...defaults,
               ...latest.inputs,
               // Always restore national births for US
               annualBirths:
-                latest.inputs.region === 'US'
-                  ? US_TOTAL_BIRTHS
-                  : latest.inputs.annualBirths,
+                latest.inputs.region === 'US' ? US_TOTAL_BIRTHS : latest.inputs.annualBirths,
               inputReferences: {
                 ...defaults.inputReferences,
                 ...(latest.inputs.inputReferences || {}),
@@ -107,7 +92,9 @@ const Index: React.FC = () => {
           }
         }
       }
-    } catch { /* localStorage unavailable */ }
+    } catch {
+      /* localStorage unavailable */
+    }
     return DEFAULT_UK_INPUTS;
   });
 
@@ -118,56 +105,47 @@ const Index: React.FC = () => {
         const configs = JSON.parse(saved) as SavedConfig[];
         if (configs.length > 0) {
           const latest = configs[configs.length - 1];
-          return mergeWithDefaultFormulas(
-            latest.inputs?.region || 'UK',
-            latest.formulas,
-          );
+          return mergeWithDefaultFormulas(latest.inputs?.region || 'UK', latest.formulas);
         }
       }
-    } catch { /* localStorage unavailable */ }
+    } catch {
+      /* localStorage unavailable */
+    }
     return getDefaultFormulas('UK');
   });
 
-  const [customVariables, setCustomVariables] = useState<CustomVariable[]>(
-    () => {
-      try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          const configs = JSON.parse(saved) as SavedConfig[];
-          if (
-            configs.length > 0 &&
-            configs[configs.length - 1].customVariables
-          ) {
-            return configs[configs.length - 1].customVariables!;
-          }
+  const [customVariables, setCustomVariables] = useState<CustomVariable[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const configs = JSON.parse(saved) as SavedConfig[];
+        if (configs.length > 0 && configs[configs.length - 1].customVariables) {
+          return configs[configs.length - 1].customVariables!;
         }
-      } catch { /* localStorage unavailable */ }
-      return [];
-    },
-  );
+      }
+    } catch {
+      /* localStorage unavailable */
+    }
+    return [];
+  });
 
-  const [customParameters, setCustomParameters] = useState<CustomParameter[]>(
-    () => {
-      try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          const configs = JSON.parse(saved) as SavedConfig[];
-          if (
-            configs.length > 0 &&
-            configs[configs.length - 1].customParameters
-          ) {
-            return configs[configs.length - 1].customParameters!;
-          }
+  const [customParameters, setCustomParameters] = useState<CustomParameter[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const configs = JSON.parse(saved) as SavedConfig[];
+        if (configs.length > 0 && configs[configs.length - 1].customParameters) {
+          return configs[configs.length - 1].customParameters!;
         }
-      } catch { /* localStorage unavailable */ }
-      return [];
-    },
-  );
+      }
+    } catch {
+      /* localStorage unavailable */
+    }
+    return [];
+  });
 
   const [providerView, setProviderView] = useState<USProviderView>('all');
-  const [selectedProviderId, setSelectedProviderId] = useState<string | null>(
-    null,
-  );
+  const [selectedProviderId, setSelectedProviderId] = useState<string | null>(null);
   const [providerBirthOverrides, setProviderBirthOverrides] = useState<Record<string, number>>({});
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => window.innerWidth >= 1024);
@@ -229,9 +207,7 @@ const Index: React.FC = () => {
     return formulaResultsToSimulation(values, 'US');
   }, [providerBirths, inputVarMap, formulas]);
 
-  const selectedProvider = selectedProviderId
-    ? getProviderById(selectedProviderId)
-    : null;
+  const selectedProvider = selectedProviderId ? getProviderById(selectedProviderId) : null;
   const providerLabel = isUS
     ? selectedProvider
       ? `${selectedProvider.name} (${selectedProvider.type.toUpperCase()})`
@@ -310,13 +286,10 @@ const Index: React.FC = () => {
     const config = configs.find((c) => c.id === id);
     if (config) {
       setInputs(config.inputs);
-      setFormulas(
-        mergeWithDefaultFormulas(config.inputs.region, config.formulas),
-      );
+      setFormulas(mergeWithDefaultFormulas(config.inputs.region, config.formulas));
       if (config.customVariables) setCustomVariables(config.customVariables);
       else setCustomVariables([]);
-      if (config.customParameters)
-        setCustomParameters(config.customParameters);
+      if (config.customParameters) setCustomParameters(config.customParameters);
       else setCustomParameters([]);
       toast.success(`Loaded: ${config.name}`);
     }
@@ -408,21 +381,24 @@ const Index: React.FC = () => {
           }
         />
 
-      <SaveConfigDialog
-        open={saveDialogOpen}
-        onOpenChange={setSaveDialogOpen}
-        onSave={saveConfiguration}
-        defaultName={`${inputs.region} – ${new Date().toLocaleDateString()}`}
-      />
+        <SaveConfigDialog
+          open={saveDialogOpen}
+          onOpenChange={setSaveDialogOpen}
+          onSave={saveConfiguration}
+          defaultName={`${inputs.region} – ${new Date().toLocaleDateString()}`}
+        />
 
         <main className="flex-1 overflow-y-auto">
-            <div className="max-w-7xl mx-auto p-6 lg:p-10 space-y-10">
+          <div className="max-w-7xl mx-auto p-6 lg:p-10 space-y-10">
             {inputs.region === 'Global' && (
               <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/50 px-4 py-3">
                 <div className="h-2 w-2 rounded-full bg-amber-500 shrink-0" />
                 <div>
                   <p className="text-sm font-medium text-foreground">Draft</p>
-                  <p className="text-xs text-muted-foreground">Global model values are preliminary estimates and have not been validated against published sources. Treat all outputs as indicative only.</p>
+                  <p className="text-xs text-muted-foreground">
+                    Global model values are preliminary estimates and have not been validated
+                    against published sources. Treat all outputs as indicative only.
+                  </p>
                 </div>
               </div>
             )}
@@ -430,7 +406,8 @@ const Index: React.FC = () => {
             <section>
               <div className="mb-4">
                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-1">
-                  {isUS ? 'US Market' : inputs.region === 'UK' ? 'UK NHS' : 'Global'} Impact Analysis
+                  {isUS ? 'US Market' : inputs.region === 'UK' ? 'UK NHS' : 'Global'} Impact
+                  Analysis
                 </p>
                 <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
                   {isUS ? 'U.S. National Summary' : 'Executive Summary'}
@@ -466,11 +443,7 @@ const Index: React.FC = () => {
               <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4">
                 Financial Projections
               </h2>
-              <FinancialCharts
-                results={results}
-                region={inputs.region}
-                providerLabel={undefined}
-              />
+              <FinancialCharts results={results} region={inputs.region} providerLabel={undefined} />
             </section>
 
             {/* Section 2.5: US Heatmap + State Market Table */}
@@ -479,10 +452,7 @@ const Index: React.FC = () => {
                 <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4">
                   Geographic Distribution
                 </h2>
-                <USHeatmap
-                  providerView={providerView}
-                  selectedProviderId={selectedProviderId}
-                />
+                <USHeatmap providerView={providerView} selectedProviderId={selectedProviderId} />
                 <StateMarketTable />
               </section>
             )}

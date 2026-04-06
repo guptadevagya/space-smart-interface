@@ -1,11 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -72,10 +66,7 @@ const StateMarketTable: React.FC = () => {
       <span className="inline-flex items-center gap-1">
         {label}
         <ArrowUpDown
-          className={cn(
-            'h-3 w-3',
-            sortKey === field ? 'text-primary' : 'text-muted-foreground/40',
-          )}
+          className={cn('h-3 w-3', sortKey === field ? 'text-primary' : 'text-muted-foreground/40')}
         />
       </span>
     </TableHead>
@@ -104,8 +95,8 @@ const StateMarketTable: React.FC = () => {
               50-State Obstetric Market Share Matrix
             </CardTitle>
             <CardDescription className="text-xs mt-1">
-              {totalBirths.toLocaleString()} total births · {idnCount} IDN-led
-              states · {ippCount} IPP-led states
+              {totalBirths.toLocaleString()} total births · {idnCount} IDN-led states · {ippCount}{' '}
+              IPP-led states
             </CardDescription>
           </div>
           <div className="relative w-48 shrink-0">
@@ -133,15 +124,12 @@ const StateMarketTable: React.FC = () => {
                   Type
                 </TableHead>
                 <SortHeader label="% Controlled" field="estPctControlled" />
-                
               </TableRow>
             </TableHeader>
             <TableBody>
               {filtered.map((row) => (
                 <TableRow key={row.abbr} className="group">
-                  <TableCell className="font-medium text-sm">
-                    {row.state}
-                  </TableCell>
+                  <TableCell className="font-medium text-sm">{row.state}</TableCell>
                   <TableCell className="text-right font-mono text-sm tabular-nums">
                     {row.totalBirths.toLocaleString()}
                   </TableCell>

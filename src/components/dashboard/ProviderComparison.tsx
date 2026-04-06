@@ -2,13 +2,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { SimulationResults } from '@/lib/types';
 import { motion } from 'framer-motion';
-import {
-  TrendingUp,
-  DollarSign,
-  Shield,
-  Heart,
-  Activity,
-} from 'lucide-react';
+import { TrendingUp, DollarSign, Shield, Heart, Activity } from 'lucide-react';
 
 interface ProviderComparisonProps {
   providerResults: SimulationResults;
@@ -27,12 +21,7 @@ interface MetricCardProps {
   delay: number;
 }
 
-const MetricCard: React.FC<MetricCardProps> = ({
-  title,
-  providerValue,
-  icon,
-  delay,
-}) => (
+const MetricCard: React.FC<MetricCardProps> = ({ title, providerValue, icon, delay }) => (
   <motion.div
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
@@ -44,13 +33,9 @@ const MetricCard: React.FC<MetricCardProps> = ({
           <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
             {title}
           </p>
-          <div className="p-1 bg-muted/50 rounded-md shrink-0">
-            {icon}
-          </div>
+          <div className="p-1 bg-muted/50 rounded-md shrink-0">{icon}</div>
         </div>
-        <p className="text-lg font-semibold text-foreground leading-none">
-          {providerValue}
-        </p>
+        <p className="text-lg font-semibold text-foreground leading-none">{providerValue}</p>
       </CardContent>
     </Card>
   </motion.div>
@@ -93,7 +78,7 @@ const ProviderComparison: React.FC<ProviderComparisonProps> = ({
       providerValue: formatNumber(
         Math.round(
           providerResults.clinicalOutcomes.avoidedStillbirths +
-            (providerResults.clinicalOutcomes.avoidedNeonatalDeaths || 0)
+            (providerResults.clinicalOutcomes.avoidedNeonatalDeaths || 0),
         ),
       ),
       icon: <Activity className={iconClass} />,

@@ -4,11 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   ChevronDown,
   Calculator,
@@ -24,11 +20,7 @@ import {
   Users,
   Activity,
 } from 'lucide-react';
-import {
-  FormulaDefinition,
-  CustomVariable,
-  SimulationInputs,
-} from '@/lib/types';
+import { FormulaDefinition, CustomVariable, SimulationInputs } from '@/lib/types';
 import { extractVariables, validateFormula } from '@/lib/formulaEngine';
 import { INPUT_VARIABLE_LABELS } from '@/lib/defaultFormulas';
 import { cn } from '@/lib/utils';
@@ -51,8 +43,12 @@ function buildLabelMap(
   customVars: CustomVariable[],
 ): Record<string, string> {
   const map: Record<string, string> = { ...INPUT_VARIABLE_LABELS };
-  formulas.forEach((f) => { map[f.id] = f.name; });
-  customVars.forEach((v) => { map[v.id] = v.name; });
+  formulas.forEach((f) => {
+    map[f.id] = f.name;
+  });
+  customVars.forEach((v) => {
+    map[v.id] = v.name;
+  });
   return map;
 }
 
@@ -74,7 +70,18 @@ const FormulaCard: React.FC<{
   formatNumber: (val: number) => string;
   onUpdate: (id: string, changes: Partial<FormulaDefinition>) => void;
   onDelete?: (id: string) => void;
-}> = ({ def, value, error, allVarIds, labelMap, allValues, formatCurrency, formatNumber, onUpdate, onDelete }) => {
+}> = ({
+  def,
+  value,
+  error,
+  allVarIds,
+  labelMap,
+  allValues,
+  formatCurrency,
+  formatNumber,
+  onUpdate,
+  onDelete,
+}) => {
   const [editing, setEditing] = useState(false);
   const [editFormula, setEditFormula] = useState(def.formula);
   const [editName, setEditName] = useState(def.name);
@@ -116,24 +123,30 @@ const FormulaCard: React.FC<{
   };
 
   return (
-    <div className={cn(
-      'rounded-lg border bg-card transition-all',
-      error ? 'border-destructive/40 bg-destructive/5' : 'border-border/60 hover:border-border',
-    )}>
+    <div
+      className={cn(
+        'rounded-lg border bg-card transition-all',
+        error ? 'border-destructive/40 bg-destructive/5' : 'border-border/60 hover:border-border',
+      )}
+    >
       {/* Header row */}
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
           <span className="text-sm font-medium text-foreground truncate">{def.name}</span>
           {error && <AlertCircle className="h-3.5 w-3.5 text-destructive shrink-0" />}
           {def.isCustom && (
-            <Badge variant="secondary" className="text-xs px-1.5 py-0 shrink-0">Custom</Badge>
+            <Badge variant="secondary" className="text-xs px-1.5 py-0 shrink-0">
+              Custom
+            </Badge>
           )}
         </div>
         <div className="flex items-center gap-2">
-          <span className={cn(
-            'text-sm font-semibold font-mono',
-            error ? 'text-destructive' : 'text-foreground',
-          )}>
+          <span
+            className={cn(
+              'text-sm font-semibold font-mono',
+              error ? 'text-destructive' : 'text-foreground',
+            )}
+          >
             {error ? 'Error' : formattedResult}
             {def.unit && !error ? ` ${def.unit}` : ''}
           </span>
@@ -141,12 +154,20 @@ const FormulaCard: React.FC<{
             size="sm"
             variant="ghost"
             className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
-            onClick={() => { setEditing(!editing); setShowVars(false); }}
+            onClick={() => {
+              setEditing(!editing);
+              setShowVars(false);
+            }}
           >
             <Pencil className="h-3.5 w-3.5" />
           </Button>
           {onDelete && def.isCustom && (
-            <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive" onClick={() => onDelete(def.id)}>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive"
+              onClick={() => onDelete(def.id)}
+            >
               <Trash2 className="h-3.5 w-3.5" />
             </Button>
           )}
@@ -187,14 +208,23 @@ const FormulaCard: React.FC<{
                     className="inline-flex items-center rounded-md border border-border bg-background px-2 py-1 text-xs font-mono hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer gap-1"
                   >
                     {vid}
-                    {labelMap[vid] && <span className="text-muted-foreground text-xs font-sans">({labelMap[vid]})</span>}
+                    {labelMap[vid] && (
+                      <span className="text-muted-foreground text-xs font-sans">
+                        ({labelMap[vid]})
+                      </span>
+                    )}
                   </button>
                 ))}
               </div>
             </div>
           )}
           <div className="flex gap-2">
-            <Button size="sm" onClick={handleSave} disabled={!!validationError} className="h-8 text-xs">
+            <Button
+              size="sm"
+              onClick={handleSave}
+              disabled={!!validationError}
+              className="h-8 text-xs"
+            >
               <Check className="h-3.5 w-3.5 mr-1" /> Save
             </Button>
             <Button size="sm" variant="outline" onClick={handleCancel} className="h-8 text-xs">
@@ -211,7 +241,10 @@ const FormulaCard: React.FC<{
           {usedVars.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {usedVars.map((vid) => (
-                <span key={vid} className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted/40 rounded px-2 py-0.5">
+                <span
+                  key={vid}
+                  className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted/40 rounded px-2 py-0.5"
+                >
                   <span className="font-mono">{labelMap[vid] || vid}</span>
                   <span className="text-muted-foreground/60">=</span>
                   <span className="font-mono">
@@ -247,7 +280,9 @@ const AddFormulaForm: React.FC<{
   const handleSubmit = () => {
     if (!name || !id || !formula || error) return;
     onAdd({ id, name, formula, group, format, isCustom: true });
-    setName(''); setId(''); setFormula('');
+    setName('');
+    setId('');
+    setFormula('');
   };
 
   const insertVar = (vid: string) => {
@@ -265,27 +300,59 @@ const AddFormulaForm: React.FC<{
           </Button>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Display name" className="text-sm h-9" />
-          <Input value={id} onChange={(e) => setId(e.target.value.replace(/\s/g, ''))} placeholder="Variable ID (camelCase)" className="text-sm h-9 font-mono" />
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Display name"
+            className="text-sm h-9"
+          />
+          <Input
+            value={id}
+            onChange={(e) => setId(e.target.value.replace(/\s/g, ''))}
+            placeholder="Variable ID (camelCase)"
+            className="text-sm h-9 font-mono"
+          />
         </div>
-        <Input ref={inputRef} value={formula} onChange={(e) => setFormula(e.target.value)} placeholder="Formula expression" className="text-sm h-9 font-mono" />
+        <Input
+          ref={inputRef}
+          value={formula}
+          onChange={(e) => setFormula(e.target.value)}
+          placeholder="Formula expression"
+          className="text-sm h-9 font-mono"
+        />
         {error && <p className="text-xs text-destructive">{error}</p>}
         <div className="flex flex-wrap gap-1 max-h-24 overflow-y-auto">
           {allVarIds.slice(0, 20).map((vid) => (
-            <button key={vid} type="button" onClick={() => insertVar(vid)}
-              className="inline-flex rounded-md border border-border px-2 py-0.5 text-xs font-mono hover:bg-accent transition-colors cursor-pointer">
+            <button
+              key={vid}
+              type="button"
+              onClick={() => insertVar(vid)}
+              className="inline-flex rounded-md border border-border px-2 py-0.5 text-xs font-mono hover:bg-accent transition-colors cursor-pointer"
+            >
               {vid}
             </button>
           ))}
-          {allVarIds.length > 20 && <span className="text-xs text-muted-foreground self-center">+{allVarIds.length - 20} more</span>}
+          {allVarIds.length > 20 && (
+            <span className="text-xs text-muted-foreground self-center">
+              +{allVarIds.length - 20} more
+            </span>
+          )}
         </div>
         <div className="flex gap-2 items-center">
-          <select value={format} onChange={(e) => setFormat(e.target.value as 'number' | 'currency')}
-            className="text-sm h-9 border rounded-md px-3 bg-background text-foreground">
+          <select
+            value={format}
+            onChange={(e) => setFormat(e.target.value as 'number' | 'currency')}
+            className="text-sm h-9 border rounded-md px-3 bg-background text-foreground"
+          >
             <option value="number">Number</option>
             <option value="currency">Currency</option>
           </select>
-          <Button size="sm" className="h-9" onClick={handleSubmit} disabled={!name || !id || !formula || !!error}>
+          <Button
+            size="sm"
+            className="h-9"
+            onClick={handleSubmit}
+            disabled={!name || !id || !formula || !!error}
+          >
             <Plus className="h-3.5 w-3.5 mr-1" /> Add formula
           </Button>
         </div>
@@ -307,7 +374,9 @@ const AddVariableForm: React.FC<{
   const handleSubmit = () => {
     if (!name || !id) return;
     onAdd({ id, name, value: parseFloat(value) || 0, format });
-    setName(''); setId(''); setValue('0');
+    setName('');
+    setId('');
+    setValue('0');
   };
 
   return (
@@ -320,13 +389,32 @@ const AddVariableForm: React.FC<{
           </Button>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Display name" className="text-sm h-9" />
-          <Input value={id} onChange={(e) => setId(e.target.value.replace(/\s/g, ''))} placeholder="Variable ID (camelCase)" className="text-sm h-9 font-mono" />
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Display name"
+            className="text-sm h-9"
+          />
+          <Input
+            value={id}
+            onChange={(e) => setId(e.target.value.replace(/\s/g, ''))}
+            placeholder="Variable ID (camelCase)"
+            className="text-sm h-9 font-mono"
+          />
         </div>
         <div className="flex gap-2">
-          <Input type="number" value={value} onChange={(e) => setValue(e.target.value)} placeholder="Value" className="text-sm h-9 flex-1" />
-          <select value={format} onChange={(e) => setFormat(e.target.value as 'number' | 'percent' | 'currency')}
-            className="text-sm h-9 border rounded-md px-3 bg-background text-foreground">
+          <Input
+            type="number"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            placeholder="Value"
+            className="text-sm h-9 flex-1"
+          />
+          <select
+            value={format}
+            onChange={(e) => setFormat(e.target.value as 'number' | 'percent' | 'currency')}
+            className="text-sm h-9 border rounded-md px-3 bg-background text-foreground"
+          >
             <option value="number">Number</option>
             <option value="percent">Percent (0–1)</option>
             <option value="currency">Currency</option>
@@ -358,7 +446,10 @@ const FormulaExplorer: React.FC<FormulaExplorerProps> = ({
   const [showAddFormula, setShowAddFormula] = useState<FormulaDefinition['group'] | null>(null);
   const [activeTab, setActiveTab] = useState('demographics');
 
-  const labelMap = useMemo(() => buildLabelMap(formulas, customVariables), [formulas, customVariables]);
+  const labelMap = useMemo(
+    () => buildLabelMap(formulas, customVariables),
+    [formulas, customVariables],
+  );
 
   const allVarIds = useMemo(() => {
     const inputVarIds = Object.keys(INPUT_VARIABLE_LABELS);
@@ -370,10 +461,20 @@ const FormulaExplorer: React.FC<FormulaExplorerProps> = ({
   const handleUpdateFormula = (id: string, changes: Partial<FormulaDefinition>) => {
     setFormulas((prev) => prev.map((f) => (f.id === id ? { ...f, ...changes } : f)));
   };
-  const handleDeleteFormula = (id: string) => { setFormulas((prev) => prev.filter((f) => f.id !== id)); };
-  const handleAddFormula = (formula: FormulaDefinition) => { setFormulas((prev) => [...prev, formula]); setShowAddFormula(null); };
-  const handleAddVariable = (v: CustomVariable) => { setCustomVariables((prev) => [...prev, v]); setShowAddVar(false); };
-  const handleDeleteVariable = (id: string) => { setCustomVariables((prev) => prev.filter((v) => v.id !== id)); };
+  const handleDeleteFormula = (id: string) => {
+    setFormulas((prev) => prev.filter((f) => f.id !== id));
+  };
+  const handleAddFormula = (formula: FormulaDefinition) => {
+    setFormulas((prev) => [...prev, formula]);
+    setShowAddFormula(null);
+  };
+  const handleAddVariable = (v: CustomVariable) => {
+    setCustomVariables((prev) => [...prev, v]);
+    setShowAddVar(false);
+  };
+  const handleDeleteVariable = (id: string) => {
+    setCustomVariables((prev) => prev.filter((v) => v.id !== id));
+  };
 
   const groups: FormulaDefinition['group'][] = ['demographics', 'clinical', 'financial'];
 
@@ -383,12 +484,20 @@ const FormulaExplorer: React.FC<FormulaExplorerProps> = ({
     const gf = formulas.filter((f) => f.group === group);
     if (!search) return gf;
     const q = search.toLowerCase();
-    return gf.filter((f) => f.name.toLowerCase().includes(q) || f.id.toLowerCase().includes(q) || f.formula.toLowerCase().includes(q));
+    return gf.filter(
+      (f) =>
+        f.name.toLowerCase().includes(q) ||
+        f.id.toLowerCase().includes(q) ||
+        f.formula.toLowerCase().includes(q),
+    );
   };
 
   const printFormulaRows = formulas.map((f) => ({
-    name: f.name, group: f.group, formula: f.formula,
-    value: formulaValues[f.id] ?? 0, format: f.format,
+    name: f.name,
+    group: f.group,
+    formula: f.formula,
+    value: formulaValues[f.id] ?? 0,
+    format: f.format,
   }));
 
   return (
@@ -412,7 +521,12 @@ const FormulaExplorer: React.FC<FormulaExplorerProps> = ({
                       </Badge>
                     )}
                   </div>
-                  <ChevronDown className={cn('h-4 w-4 text-muted-foreground transition-transform', open && 'rotate-180')} />
+                  <ChevronDown
+                    className={cn(
+                      'h-4 w-4 text-muted-foreground transition-transform',
+                      open && 'rotate-180',
+                    )}
+                  />
                 </div>
                 {!open && (
                   <p className="text-xs text-muted-foreground mt-1">
@@ -434,19 +548,47 @@ const FormulaExplorer: React.FC<FormulaExplorerProps> = ({
                       className="pl-8 h-9 text-sm"
                     />
                   </div>
-                  <Button size="sm" variant="outline" className="h-9 text-xs" onClick={() => { setShowAddVar(!showAddVar); setShowAddFormula(null); }}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-9 text-xs"
+                    onClick={() => {
+                      setShowAddVar(!showAddVar);
+                      setShowAddFormula(null);
+                    }}
+                  >
                     <Plus className="h-3.5 w-3.5 mr-1.5" /> Variable
                   </Button>
-                  <Button size="sm" variant="outline" className="h-9 text-xs" onClick={() => { setShowAddFormula(showAddFormula ? null : activeTab as FormulaDefinition['group']); setShowAddVar(false); }}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-9 text-xs"
+                    onClick={() => {
+                      setShowAddFormula(
+                        showAddFormula ? null : (activeTab as FormulaDefinition['group']),
+                      );
+                      setShowAddVar(false);
+                    }}
+                  >
                     <Plus className="h-3.5 w-3.5 mr-1.5" /> Formula
                   </Button>
-                  <Button size="sm" variant="ghost" className="h-9 text-xs text-muted-foreground" onClick={onResetFormulas}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-9 text-xs text-muted-foreground"
+                    onClick={onResetFormulas}
+                  >
                     <RotateCcw className="h-3.5 w-3.5 mr-1.5" /> Reset
                   </Button>
                 </div>
 
                 {/* Add forms */}
-                {showAddVar && <AddVariableForm onAdd={handleAddVariable} onCancel={() => setShowAddVar(false)} />}
+                {showAddVar && (
+                  <AddVariableForm
+                    onAdd={handleAddVariable}
+                    onCancel={() => setShowAddVar(false)}
+                  />
+                )}
                 {showAddFormula && (
                   <AddFormulaForm
                     group={showAddFormula}
@@ -459,13 +601,18 @@ const FormulaExplorer: React.FC<FormulaExplorerProps> = ({
                 {/* Custom Variables */}
                 {customVariables.length > 0 && (
                   <div className="bg-muted/30 rounded-lg p-3">
-                    <p className="text-xs font-medium text-muted-foreground mb-2">Custom variables</p>
+                    <p className="text-xs font-medium text-muted-foreground mb-2">
+                      Custom variables
+                    </p>
                     <div className="flex flex-wrap gap-1.5">
                       {customVariables.map((v) => (
                         <Badge key={v.id} variant="secondary" className="text-xs gap-1.5 pr-1 h-7">
                           <span className="font-mono">{v.id}</span>
                           <span className="text-muted-foreground">= {v.value}</span>
-                          <button onClick={() => handleDeleteVariable(v.id)} className="ml-0.5 hover:text-destructive transition-colors">
+                          <button
+                            onClick={() => handleDeleteVariable(v.id)}
+                            className="ml-0.5 hover:text-destructive transition-colors"
+                          >
                             <X className="h-3 w-3" />
                           </button>
                         </Badge>
@@ -496,7 +643,9 @@ const FormulaExplorer: React.FC<FormulaExplorerProps> = ({
                         {gf.length === 0 ? (
                           <div className="text-center py-8">
                             <p className="text-sm text-muted-foreground">
-                              {search ? 'No formulas match your search' : 'No formulas in this group'}
+                              {search
+                                ? 'No formulas match your search'
+                                : 'No formulas in this group'}
                             </p>
                           </div>
                         ) : (
@@ -528,13 +677,17 @@ const FormulaExplorer: React.FC<FormulaExplorerProps> = ({
 
       {/* Print-only version */}
       <div className="hidden print:block">
-        <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Model Formulas</h2>
+        <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
+          Model Formulas
+        </h2>
         {groups.map((g) => {
           const gf = printFormulaRows.filter((f) => f.group === g);
           if (gf.length === 0) return null;
           return (
             <div key={g} className="mb-4">
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">{groupMeta[g].label}</h3>
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
+                {groupMeta[g].label}
+              </h3>
               <Card>
                 <CardContent className="p-0">
                   <div className="divide-y divide-border">
@@ -545,7 +698,9 @@ const FormulaExplorer: React.FC<FormulaExplorerProps> = ({
                           <p className="text-xs font-mono text-muted-foreground">{f.formula}</p>
                         </div>
                         <p className="text-sm font-bold text-foreground">
-                          {f.format === 'currency' ? formatCurrency(f.value) : formatNumber(f.value)}
+                          {f.format === 'currency'
+                            ? formatCurrency(f.value)
+                            : formatNumber(f.value)}
                         </p>
                       </div>
                     ))}

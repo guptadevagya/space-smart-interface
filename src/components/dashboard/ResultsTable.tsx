@@ -30,17 +30,12 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   const totalFGR = inputs.annualBirths * inputs.fgrPrevalence;
   const detectedOxailis = totalFGR * inputs.oxailisDetectionRate;
   const detectedCurrent = totalFGR * inputs.currentDetectionRate;
-  const highRiskOxailis =
-    detectedOxailis / (1 - inputs.oxailisFalsePositiveRate);
-  const highRiskCurrent =
-    detectedCurrent / (1 - inputs.currentFalsePositiveRate);
+  const highRiskOxailis = detectedOxailis / (1 - inputs.oxailisFalsePositiveRate);
+  const highRiskCurrent = detectedCurrent / (1 - inputs.currentFalsePositiveRate);
   const additionalHighRisk = highRiskOxailis - highRiskCurrent;
-  const midwifeToConsultantDiff =
-    inputs.consultantAppointmentCost - inputs.midwifeAppointmentCost;
+  const midwifeToConsultantDiff = inputs.consultantAppointmentCost - inputs.midwifeAppointmentCost;
   const costPerHighRisk =
-    3 * inputs.growthScanCost +
-    2 * inputs.consultantAppointmentCost +
-    midwifeToConsultantDiff;
+    3 * inputs.growthScanCost + 2 * inputs.consultantAppointmentCost + midwifeToConsultantDiff;
   const totalScansOxailis = highRiskOxailis * 3;
 
   // UK-specific intermediates
@@ -50,13 +45,10 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   const avoidedCP = results.clinicalOutcomes.avoidedCPCases;
 
   // Individual UK cost items (matching Excel line items)
-  const cSectionSavings =
-    results.clinicalOutcomes.avoidedCSections * inputs.cSectionCost;
+  const cSectionSavings = results.clinicalOutcomes.avoidedCSections * inputs.cSectionCost;
   const mumStaySavings = avoidedHypoxic * 2537.333333;
-  const nicuSavings =
-    results.clinicalOutcomes.avoidedNICUDays * inputs.nicuDailyCost;
-  const stillbirthSavings =
-    avoidedStillbirths * inputs.stillbirthLitigationCost;
+  const nicuSavings = results.clinicalOutcomes.avoidedNICUDays * inputs.nicuDailyCost;
+  const stillbirthSavings = avoidedStillbirths * inputs.stillbirthLitigationCost;
   const cpLitigationSavings = avoidedCP * inputs.malpracticeClaimCost;
   const nndLitigationSavings = avoidedNND * inputs.neonatalDeathLitigationCost;
   const nndTrustCost = avoidedNND * inputs.stillbirthLitigationCost;
@@ -143,8 +135,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
         },
         {
           label: 'Total cost of Neonatal ICU avoided',
-          units:
-            formatNumber(results.clinicalOutcomes.avoidedNICUDays) + ' days',
+          units: formatNumber(results.clinicalOutcomes.avoidedNICUDays) + ' days',
           unitCost: formatCurrency(inputs.nicuDailyCost) + '/day',
           impact: formatCurrency(nicuSavings),
           type: 'saving',
@@ -233,20 +224,14 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                   row.type === 'revenue' && 'bg-blue-50/50 dark:bg-blue-950/20',
                 )}
               >
-                <TableCell className="text-sm">
-                  {row.label}
-                </TableCell>
+                <TableCell className="text-sm">{row.label}</TableCell>
                 <TableCell
                   className={cn(
                     'text-right font-mono text-sm',
-                    row.type === 'cost'
-                      ? 'text-destructive'
-                      : 'text-emerald-600',
+                    row.type === 'cost' ? 'text-destructive' : 'text-emerald-600',
                   )}
                 >
-                  {row.type === 'saving' && row.units
-                    ? `${row.units}`
-                    : row.units}
+                  {row.type === 'saving' && row.units ? `${row.units}` : row.units}
                 </TableCell>
                 <TableCell className="text-right text-sm text-muted-foreground">
                   {row.unitCost}
@@ -254,9 +239,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                 <TableCell
                   className={cn(
                     'text-right font-bold text-sm',
-                    row.type === 'cost'
-                      ? 'text-destructive'
-                      : 'text-foreground',
+                    row.type === 'cost' ? 'text-destructive' : 'text-foreground',
                   )}
                 >
                   {row.impact}
