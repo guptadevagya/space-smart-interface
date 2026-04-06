@@ -170,11 +170,11 @@ const Index: React.FC = () => {
   );
   const [providerBirthOverrides, setProviderBirthOverrides] = useState<Record<string, number>>({});
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(() => window.innerWidth >= 1280);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => window.innerWidth >= 768);
 
   useEffect(() => {
     const syncSidebarState = () => {
-      setIsSidebarOpen(window.innerWidth >= 1280);
+      setIsSidebarOpen(window.innerWidth >= 768);
     };
 
     syncSidebarState();
