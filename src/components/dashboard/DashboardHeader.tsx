@@ -82,9 +82,8 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
-        {/* Region selector */}
-        <div className="flex items-center bg-muted rounded-lg p-0.5">
+      {/* Region selector */}
+      <div className="flex items-center bg-muted rounded-lg p-0.5">
           {regions.map((r) => (
             <button
               key={r}
