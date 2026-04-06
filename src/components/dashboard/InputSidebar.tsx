@@ -22,7 +22,7 @@ import {
 import {
   BookOpen,
   RotateCcw,
-  X,
+  PanelLeftClose,
   ChevronDown,
   Save,
   Plus,
