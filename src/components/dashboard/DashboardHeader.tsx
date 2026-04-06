@@ -46,7 +46,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   onResetDefaults,
   getSavedConfigs,
 }) => {
-  const regions: Region[] = ['US', 'UK', 'Global'];
+  const regions: Region[] = ['UK', 'US', 'Global'];
   const [loadOpen, setLoadOpen] = useState(false);
 
   const configs = loadOpen ? getSavedConfigs() : [];
@@ -118,15 +118,15 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             variant="outline"
             size="sm"
             onClick={onSave}
-            className="hidden sm:flex"
+            className="hidden sm:flex h-7 text-xs px-2"
           >
-            <Save className="h-3.5 w-3.5 mr-1.5" />
+            <Save className="h-3 w-3 mr-1" />
             Save
           </Button>
           <Popover open={loadOpen} onOpenChange={setLoadOpen}>
             <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" className="hidden sm:flex">
-                <FolderOpen className="h-3.5 w-3.5 mr-1.5" />
+              <Button variant="outline" size="sm" className="hidden sm:flex h-7 text-xs px-2">
+                <FolderOpen className="h-3 w-3 mr-1" />
                 Load
               </Button>
             </PopoverTrigger>
@@ -158,28 +158,28 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                       >
                         <div className="flex items-start justify-between gap-2">
                           <button
-                            className="flex-1 text-left"
                             onClick={() => {
                               onLoad(cfg.id);
                               setLoadOpen(false);
                             }}
+                            className="text-left flex-1 min-w-0"
                           >
-                            <div className="flex items-center gap-2 mb-1">
-                              <p className="text-sm font-medium text-foreground leading-tight">
-                                {cfg.name}
-                              </p>
+                            <p className="text-sm font-medium text-foreground truncate">
+                              {cfg.name}
+                            </p>
+                            <div className="flex items-center gap-2 mt-0.5">
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Clock className="h-3 w-3" />
+                                {formatTime(cfg.timestamp)}
+                              </span>
                               {cfg.region && (
-                                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-medium">
+                                <Badge variant="outline" className="text-[10px] px-1.5 py-0">
                                   {cfg.region}
                                 </Badge>
                               )}
                             </div>
-                            <p className="text-xs text-muted-foreground flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
-                              {formatTime(cfg.timestamp)}
-                            </p>
                             {cfg.comment && (
-                              <p className="text-xs text-muted-foreground mt-1.5 flex items-start gap-1.5">
+                              <p className="text-xs text-muted-foreground mt-1 flex items-start gap-1">
                                 <MessageSquare className="h-3 w-3 mt-0.5 shrink-0" />
                                 <span className="line-clamp-2">{cfg.comment}</span>
                               </p>
@@ -190,7 +190,8 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                               e.stopPropagation();
                               onDelete(cfg.id);
                             }}
-                            className="text-destructive/50 hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity p-1 mt-0.5"
+                            className="text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity p-1"
+                            title="Delete configuration"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>
@@ -206,18 +207,18 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             variant="outline"
             size="sm"
             onClick={onResetDefaults}
-            className="hidden sm:flex"
+            className="hidden sm:flex h-7 text-xs px-2"
           >
-            <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
+            <RotateCcw className="h-3 w-3 mr-1" />
             Defaults
           </Button>
           <Button
             variant="outline"
             size="sm"
             onClick={() => window.print()}
-            className="hidden sm:flex print:hidden"
+            className="hidden sm:flex print:hidden h-7 text-xs px-2"
           >
-            <Printer className="h-3.5 w-3.5 mr-1.5" />
+            <Printer className="h-3 w-3 mr-1" />
             Print
           </Button>
         </div>
