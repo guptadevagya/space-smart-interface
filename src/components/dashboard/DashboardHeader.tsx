@@ -61,7 +61,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   };
 
   return (
-    <header className="bg-card border-b border-border px-6 py-3 flex justify-between items-center sticky top-0 z-20 shadow-sm">
+    <header className="bg-card border-b border-border px-6 py-3 flex items-center sticky top-0 z-20 shadow-sm h-[57px]">
       <div className="flex items-center gap-3">
         {!isSidebarOpen && (
           <Button
