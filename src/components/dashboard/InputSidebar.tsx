@@ -484,7 +484,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
 
   return (
     <>
-      {/* Mobile overlay */}
+      {/* Overlay */}
       <div
         className={cn(
           'fixed inset-0 bg-foreground/40 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300',
@@ -496,7 +496,7 @@ const InputSidebar: React.FC<InputSidebarProps> = ({
       <aside
         className={cn(
           'fixed lg:static inset-y-0 left-0 z-50 w-[360px] bg-card border-r border-border flex flex-col h-full transition-transform duration-300 ease-in-out',
-          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+          isOpen ? 'translate-x-0' : '-translate-x-full',
         )}
       >
         {/* Header */}
