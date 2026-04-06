@@ -1,18 +1,14 @@
 import React, { useState, useRef, useMemo } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import {
   ChevronDown,
   ChevronRight,
@@ -24,6 +20,11 @@ import {
   Trash2,
   AlertCircle,
   RotateCcw,
+  Search,
+  Beaker,
+  DollarSign,
+  Users,
+  Activity,
 } from 'lucide-react';
 import {
   FormulaDefinition,
@@ -32,6 +33,7 @@ import {
 } from '@/lib/types';
 import { extractVariables, validateFormula } from '@/lib/formulaEngine';
 import { INPUT_VARIABLE_LABELS } from '@/lib/defaultFormulas';
+import { cn } from '@/lib/utils';
 
 interface FormulaExplorerProps {
   inputs: SimulationInputs;
@@ -46,21 +48,23 @@ interface FormulaExplorerProps {
   onResetFormulas: () => void;
 }
 
-// Build a label map from formulas + input labels + custom vars
 function buildLabelMap(
   formulas: FormulaDefinition[],
   customVars: CustomVariable[],
 ): Record<string, string> {
   const map: Record<string, string> = { ...INPUT_VARIABLE_LABELS };
-  formulas.forEach((f) => {
-    map[f.id] = f.name;
-  });
-  customVars.forEach((v) => {
-    map[v.id] = v.name;
-  });
+  formulas.forEach((f) => { map[f.id] = f.name; });
+  customVars.forEach((v) => { map[v.id] = v.name; });
   return map;
 }
 
+const groupMeta: Record<string, { icon: React.ReactNode; label: string }> = {
+  demographics: { icon: <Users className="h-3.5 w-3.5" />, label: 'Demographics' },
+  clinical: { icon: <Activity className="h-3.5 w-3.5" />, label: 'Clinical' },
+  financial: { icon: <DollarSign className="h-3.5 w-3.5" />, label: 'Financial' },
+};
+
+// ── Formula Card ──
 const FormulaCard: React.FC<{
   def: FormulaDefinition;
   value: number;
@@ -72,33 +76,17 @@ const FormulaCard: React.FC<{
   formatNumber: (val: number) => string;
   onUpdate: (id: string, changes: Partial<FormulaDefinition>) => void;
   onDelete?: (id: string) => void;
-}> = ({
-  def,
-  value,
-  error,
-  allVarIds,
-  labelMap,
-  allValues,
-  formatCurrency,
-  formatNumber,
-  onUpdate,
-  onDelete,
-}) => {
-  const [open, setOpen] = useState(false);
+}> = ({ def, value, error, allVarIds, labelMap, allValues, formatCurrency, formatNumber, onUpdate, onDelete }) => {
   const [editing, setEditing] = useState(false);
   const [editFormula, setEditFormula] = useState(def.formula);
   const [editName, setEditName] = useState(def.name);
   const [showVars, setShowVars] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const formattedResult =
-    def.format === 'currency' ? formatCurrency(value) : formatNumber(value);
+  const formattedResult = def.format === 'currency' ? formatCurrency(value) : formatNumber(value);
   const usedVars = extractVariables(def.formula);
-
   const availableVarSet = new Set(allVarIds);
-  const validationError = editing
-    ? validateFormula(editFormula, availableVarSet)
-    : null;
+  const validationError = editing ? validateFormula(editFormula, availableVarSet) : null;
 
   const handleSave = () => {
     if (!validationError) {
@@ -117,8 +105,7 @@ const FormulaCard: React.FC<{
     if (inputRef.current) {
       const start = inputRef.current.selectionStart ?? editFormula.length;
       const end = inputRef.current.selectionEnd ?? editFormula.length;
-      const newFormula =
-        editFormula.slice(0, start) + varId + editFormula.slice(end);
+      const newFormula = editFormula.slice(0, start) + varId + editFormula.slice(end);
       setEditFormula(newFormula);
       setTimeout(() => {
         inputRef.current?.focus();
@@ -131,169 +118,126 @@ const FormulaCard: React.FC<{
   };
 
   return (
-    <Collapsible open={open} onOpenChange={setOpen}>
-      <Card
-        className={`border-border/50 ${error ? 'border-destructive/50' : ''}`}
-      >
-        <CollapsibleTrigger className="w-full">
-          <div className="flex items-center justify-between p-3 hover:bg-muted/30 transition-colors cursor-pointer">
-            <div className="flex items-center gap-2">
-              {open ? (
-                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-              ) : (
-                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
-              )}
-              <span className="text-sm font-medium text-foreground">
-                {def.name}
-              </span>
-              {error && (
-                <AlertCircle className="h-3.5 w-3.5 text-destructive" />
-              )}
-              {def.isCustom && (
-              <Badge variant="secondary" className="text-xs px-1.5 py-0">
-                  Custom
-                </Badge>
-              )}
-            </div>
-            <span
-              className={`text-sm font-semibold font-mono ${error ? 'text-destructive' : 'text-primary'}`}
-            >
-              = {error ? 'Error' : formattedResult}
-              {def.unit && !error ? ` ${def.unit}` : ''}
-            </span>
-          </div>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <CardContent className="pt-0 pb-3 px-3 space-y-2">
-            {editing ? (
-              <div className="space-y-2">
-                <div className="flex gap-2">
-                  <Input
-                    value={editName}
-                    onChange={(e) => setEditName(e.target.value)}
-                    placeholder="Formula name"
-                    className="text-sm h-8"
-                  />
-                </div>
-                <div className="relative">
-                  <Input
-                    ref={inputRef}
-                    value={editFormula}
-                    onChange={(e) => setEditFormula(e.target.value)}
-                    placeholder="e.g. annualBirths * fgrPrevalence"
-                    className="font-mono text-xs h-8"
-                    onFocus={() => setShowVars(true)}
-                  />
-                  {validationError && (
-                    <p className="text-xs text-destructive mt-1">
-                      {validationError}
-                    </p>
-                  )}
-                </div>
-                {showVars && (
-                  <div className="bg-muted/50 rounded-md p-2 max-h-32 overflow-y-auto">
-                    <p className="text-xs text-muted-foreground mb-1.5 font-medium uppercase tracking-wider">
-                      Click to insert variable
-                    </p>
-                    <div className="flex flex-wrap gap-1">
-                      {allVarIds.map((vid) => (
-                        <button
-                          key={vid}
-                          type="button"
-                          onClick={() => insertVariable(vid)}
-                          className="inline-flex items-center rounded-full border border-border bg-background px-2 py-0.5 text-xs font-mono hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer"
-                        >
-                          {vid}
-                          <span className="text-muted-foreground ml-1 text-xs">
-                            {labelMap[vid] || ''}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                <div className="flex gap-1.5">
-                  <Button
-                    size="sm"
-                    variant="default"
-                    className="h-7 text-xs"
-                    onClick={handleSave}
-                    disabled={!!validationError}
-                  >
-                    <Check className="h-3 w-3 mr-1" /> Save
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-7 text-xs"
-                    onClick={handleCancel}
-                  >
-                    <X className="h-3 w-3 mr-1" /> Cancel
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <>
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 bg-muted/50 rounded-md p-2 font-mono text-xs text-muted-foreground">
-                    {def.formula}
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-7 w-7 p-0"
-                    onClick={() => {
-                      setEditing(true);
-                      setShowVars(false);
-                    }}
-                  >
-                    <Pencil className="h-3 w-3" />
-                  </Button>
-                  {onDelete && def.isCustom && (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-7 w-7 p-0 text-destructive"
-                      onClick={() => onDelete(def.id)}
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
-                  )}
-                </div>
-                {error && (
-                  <p className="text-xs text-destructive">{error}</p>
-                )}
-                <div className="flex flex-wrap gap-1">
-                  {usedVars.map((vid) => (
-                    <Badge
-                      key={vid}
-                      variant="outline"
-                      className="text-xs font-normal gap-1"
-                    >
-                      {labelMap[vid] || vid}
-                      <span className="text-muted-foreground font-mono">
-                        {allValues[vid] !== undefined
-                          ? formatNumber(allValues[vid])
-                          : '?'}
-                      </span>
-                    </Badge>
-                  ))}
-                </div>
-              </>
+    <div className={cn(
+      'rounded-lg border bg-card transition-all',
+      error ? 'border-destructive/40 bg-destructive/5' : 'border-border/60 hover:border-border',
+    )}>
+      {/* Header row */}
+      <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+          <span className="text-sm font-medium text-foreground truncate">{def.name}</span>
+          {error && <AlertCircle className="h-3.5 w-3.5 text-destructive shrink-0" />}
+          {def.isCustom && (
+            <Badge variant="secondary" className="text-xs px-1.5 py-0 shrink-0">Custom</Badge>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          <span className={cn(
+            'text-sm font-semibold font-mono',
+            error ? 'text-destructive' : 'text-foreground',
+          )}>
+            {error ? 'Error' : formattedResult}
+            {def.unit && !error ? ` ${def.unit}` : ''}
+          </span>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
+            onClick={() => { setEditing(!editing); setShowVars(false); }}
+          >
+            <Pencil className="h-3.5 w-3.5" />
+          </Button>
+          {onDelete && def.isCustom && (
+            <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive" onClick={() => onDelete(def.id)}>
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          )}
+        </div>
+      </div>
+
+      {/* Expanded content */}
+      {editing ? (
+        <div className="px-4 pb-4 space-y-3 border-t border-border/40 pt-3">
+          <Input
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            placeholder="Formula name"
+            className="text-sm h-9"
+          />
+          <div>
+            <Input
+              ref={inputRef}
+              value={editFormula}
+              onChange={(e) => setEditFormula(e.target.value)}
+              placeholder="e.g. annualBirths * fgrPrevalence"
+              className="font-mono text-sm h-9"
+              onFocus={() => setShowVars(true)}
+            />
+            {validationError && (
+              <p className="text-xs text-destructive mt-1.5">{validationError}</p>
             )}
-          </CardContent>
-        </CollapsibleContent>
-      </Card>
-    </Collapsible>
+          </div>
+          {showVars && (
+            <div className="bg-muted/40 rounded-lg p-3 max-h-36 overflow-y-auto">
+              <p className="text-xs text-muted-foreground mb-2 font-medium">Insert variable</p>
+              <div className="flex flex-wrap gap-1.5">
+                {allVarIds.map((vid) => (
+                  <button
+                    key={vid}
+                    type="button"
+                    onClick={() => insertVariable(vid)}
+                    className="inline-flex items-center rounded-md border border-border bg-background px-2 py-1 text-xs font-mono hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer gap-1"
+                  >
+                    {vid}
+                    {labelMap[vid] && <span className="text-muted-foreground text-xs font-sans">({labelMap[vid]})</span>}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          <div className="flex gap-2">
+            <Button size="sm" onClick={handleSave} disabled={!!validationError} className="h-8 text-xs">
+              <Check className="h-3.5 w-3.5 mr-1" /> Save
+            </Button>
+            <Button size="sm" variant="outline" onClick={handleCancel} className="h-8 text-xs">
+              Cancel
+            </Button>
+          </div>
+        </div>
+      ) : (
+        /* Read-only formula + dependency badges */
+        <div className="px-4 pb-3 space-y-2">
+          <div className="bg-muted/30 rounded-md px-3 py-2 font-mono text-xs text-muted-foreground">
+            {def.formula}
+          </div>
+          {usedVars.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {usedVars.map((vid) => (
+                <span key={vid} className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted/40 rounded px-2 py-0.5">
+                  <span className="font-mono">{labelMap[vid] || vid}</span>
+                  <span className="text-muted-foreground/60">=</span>
+                  <span className="font-mono">
+                    {allValues[vid] !== undefined ? formatNumber(allValues[vid]) : '?'}
+                  </span>
+                </span>
+              ))}
+            </div>
+          )}
+          {error && <p className="text-xs text-destructive">{error}</p>}
+        </div>
+      )}
+    </div>
   );
 };
 
+// ── Add Formula Form ──
 const AddFormulaForm: React.FC<{
   group: FormulaDefinition['group'];
   allVarIds: string[];
   labelMap: Record<string, string>;
   onAdd: (formula: FormulaDefinition) => void;
-}> = ({ group, allVarIds, labelMap, onAdd }) => {
+  onCancel: () => void;
+}> = ({ group, allVarIds, labelMap, onAdd, onCancel }) => {
   const [name, setName] = useState('');
   const [id, setId] = useState('');
   const [formula, setFormula] = useState('');
@@ -306,9 +250,7 @@ const AddFormulaForm: React.FC<{
   const handleSubmit = () => {
     if (!name || !id || !formula || error) return;
     onAdd({ id, name, formula, group, format, isCustom: true });
-    setName('');
-    setId('');
-    setFormula('');
+    setName(''); setId(''); setFormula('');
   };
 
   const insertVar = (vid: string) => {
@@ -317,66 +259,37 @@ const AddFormulaForm: React.FC<{
   };
 
   return (
-    <Card className="border-dashed border-border/50">
-      <CardContent className="p-3 space-y-2">
-        <p className="text-xs font-semibold text-muted-foreground">
-          Add Formula
-        </p>
-        <div className="grid grid-cols-2 gap-2">
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Name (e.g. Extra Savings)"
-            className="text-xs h-7"
-          />
-          <Input
-            value={id}
-            onChange={(e) => setId(e.target.value.replace(/\s/g, ''))}
-            placeholder="ID (e.g. extraSavings)"
-            className="text-xs h-7 font-mono"
-          />
+    <Card className="border-dashed">
+      <CardContent className="p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-medium text-foreground">New formula</p>
+          <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={onCancel}>
+            <X className="h-3.5 w-3.5" />
+          </Button>
         </div>
-        <Input
-          ref={inputRef}
-          value={formula}
-          onChange={(e) => setFormula(e.target.value)}
-          placeholder="Formula expression"
-          className="text-xs h-7 font-mono"
-        />
+        <div className="grid grid-cols-2 gap-2">
+          <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Display name" className="text-sm h-9" />
+          <Input value={id} onChange={(e) => setId(e.target.value.replace(/\s/g, ''))} placeholder="Variable ID (camelCase)" className="text-sm h-9 font-mono" />
+        </div>
+        <Input ref={inputRef} value={formula} onChange={(e) => setFormula(e.target.value)} placeholder="Formula expression" className="text-sm h-9 font-mono" />
         {error && <p className="text-xs text-destructive">{error}</p>}
-        <div className="flex flex-wrap gap-1 max-h-20 overflow-y-auto">
+        <div className="flex flex-wrap gap-1 max-h-24 overflow-y-auto">
           {allVarIds.slice(0, 20).map((vid) => (
-            <button
-              key={vid}
-              type="button"
-              onClick={() => insertVar(vid)}
-              className="inline-flex rounded-full border border-border px-1.5 py-0 text-xs font-mono hover:bg-accent transition-colors cursor-pointer"
-            >
+            <button key={vid} type="button" onClick={() => insertVar(vid)}
+              className="inline-flex rounded-md border border-border px-2 py-0.5 text-xs font-mono hover:bg-accent transition-colors cursor-pointer">
               {vid}
             </button>
           ))}
-          {allVarIds.length > 20 && (
-            <span className="text-xs text-muted-foreground">
-              +{allVarIds.length - 20} more
-            </span>
-          )}
+          {allVarIds.length > 20 && <span className="text-xs text-muted-foreground self-center">+{allVarIds.length - 20} more</span>}
         </div>
         <div className="flex gap-2 items-center">
-          <select
-            value={format}
-            onChange={(e) => setFormat(e.target.value as 'number' | 'currency')}
-            className="text-xs h-7 border rounded px-2 bg-background text-foreground"
-          >
+          <select value={format} onChange={(e) => setFormat(e.target.value as 'number' | 'currency')}
+            className="text-sm h-9 border rounded-md px-3 bg-background text-foreground">
             <option value="number">Number</option>
             <option value="currency">Currency</option>
           </select>
-          <Button
-            size="sm"
-            className="h-7 text-xs"
-            onClick={handleSubmit}
-            disabled={!name || !id || !formula || !!error}
-          >
-            <Plus className="h-3 w-3 mr-1" /> Add
+          <Button size="sm" className="h-9" onClick={handleSubmit} disabled={!name || !id || !formula || !!error}>
+            <Plus className="h-3.5 w-3.5 mr-1" /> Add formula
           </Button>
         </div>
       </CardContent>
@@ -384,68 +297,45 @@ const AddFormulaForm: React.FC<{
   );
 };
 
+// ── Add Variable Form ──
 const AddVariableForm: React.FC<{
   onAdd: (v: CustomVariable) => void;
-}> = ({ onAdd }) => {
+  onCancel: () => void;
+}> = ({ onAdd, onCancel }) => {
   const [name, setName] = useState('');
   const [id, setId] = useState('');
   const [value, setValue] = useState('0');
-  const [format, setFormat] = useState<'number' | 'percent' | 'currency'>(
-    'number',
-  );
+  const [format, setFormat] = useState<'number' | 'percent' | 'currency'>('number');
 
   const handleSubmit = () => {
     if (!name || !id) return;
     onAdd({ id, name, value: parseFloat(value) || 0, format });
-    setName('');
-    setId('');
-    setValue('0');
+    setName(''); setId(''); setValue('0');
   };
 
   return (
-    <Card className="border-dashed border-border/50">
-      <CardContent className="p-3 space-y-2">
-        <p className="text-xs font-semibold text-muted-foreground">
-          Add Custom Variable
-        </p>
+    <Card className="border-dashed">
+      <CardContent className="p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-medium text-foreground">New variable</p>
+          <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={onCancel}>
+            <X className="h-3.5 w-3.5" />
+          </Button>
+        </div>
         <div className="grid grid-cols-2 gap-2">
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Name"
-            className="text-xs h-7"
-          />
-          <Input
-            value={id}
-            onChange={(e) => setId(e.target.value.replace(/\s/g, ''))}
-            placeholder="ID (camelCase)"
-            className="text-xs h-7 font-mono"
-          />
+          <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Display name" className="text-sm h-9" />
+          <Input value={id} onChange={(e) => setId(e.target.value.replace(/\s/g, ''))} placeholder="Variable ID (camelCase)" className="text-sm h-9 font-mono" />
         </div>
         <div className="flex gap-2">
-          <Input
-            type="number"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            placeholder="Value"
-            className="text-xs h-7 flex-1"
-          />
-          <select
-            value={format}
-            onChange={(e) => setFormat(e.target.value as any)}
-            className="text-xs h-7 border rounded px-2 bg-background text-foreground"
-          >
+          <Input type="number" value={value} onChange={(e) => setValue(e.target.value)} placeholder="Value" className="text-sm h-9 flex-1" />
+          <select value={format} onChange={(e) => setFormat(e.target.value as any)}
+            className="text-sm h-9 border rounded-md px-3 bg-background text-foreground">
             <option value="number">Number</option>
-            <option value="percent">Percent (0-1)</option>
+            <option value="percent">Percent (0–1)</option>
             <option value="currency">Currency</option>
           </select>
-          <Button
-            size="sm"
-            className="h-7 text-xs"
-            onClick={handleSubmit}
-            disabled={!name || !id}
-          >
-            <Plus className="h-3 w-3 mr-1" /> Add
+          <Button size="sm" className="h-9" onClick={handleSubmit} disabled={!name || !id}>
+            <Plus className="h-3.5 w-3.5 mr-1" /> Add
           </Button>
         </div>
       </CardContent>
@@ -453,6 +343,7 @@ const AddVariableForm: React.FC<{
   );
 };
 
+// ── Main Component ──
 const FormulaExplorer: React.FC<FormulaExplorerProps> = ({
   inputs,
   formulas,
@@ -466,17 +357,13 @@ const FormulaExplorer: React.FC<FormulaExplorerProps> = ({
   onResetFormulas,
 }) => {
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState('');
   const [showAddVar, setShowAddVar] = useState(false);
-  const [showAddFormula, setShowAddFormula] = useState<
-    FormulaDefinition['group'] | null
-  >(null);
+  const [showAddFormula, setShowAddFormula] = useState<FormulaDefinition['group'] | null>(null);
+  const [activeTab, setActiveTab] = useState('demographics');
 
-  const labelMap = useMemo(
-    () => buildLabelMap(formulas, customVariables),
-    [formulas, customVariables],
-  );
+  const labelMap = useMemo(() => buildLabelMap(formulas, customVariables), [formulas, customVariables]);
 
-  // All available variable IDs for autocomplete
   const allVarIds = useMemo(() => {
     const inputVarIds = Object.keys(INPUT_VARIABLE_LABELS);
     const customVarIds = customVariables.map((v) => v.id);
@@ -484,214 +371,186 @@ const FormulaExplorer: React.FC<FormulaExplorerProps> = ({
     return [...inputVarIds, ...customVarIds, ...formulaIds];
   }, [formulas, customVariables]);
 
-  const handleUpdateFormula = (
-    id: string,
-    changes: Partial<FormulaDefinition>,
-  ) => {
-    setFormulas((prev) =>
-      prev.map((f) => (f.id === id ? { ...f, ...changes } : f)),
-    );
+  const handleUpdateFormula = (id: string, changes: Partial<FormulaDefinition>) => {
+    setFormulas((prev) => prev.map((f) => (f.id === id ? { ...f, ...changes } : f)));
   };
+  const handleDeleteFormula = (id: string) => { setFormulas((prev) => prev.filter((f) => f.id !== id)); };
+  const handleAddFormula = (formula: FormulaDefinition) => { setFormulas((prev) => [...prev, formula]); setShowAddFormula(null); };
+  const handleAddVariable = (v: CustomVariable) => { setCustomVariables((prev) => [...prev, v]); setShowAddVar(false); };
+  const handleDeleteVariable = (id: string) => { setCustomVariables((prev) => prev.filter((v) => v.id !== id)); };
 
-  const handleDeleteFormula = (id: string) => {
-    setFormulas((prev) => prev.filter((f) => f.id !== id));
+  const groups: FormulaDefinition['group'][] = ['demographics', 'clinical', 'financial'];
+
+  const errorCount = Object.keys(formulaErrors).length;
+
+  const filteredFormulas = (group: FormulaDefinition['group']) => {
+    const gf = formulas.filter((f) => f.group === group);
+    if (!search) return gf;
+    const q = search.toLowerCase();
+    return gf.filter((f) => f.name.toLowerCase().includes(q) || f.id.toLowerCase().includes(q) || f.formula.toLowerCase().includes(q));
   };
-
-  const handleAddFormula = (formula: FormulaDefinition) => {
-    setFormulas((prev) => [...prev, formula]);
-    setShowAddFormula(null);
-  };
-
-  const handleAddVariable = (v: CustomVariable) => {
-    setCustomVariables((prev) => [...prev, v]);
-    setShowAddVar(false);
-  };
-
-  const handleDeleteVariable = (id: string) => {
-    setCustomVariables((prev) => prev.filter((v) => v.id !== id));
-  };
-
-  const groups: { key: FormulaDefinition['group']; title: string }[] = [
-    { key: 'demographics', title: 'Demographics' },
-    { key: 'clinical', title: 'Clinical Outcomes' },
-    { key: 'financial', title: 'Financial Impact' },
-  ];
 
   const printFormulaRows = formulas.map((f) => ({
-    name: f.name,
-    group: f.group,
-    formula: f.formula,
-    value: formulaValues[f.id] ?? 0,
-    format: f.format,
+    name: f.name, group: f.group, formula: f.formula,
+    value: formulaValues[f.id] ?? 0, format: f.format,
   }));
 
   return (
     <>
-      {/* Interactive version (hidden in print) */}
+      {/* Interactive version */}
       <div className="print:hidden">
         <Collapsible open={open} onOpenChange={setOpen}>
-          <CollapsibleTrigger className="w-full">
-            <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-              <Calculator className="h-4 w-4 text-muted-foreground" />
-              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                Model Formulas
-              </h2>
-              {open ? (
-                <ChevronDown className="h-3 w-3 text-muted-foreground" />
-              ) : (
-                <ChevronRight className="h-3 w-3 text-muted-foreground" />
-              )}
-              {!open && (
-                <span className="text-xs text-muted-foreground/60 ml-2">
-                  Click to expand — edit formulas, add variables
-                </span>
-              )}
-            </div>
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <div className="mt-4 space-y-5">
-              {/* Toolbar */}
-              <div className="flex gap-2 flex-wrap">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="h-7 text-xs"
-                  onClick={() => setShowAddVar(!showAddVar)}
-                >
-                  <Plus className="h-3 w-3 mr-1" /> Add Variable
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="h-7 text-xs"
-                  onClick={onResetFormulas}
-                >
-                  <RotateCcw className="h-3 w-3 mr-1" /> Reset to Defaults
-                </Button>
-              </div>
-
-              {/* Custom Variables */}
-              {showAddVar && <AddVariableForm onAdd={handleAddVariable} />}
-              {customVariables.length > 0 && (
-                <div>
-                  <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
-                    Custom Variables
-                  </h3>
-                  <div className="flex flex-wrap gap-1.5">
-                    {customVariables.map((v) => (
-                      <Badge
-                        key={v.id}
-                        variant="secondary"
-                        className="text-xs gap-1.5 pr-1"
-                      >
-                        <span className="font-mono">{v.id}</span>
-                        <span className="text-muted-foreground">
-                          = {v.value}
-                        </span>
-                        <button
-                          onClick={() => handleDeleteVariable(v.id)}
-                          className="ml-0.5 hover:text-destructive"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
+          <Card>
+            <CollapsibleTrigger asChild>
+              <CardHeader className="cursor-pointer hover:bg-muted/30 transition-colors py-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <Calculator className="h-4 w-4 text-primary" />
+                    <CardTitle className="text-sm font-bold">Model Formulas</CardTitle>
+                    <Badge variant="secondary" className="text-xs px-2 py-0 h-5">
+                      {formulas.length}
+                    </Badge>
+                    {errorCount > 0 && (
+                      <Badge variant="destructive" className="text-xs px-2 py-0 h-5">
+                        {errorCount} error{errorCount > 1 ? 's' : ''}
                       </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Formula Groups */}
-              {groups.map((group) => {
-                const groupFormulas = formulas.filter(
-                  (f) => f.group === group.key,
-                );
-                return (
-                  <div key={group.key}>
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                        {group.title}
-                      </h3>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-6 text-[10px] px-2"
-                        onClick={() =>
-                          setShowAddFormula(
-                            showAddFormula === group.key ? null : group.key,
-                          )
-                        }
-                      >
-                        <Plus className="h-3 w-3 mr-0.5" /> Add
-                      </Button>
-                    </div>
-                    <div className="space-y-1.5">
-                      {groupFormulas.map((def) => (
-                        <FormulaCard
-                          key={def.id}
-                          def={def}
-                          value={formulaValues[def.id] ?? 0}
-                          error={formulaErrors[def.id]}
-                          allVarIds={allVarIds}
-                          labelMap={labelMap}
-                          allValues={formulaValues}
-                          formatCurrency={formatCurrency}
-                          formatNumber={formatNumber}
-                          onUpdate={handleUpdateFormula}
-                          onDelete={handleDeleteFormula}
-                        />
-                      ))}
-                    </div>
-                    {showAddFormula === group.key && (
-                      <div className="mt-2">
-                        <AddFormulaForm
-                          group={group.key}
-                          allVarIds={allVarIds}
-                          labelMap={labelMap}
-                          onAdd={handleAddFormula}
-                        />
-                      </div>
                     )}
                   </div>
-                );
-              })}
-            </div>
-          </CollapsibleContent>
+                  <ChevronDown className={cn('h-4 w-4 text-muted-foreground transition-transform', open && 'rotate-180')} />
+                </div>
+                {!open && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Edit calculation logic, add custom variables and formulas
+                  </p>
+                )}
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="pt-0 space-y-4">
+                {/* Toolbar */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  <div className="relative flex-1 min-w-[200px]">
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                    <Input
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder="Search formulas..."
+                      className="pl-8 h-9 text-sm"
+                    />
+                  </div>
+                  <Button size="sm" variant="outline" className="h-9 text-xs" onClick={() => { setShowAddVar(!showAddVar); setShowAddFormula(null); }}>
+                    <Beaker className="h-3.5 w-3.5 mr-1.5" /> Variable
+                  </Button>
+                  <Button size="sm" variant="outline" className="h-9 text-xs" onClick={() => { setShowAddFormula(showAddFormula ? null : activeTab as FormulaDefinition['group']); setShowAddVar(false); }}>
+                    <Plus className="h-3.5 w-3.5 mr-1.5" /> Formula
+                  </Button>
+                  <Button size="sm" variant="ghost" className="h-9 text-xs text-muted-foreground" onClick={onResetFormulas}>
+                    <RotateCcw className="h-3.5 w-3.5 mr-1.5" /> Reset
+                  </Button>
+                </div>
+
+                {/* Add forms */}
+                {showAddVar && <AddVariableForm onAdd={handleAddVariable} onCancel={() => setShowAddVar(false)} />}
+                {showAddFormula && (
+                  <AddFormulaForm
+                    group={showAddFormula}
+                    allVarIds={allVarIds}
+                    labelMap={labelMap}
+                    onAdd={handleAddFormula}
+                    onCancel={() => setShowAddFormula(null)}
+                  />
+                )}
+
+                {/* Custom Variables */}
+                {customVariables.length > 0 && (
+                  <div className="bg-muted/30 rounded-lg p-3">
+                    <p className="text-xs font-medium text-muted-foreground mb-2">Custom variables</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {customVariables.map((v) => (
+                        <Badge key={v.id} variant="secondary" className="text-xs gap-1.5 pr-1 h-7">
+                          <span className="font-mono">{v.id}</span>
+                          <span className="text-muted-foreground">= {v.value}</span>
+                          <button onClick={() => handleDeleteVariable(v.id)} className="ml-0.5 hover:text-destructive transition-colors">
+                            <X className="h-3 w-3" />
+                          </button>
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Tabbed Formula Groups */}
+                <Tabs value={activeTab} onValueChange={setActiveTab}>
+                  <TabsList className="w-full grid grid-cols-3 h-10">
+                    {groups.map((g) => {
+                      const meta = groupMeta[g];
+                      const count = filteredFormulas(g).length;
+                      return (
+                        <TabsTrigger key={g} value={g} className="text-xs font-medium gap-1.5">
+                          {meta.icon}
+                          {meta.label}
+                          <span className="text-muted-foreground">({count})</span>
+                        </TabsTrigger>
+                      );
+                    })}
+                  </TabsList>
+                  {groups.map((g) => {
+                    const gf = filteredFormulas(g);
+                    return (
+                      <TabsContent key={g} value={g} className="mt-3 space-y-2">
+                        {gf.length === 0 ? (
+                          <div className="text-center py-8">
+                            <p className="text-sm text-muted-foreground">
+                              {search ? 'No formulas match your search' : 'No formulas in this group'}
+                            </p>
+                          </div>
+                        ) : (
+                          gf.map((def) => (
+                            <FormulaCard
+                              key={def.id}
+                              def={def}
+                              value={formulaValues[def.id] ?? 0}
+                              error={formulaErrors[def.id]}
+                              allVarIds={allVarIds}
+                              labelMap={labelMap}
+                              allValues={formulaValues}
+                              formatCurrency={formatCurrency}
+                              formatNumber={formatNumber}
+                              onUpdate={handleUpdateFormula}
+                              onDelete={handleDeleteFormula}
+                            />
+                          ))
+                        )}
+                      </TabsContent>
+                    );
+                  })}
+                </Tabs>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
         </Collapsible>
       </div>
 
-      {/* Print-only version — static table of all formula results */}
+      {/* Print-only version */}
       <div className="hidden print:block">
-        <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
-          Model Formulas
-        </h2>
-        {groups.map((group) => {
-          const gf = printFormulaRows.filter((f) => f.group === group.key);
+        <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Model Formulas</h2>
+        {groups.map((g) => {
+          const gf = printFormulaRows.filter((f) => f.group === g);
           if (gf.length === 0) return null;
           return (
-            <div key={group.key} className="mb-4">
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
-                {group.title}
-              </h3>
+            <div key={g} className="mb-4">
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">{groupMeta[g].label}</h3>
               <Card>
                 <CardContent className="p-0">
                   <div className="divide-y divide-border">
                     {gf.map((f, i) => (
-                      <div
-                        key={i}
-                        className="px-4 py-2 flex justify-between items-center"
-                      >
+                      <div key={i} className="px-4 py-2 flex justify-between items-center">
                         <div>
-                          <p className="text-xs font-medium text-foreground">
-                            {f.name}
-                          </p>
-                          <p className="text-[10px] font-mono text-muted-foreground">
-                            {f.formula}
-                          </p>
+                          <p className="text-xs font-medium text-foreground">{f.name}</p>
+                          <p className="text-xs font-mono text-muted-foreground">{f.formula}</p>
                         </div>
                         <p className="text-sm font-bold text-foreground">
-                          {f.format === 'currency'
-                            ? formatCurrency(f.value)
-                            : formatNumber(f.value)}
+                          {f.format === 'currency' ? formatCurrency(f.value) : formatNumber(f.value)}
                         </p>
                       </div>
                     ))}
