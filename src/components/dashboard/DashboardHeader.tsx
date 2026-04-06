@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Region, USProviderView } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import oxnnetLogo from '@/assets/oxnnet-logo.png';
-import { Menu, Printer, Save, FolderOpen, Trash2, Clock, RotateCcw, MessageSquare } from 'lucide-react';
+import { Menu, Printer, Save, FolderOpen, Trash2, Clock, RotateCcw, MessageSquare, PanelLeftOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Popover,
@@ -25,21 +25,20 @@ interface DashboardHeaderProps {
   region: Region;
   switchRegion: (r: Region) => void;
   toggleSidebar: () => void;
+  isSidebarOpen: boolean;
   totalImpact: string;
   onSave: () => void;
   onLoad: (id: string) => void;
   onDelete: (id: string) => void;
   onResetDefaults: () => void;
   getSavedConfigs: () => SavedConfigMeta[];
-  providerView?: USProviderView;
-  selectedProviderId?: string | null;
-  annualBirths?: number;
 }
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   region,
   switchRegion,
   toggleSidebar,
+  isSidebarOpen,
   totalImpact,
   onSave,
   onLoad,
@@ -64,14 +63,17 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   return (
     <header className="bg-card border-b border-border px-6 py-3 flex justify-between items-center sticky top-0 z-20 shadow-sm">
       <div className="flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-9 w-9"
-          onClick={toggleSidebar}
-        >
-          <Menu className="h-5 w-5" />
-        </Button>
+        {!isSidebarOpen && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9"
+            onClick={toggleSidebar}
+            title="Open sidebar"
+          >
+            <PanelLeftOpen className="h-5 w-5" />
+          </Button>
+        )}
         <div className="flex items-center gap-2.5">
           <img src={oxnnetLogo} alt="OxNNet" className="h-8 w-8 object-contain" />
           <div>

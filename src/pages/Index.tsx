@@ -381,6 +381,7 @@ const Index: React.FC = () => {
           region={inputs.region}
           switchRegion={switchRegion}
           toggleSidebar={toggleSidebar}
+          isSidebarOpen={isSidebarOpen}
           totalImpact={formatCurrency(results.financials.totalEconomicImpact)}
           onSave={() => setSaveDialogOpen(true)}
           onLoad={loadConfiguration}
@@ -395,9 +396,6 @@ const Index: React.FC = () => {
               region: r,
             }))
           }
-          providerView={providerView}
-          selectedProviderId={selectedProviderId}
-          annualBirths={inputs.annualBirths}
         />
 
       <SaveConfigDialog
