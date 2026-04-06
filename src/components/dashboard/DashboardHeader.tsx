@@ -98,127 +98,126 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               {r}
             </button>
           ))}
-        </div>
+      </div>
 
-        {/* Total impact badge */}
-        <div className="hidden md:block text-right">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
-            Total Impact
-          </p>
-          <p className="text-xl font-bold text-emerald-600 leading-none">
-            {totalImpact}
-          </p>
-        </div>
+      {/* Total impact badge */}
+      <div className="hidden md:block text-right">
+        <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+          Total Impact
+        </p>
+        <p className="text-xl font-bold text-emerald-600 leading-none">
+          {totalImpact}
+        </p>
+      </div>
 
-        <div className="flex items-center gap-1">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onSave}
-            className="hidden sm:flex text-xs px-2.5"
-          >
-            <Save className="h-3 w-3 mr-1" />
-            Save
-          </Button>
-          <Popover open={loadOpen} onOpenChange={setLoadOpen}>
-            <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" className="hidden sm:flex text-xs px-2.5">
-                <FolderOpen className="h-3 w-3 mr-1" />
-                Load
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="w-96 p-0">
-              <div className="px-4 py-3 border-b border-border">
-                <p className="text-sm font-bold text-foreground">
-                  Saved Configurations
-                </p>
+      <div className="flex items-center gap-1">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onSave}
+          className="hidden sm:flex text-xs px-2.5"
+        >
+          <Save className="h-3 w-3 mr-1" />
+          Save
+        </Button>
+        <Popover open={loadOpen} onOpenChange={setLoadOpen}>
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="sm" className="hidden sm:flex text-xs px-2.5">
+              <FolderOpen className="h-3 w-3 mr-1" />
+              Load
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="end" className="w-96 p-0">
+            <div className="px-4 py-3 border-b border-border">
+              <p className="text-sm font-bold text-foreground">
+                Saved Configurations
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Select a configuration to restore
+              </p>
+            </div>
+            {configs.length === 0 ? (
+              <div className="px-4 py-6 text-center">
                 <p className="text-xs text-muted-foreground">
-                  Select a configuration to restore
+                  No saved configurations yet.
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Click "Save" to store your current setup.
                 </p>
               </div>
-              {configs.length === 0 ? (
-                <div className="px-4 py-6 text-center">
-                  <p className="text-xs text-muted-foreground">
-                    No saved configurations yet.
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Click "Save" to store your current setup.
-                  </p>
-                </div>
-              ) : (
-                <ScrollArea className="max-h-72">
-                  <div className="divide-y divide-border">
-                    {[...configs].reverse().map((cfg) => (
-                      <div
-                        key={cfg.id}
-                        className="px-4 py-3 hover:bg-muted/40 transition-colors group"
-                      >
-                        <div className="flex items-start justify-between gap-2">
-                          <button
-                            onClick={() => {
-                              onLoad(cfg.id);
-                              setLoadOpen(false);
-                            }}
-                            className="text-left flex-1 min-w-0"
-                          >
-                            <p className="text-sm font-medium text-foreground truncate">
-                              {cfg.name}
-                            </p>
-                            <div className="flex items-center gap-2 mt-0.5">
-                              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                <Clock className="h-3 w-3" />
-                                {formatTime(cfg.timestamp)}
-                              </span>
-                              {cfg.region && (
-                                <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                                  {cfg.region}
-                                </Badge>
-                              )}
-                            </div>
-                            {cfg.comment && (
-                              <p className="text-xs text-muted-foreground mt-1 flex items-start gap-1">
-                                <MessageSquare className="h-3 w-3 mt-0.5 shrink-0" />
-                                <span className="line-clamp-2">{cfg.comment}</span>
-                              </p>
+            ) : (
+              <ScrollArea className="max-h-72">
+                <div className="divide-y divide-border">
+                  {[...configs].reverse().map((cfg) => (
+                    <div
+                      key={cfg.id}
+                      className="px-4 py-3 hover:bg-muted/40 transition-colors group"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <button
+                          onClick={() => {
+                            onLoad(cfg.id);
+                            setLoadOpen(false);
+                          }}
+                          className="text-left flex-1 min-w-0"
+                        >
+                          <p className="text-sm font-medium text-foreground truncate">
+                            {cfg.name}
+                          </p>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {formatTime(cfg.timestamp)}
+                            </span>
+                            {cfg.region && (
+                              <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                                {cfg.region}
+                              </Badge>
                             )}
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onDelete(cfg.id);
-                            }}
-                            className="text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity p-1"
-                            title="Delete configuration"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
+                          </div>
+                          {cfg.comment && (
+                            <p className="text-xs text-muted-foreground mt-1 flex items-start gap-1">
+                              <MessageSquare className="h-3 w-3 mt-0.5 shrink-0" />
+                              <span className="line-clamp-2">{cfg.comment}</span>
+                            </p>
+                          )}
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete(cfg.id);
+                          }}
+                          className="text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity p-1"
+                          title="Delete configuration"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
                       </div>
-                    ))}
-                  </div>
-                </ScrollArea>
-              )}
-            </PopoverContent>
-          </Popover>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onResetDefaults}
-            className="hidden sm:flex text-xs px-2.5"
-          >
-            <RotateCcw className="h-3 w-3 mr-1" />
-            Defaults
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => window.print()}
-            className="hidden sm:flex print:hidden text-xs px-2.5"
-          >
-            <Printer className="h-3 w-3 mr-1" />
-            Print
-          </Button>
-        </div>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
+            )}
+          </PopoverContent>
+        </Popover>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onResetDefaults}
+          className="hidden sm:flex text-xs px-2.5"
+        >
+          <RotateCcw className="h-3 w-3 mr-1" />
+          Defaults
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => window.print()}
+          className="hidden sm:flex print:hidden text-xs px-2.5"
+        >
+          <Printer className="h-3 w-3 mr-1" />
+          Print
+        </Button>
       </div>
     </header>
   );
