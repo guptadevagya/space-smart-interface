@@ -25,15 +25,14 @@ interface DashboardHeaderProps {
   region: Region;
   switchRegion: (r: Region) => void;
   toggleSidebar: () => void;
+  isSidebarOpen: boolean;
   totalImpact: string;
   onSave: () => void;
   onLoad: (id: string) => void;
   onDelete: (id: string) => void;
   onResetDefaults: () => void;
   getSavedConfigs: () => SavedConfigMeta[];
-  providerView?: USProviderView;
-  selectedProviderId?: string | null;
-  annualBirths?: number;
+}
 }
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({
