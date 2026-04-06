@@ -67,7 +67,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         <Button
           variant="ghost"
           size="icon"
-          className="lg:hidden h-9 w-9"
+          className="h-9 w-9"
           onClick={toggleSidebar}
         >
           <Menu className="h-5 w-5" />
