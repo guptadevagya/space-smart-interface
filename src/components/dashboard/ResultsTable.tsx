@@ -242,7 +242,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                   row.type === 'revenue' && 'bg-blue-50/50 dark:bg-blue-950/20',
                 )}
               >
-                <TableCell className="font-semibold text-sm">
+                <TableCell className="text-sm">
                   {row.label}
                 </TableCell>
                 <TableCell
