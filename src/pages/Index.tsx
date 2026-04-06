@@ -172,6 +172,16 @@ const Index: React.FC = () => {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => window.innerWidth >= 1280);
 
+  useEffect(() => {
+    const syncSidebarState = () => {
+      setIsSidebarOpen(window.innerWidth >= 1280);
+    };
+
+    syncSidebarState();
+    window.addEventListener('resize', syncSidebarState);
+    return () => window.removeEventListener('resize', syncSidebarState);
+  }, []);
+
   const isUS = inputs.region === 'US';
 
   // ── National-level results (always full U.S. for US region) ──
